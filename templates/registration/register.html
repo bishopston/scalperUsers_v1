@@ -1,0 +1,26 @@
+{%  extends "../base/base.html" %}
+
+{% block content %}
+<div class="container bg-light text-dark">
+  <div class="row">
+    <div class="col-sm-7">
+      <h4>Create a Martingale Account</h4>
+      <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+          
+          <div class="form-group">
+            {{ field.label_tag }}<br>
+            {{ field }}
+          </div>
+          {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+          {% endfor %}  
+          
+        {% endfor %}
+        <button class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
