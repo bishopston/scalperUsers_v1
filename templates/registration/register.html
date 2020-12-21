@@ -1,26 +1,30 @@
 {%  extends "../base/base.html" %}
 
 {% block content %}
-<div class="container bg-light text-dark">
-  <div class="row">
-    <div class="col-sm-7">
-      <h4>Create a Martingale Account</h4>
+<div id="content-container" class="container p-none">
+  <div class="lgn-container col-lg-8">
       <form method="POST">
         {% csrf_token %}
-        {% for field in form %}
-          
-          <div class="form-group">
-            {{ field.label_tag }}<br>
-            {{ field }}
-          </div>
-          {% for error in field.errors %}
-            <p style="color: red">{{ error }}</p>
-          {% endfor %}  
-          
-        {% endfor %}
+        <table class="table table-dark">
+          {% for field in form %}
+            <tr>
+              <td>
+                {{ field.label_tag }}<br>
+                {{ field }}
+                {% if field.help_text %}
+                  <small style="color: grey">{{ field.help_text }}</small>
+                {% endif %}
+                <div>
+                  {% for error in field.errors %}
+                    <small style="color: red">{{ error }}</small>
+                  {% endfor %}
+              </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
         <button class="btn btn-primary">Submit</button>
       </form>
-    </div>
   </div>
 </div>
 {% endblock %}
