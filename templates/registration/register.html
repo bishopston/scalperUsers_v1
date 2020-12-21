@@ -6,25 +6,47 @@
       <form method="POST">
         {% csrf_token %}
         <table class="table table-dark">
-          {% for field in form %}
+
             <tr>
               <td>
-                {{ field.label_tag }}<br>
-                {{ field }}
-                {% if field.help_text %}
-                  <small style="color: grey">{{ field.help_text }}</small>
-                {% endif %}
-                <div>
-                  {% for error in field.errors %}
-                    <small style="color: red">{{ error }}</small>
-                  {% endfor %}
-              </div>
+                <label for="{{ form.email.id_for_label }}">Email address:</label><br>
+                {{ form.email }}
               </td>
             </tr>
-          {% endfor %}
+            <tr>
+              <td>
+                <label for="{{ form.password1.id_for_label }}">Password:</label>
+                <button id="toggle-password" type="button" class="btn btn-link float-right text-warning text-decoration-none">Show password</button><br>
+                {{ form.password1 }}
+              </td>
+            </tr>
+
         </table>
         <button class="btn btn-primary">Submit</button>
       </form>
   </div>
 </div>
+
+<script>
+  const passwordInput = document.getElementById('id_password1');
+  const togglePasswordButton = document.getElementById('toggle-password');
+
+  togglePasswordButton.addEventListener('click', togglePassword);
+
+  function togglePassword() {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      togglePasswordButton.textContent = 'Hide password';
+      togglePasswordButton.setAttribute('aria-label',
+        'Hide password.');
+    } else {
+      passwordInput.type = 'password';
+      togglePasswordButton.textContent = 'Show password';
+      togglePasswordButton.setAttribute('aria-label',
+        'Show password as plain text. ' +
+        'Warning: this will display your password on the screen.');
+    }
+  }
+</script> 
+
 {% endblock %}

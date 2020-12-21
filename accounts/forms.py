@@ -12,6 +12,7 @@ class UserAdminCreationForm(UserCreationForm):
                             widget=forms.EmailInput(
                             attrs={
                             'class': 'form-control form-control-sm',
+                            'autocomplete': 'off'
                             }
                             ))
 
@@ -21,6 +22,7 @@ class UserAdminCreationForm(UserCreationForm):
                             widget=forms.PasswordInput(
                             attrs={
                             'class': 'form-control form-control-sm',
+                            'autocomplete': 'new-password'
                             }
                             ))
 
@@ -34,6 +36,7 @@ class UserAdminCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(UserAdminCreationForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs.update({'autocomplete': 'new-password'})
         del self.fields['password2']
 
 class UserLoginForm(AuthenticationForm):
