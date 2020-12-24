@@ -1,14 +1,14 @@
 {%  extends "../base/base.html" %}
 
 {% block content %}
-<div class="container-fluid d-flex justify-content-center col-lg-6"></div>
+<div class="container-fluid d-flex justify-content-center col-lg-5"></div>
 <div class="user">
   <span class="outer-line"></span>
   <span class="fas fa-3x fa-user-circle"></span>
   <span class="outer-line"></span>
 </div>
 <div class="mt-4 d-flex justify-content-center container">
-  <div class="col-lg-6">
+  <div class="col-lg-5">
     <div class="row d-flex justify-content-center">
       <h4><strong>Create a Martingale Account</strong></h4><br>
       <p>Already have an account?&nbsp;</p><a href="{% url 'accounts:login' %}">Log In</a>
@@ -16,25 +16,30 @@
       <form method="POST">
         {% csrf_token %}
         
-        <table class="table table-dark">
+        <table class="table table-borderless">
 
           <tr>
             <td>
               <label for="{{ form.email.id_for_label }}">Email address:</label><br>
               {{ form.email }}
+              {% if form.email.errors %}
+                <p><small class="text-danger">{{ form.email.errors }}</small></p>
+              {% endif %}
             </td>
           </tr>
           <tr>
             <td>
               <label for="{{ form.password1.id_for_label }}">Password:</label>
-              <button id="toggle-password" type="button" class="btn btn-link float-right text-warning text-decoration-none">Show password</button><br>
+              <button id="toggle-password" type="button" class="btn btn-link float-right text-danger text-decoration-none">Show</button><br>
               {{ form.password1 }}<br>
-              <p><small class="text-danger">{{ form.non_field_errors }}</small></p>
+              {% if form.non_field_errors %}
+                <p><small class="text-danger">{{ form.non_field_errors }}</small></p>
+              {% endif %}
             </td>
           </tr>
 
         </table>
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center text-justify">
           <p><small>By clicking Register you confirm you have read and agree to our Terms and Conditions and acknowledge our Privacy Policy.</small></p>
         </div>
         <div class="d-flex justify-content-center">
