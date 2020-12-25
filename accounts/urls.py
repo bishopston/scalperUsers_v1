@@ -11,4 +11,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     #path('profile/', views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name="registration/login.html"), name='login'),
+    path('activate/<uidb64>/<token>/',views.activate, name='activate'),
 ]
