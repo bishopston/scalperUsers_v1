@@ -19,6 +19,8 @@ def register(request):
         form = UserAdminCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            user.email = form.cleaned_data['email']
+            user.set_password(form.cleaned_data['password1'])            
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
@@ -34,7 +36,7 @@ def register(request):
                 mail_subject, message, to=[to_email]
             )
             email.send()
-            return HttpResponse('registered succesfully and activation sent')
+            return HttpResponse('Thank you for registering at Martingale! An activation link has been sent to your email')                     
     else:
         form = UserAdminCreationForm()
     return render(request, 'registration/register.html', {'form': form})

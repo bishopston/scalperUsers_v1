@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model, password_validation
+from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+
+from accounts.models import CustomUser
 
 
 class UserAdminCreationForm(UserCreationForm):
@@ -12,7 +15,8 @@ class UserAdminCreationForm(UserCreationForm):
                             widget=forms.EmailInput(
                             attrs={
                             'class': 'form-control form-control-sm',
-                            'autocomplete': 'off'
+                            'autocomplete': 'off',
+                            'placeholder': 'Email address',
                             }
                             ))
 
@@ -22,13 +26,21 @@ class UserAdminCreationForm(UserCreationForm):
                             widget=forms.PasswordInput(
                             attrs={
                             'class': 'form-control form-control-sm',
-                            'autocomplete': 'new-password'
+                            'autocomplete': 'new-password',
+                            'placeholder': 'Password',
                             }
                             ))
 
     class Meta:
         model = get_user_model()
         fields = ['email', 'password1']
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                'Please use another email, this is already taken')
+        return email
 
     def clean(self):
         password_validation.validate_password(self.cleaned_data.get('password1'), None)
