@@ -9,9 +9,15 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.views import View
+import json
+from django.http import JsonResponse
+from validate_email import validate_email
+from django.contrib.auth.password_validation import *
 
 from accounts.forms import UserAdminCreationForm
 from accounts.models import CustomUser
+from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
 
 def register(request):
@@ -73,3 +79,22 @@ def profile(request):
     return render(request,
                   'registration/profile.html',
                   {'section': 'profile'})
+
+
+class EmailValidationView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        email = data['email']
+        if not validate_email(email):
+            return JsonResponse({'email_error': 'Email is invalid'}, status=400)
+        if CustomUser.objects.filter(email=email).exists():
+            return JsonResponse({'email_error': 'sorry email in use,choose another one '}, status=409)
+        return JsonResponse({'email_valid': True})
+
+class PasswordValidationView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        password = data['password1']
+        if validate_password(password) is not None:
+            return JsonResponse({'password1_error': 'Password is invalid'}, status=400)
+        return JsonResponse({'password1_valid': True})

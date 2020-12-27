@@ -22,6 +22,8 @@
           <p><small class="text-danger">{{ form.email.errors }}</small></p>
         {% endif %}
       </div>
+      <div class="emailFeedBackArea invalid-feedback" style="display:none">
+      </div>
       <div class="form-group">
         <!--<label for="{{ form.password1.id_for_label }}">Password:</label>-->
         <button id="toggle-password" type="button" class="btn btn-link float-right text-danger text-decoration-none">Show</button><br>
@@ -29,12 +31,17 @@
         {% if form.non_field_errors %}
           <p><small class="text-danger">{{ form.non_field_errors }}</small></p>
         {% endif %}
+        <!--<p class="error-msg">
+          Password must contain at least 8 characters
+        </p>-->
+      </div>
+      <div class="passwordFeedBackArea invalid-feedback" style="display:none">
       </div>
       <div class="d-flex justify-content-center text-justify mt-0">
         <p><small>By clicking Register you confirm you have read and agree to our Terms and Conditions and acknowledge our Privacy Policy.</small></p>
       </div>
       <div class="d-flex justify-content-center">
-        <button class="btn btn-secondary btn-lg btn-block"><i class="mr-2 far fa-user-circle"></i><strong>Register</strong></button>
+        <button class="btn btn-secondary btn-lg btn-block submit-btn"><i class="mr-2 far fa-user-circle"></i><strong>Register</strong></button>
       </div>
     </form>
   </div>
@@ -60,6 +67,94 @@
         'Warning: this will display your password on the screen.');
     }
   }
+
+
+  const emailField = document.querySelector("#id_email");
+  const emailFeedBackArea = document.querySelector(".emailFeedBackArea");
+  const submitBtn = document.querySelector(".submit-btn");
+
+  emailField.addEventListener("keyup", (e) => {
+  const emailVal = e.target.value;
+
+  emailField.classList.remove("is-invalid");
+  emailFeedBackArea.style.display = "none";
+
+  if (emailVal.length > 0) {
+    fetch("/accounts/validate-email/", {
+      body: JSON.stringify({ email: emailVal }),
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+        if (data.email_error) {
+          submitBtn.disabled = true;
+          emailField.classList.add("is-invalid");
+          emailFeedBackArea.style.display = "block";
+          emailFeedBackArea.innerHTML = `<p>${data.email_error}</p>`;
+        } else {
+          submitBtn.removeAttribute("disabled");
+        }
+      });
+  }
+  });
+
+
+  const passwordField = document.querySelector("#id_password1");
+  const passwordFeedBackArea = document.querySelector(".passwordFeedBackArea");
+
+  passwordField.addEventListener("keyup", (e) => {
+  const passwordVal = e.target.value;
+
+  passwordField.classList.remove("is-invalid");
+  passwordFeedBackArea.style.display = "none";
+
+  if (passwordVal.length > 0) {
+    fetch("/accounts/validate-password/", {
+      body: JSON.stringify({ password: passwordVal }),
+      method: "POST",
+      headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+        console.log(res.text());
+        if (data.password1_error) {
+          submitBtn.disabled = true;
+          passwordField.classList.add("is-invalid");
+          passwordFeedBackArea.style.display = "block";
+          passwordFeedBackArea.innerHTML = `<p>${data.password1_error}</p>`;
+        } else {
+          submitBtn.removeAttribute("disabled");
+        }
+      });
+  }
+  });
+
+
+
+  var validateLength = function(text) {
+    return text.length > 7; // or ajax sending text to validate
+  }
+
+  $(passwordInput).on('input', function() {
+    if (!validateLength($(this).val())) {
+      $(this).addClass('error');
+      $('p.error-msg').show();
+    }
+    else {
+      $(this).removeClass('error');
+      $('p.error-msg').hide();
+    }
+  })
+
+  var validateUppercase = function(text) {
+    return (/[A-Z]/.test(str));
+  }
+
  </script> 
 
 {% endblock %}

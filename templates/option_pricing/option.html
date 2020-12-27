@@ -1,0 +1,96 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+
+<div class="container bg-light text-dark">
+  <div class="row">
+    <div class="col-sm-7 mb-2">
+      <h3>Option Screeners</h3>
+      <form method="GET">
+        {{ optionscreenerform.as_p }}
+        <button class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+    <div class="vline col-sm-3">
+      <div class="row">
+        <p class="num-results">Number of results</p>
+      </div>
+      <div id="results" class="row">
+        {% if asset_query and callputflag_query and exp_month_query and exp_year_query %}
+          <h1 class="results">{{ queryset_num }}</h1>
+        {% else %}
+          <h1 class="results">0</h1>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if asset_query and callputflag_query and exp_month_query and exp_year_query %}
+  <div class="mt-5 container bg-white text-dark">
+    <div class="row">
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <tr>
+            <th>Symbol</th>
+            <th>Latest Trading Date</th>
+            <th>Strike</th>
+            <th>Closing Price</th>
+            <th>Change</th>
+            <th>Volume</th>
+            <th>Trades</th>
+            <th>Open Interest</th>
+            <th>Expiration Date</th>
+          </tr>
+          {% for option in page_obj %}
+            <tr>
+              <td><small><a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a></small></td>
+              <td><small>{{ option.date|date:"SHORT_DATE_FORMAT" }}</small></td>
+              <td><small>
+                {% if asset_query == 'FTSE' %}
+                  {{ option.optionsymbol.strike|add:"0" }}
+                {% else %}
+                  {{ option.optionsymbol.strike }}
+                {% endif %}
+              </small></td>
+              <td><small>{{ option.closing_price|floatformat:3 }}</small></td>
+              <td><small>
+                {% if option.change < 0 %}
+                  <div class="change-negative"> 
+                {% else %} 
+                  <div class="change-positive">
+                {% endif %}
+                  {{ option.change }}%
+                </div>
+              </small></td>
+              <td><small>{{ option.volume }}</small></td>
+              <td><small>{{ option.trades }}</small></td>
+              <td><small>{{ option.open_interest }}</small></td>
+              <td><small>{{ option.optionsymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-end">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a></li>
+          {% endif %}
+          {% for n in page_obj.paginator.page_range %}
+            {% if page_obj.number == n %}
+              <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ n }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ n }}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ n }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ n }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,337 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<div class="container light-blue text-dark mb-3">
+	<div class="row mb-0">
+        <div class="col-md-12">
+            <p class="font-weight-bold">{{asset}} {{ optiontype }} {{ expmonth }} {{ expyear }} @ 
+                {% if asset == 'FTSE' %}
+                    {{ strike|add:"0" }}
+                {% else %}
+                    {{ strike }}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <div class="pl-3 row align-items-stretch">
+ 
+            <div>
+                <h3 class="font-weight-bold">{{closing_price|floatformat:2}}</h3>
+            </div>
+            <div class="p-2 my-auto">
+                <h5 class="vertical">
+                    {% if change < 0 %}
+                    <div class="change-negative"> 
+                    {% else %} 
+                    <div class="change-positive">
+                    {% endif %}
+                    {{ change }}%
+                </h5>
+            </div>
+
+    </div>
+    <div class="row"><div class="col-md-2 align-text-top"><p class="subtext">At close: {{latest_trad_date}}</p></div></div>
+</div>
+<div class="container bg-white text-dark">
+	<div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#chart" class="nav-link" role="tab" data-toggle="tab">Chart</a>
+                </li>
+            </ul>
+
+            <div class="my-3 tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="summary">
+						<div class="container bg-white">
+							<div class="row">
+								<div class="col-md-3">
+								    <div class="table-responsive">
+										<table class="table table-sm table-hover">
+											<tbody>
+												<tr>
+													<td class="pl-1"><small>Asset:</small></td>
+													<td><small class="font-weight-bold">{{asset}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Option Type:</small></td>
+													<td><small class="font-weight-bold">{{optiontype}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Expiration Date:</small></td>
+													<td><small class="font-weight-bold">{{expdate}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Exercise Price:</small></td>
+													<td><small class="font-weight-bold">
+                                                        {% if asset == 'FTSE' %}
+                                                            {{ strike|add:"0" }}
+                                                        {% else %}
+                                                            {{ strike }}
+                                                        {% endif %}
+                                                    </small></td>												
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="col-md-3">
+								    <div class="table-responsive">
+										<table class="table table-sm table-hover">
+											<tbody>
+												<tr>
+													<td><small>Latest Trading:</small></td>
+													<td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Volume:</small></td>
+													<td><small class="font-weight-bold">{{volume}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Trades:</small></td>
+													<td><small class="font-weight-bold">{{trades}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Open Interest:</small></td>
+													<td><small class="font-weight-bold">{{open_interest}}</small></td>												
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="col-md-3">
+								    <div class="table-responsive">
+										<table class="table table-sm table-hover">
+											<tbody>
+												<tr>
+													<td><small>Imp. Volatility:</small></td>
+													<td><small class="font-weight-bold">{{imp_vol}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Moneyness:</small></td>
+													<td><small class="font-weight-bold">
+                                                        {% if moneyness == 'OTM' %}
+                                                        <div class="change-negative"> 
+                                                        {% else %} 
+                                                        <div class="change-positive">
+                                                        {% endif %}
+                                                        {{moneyness}}
+                                                    </small></td>												
+												</tr>
+												<tr>
+													<td><small>Lifetime High:</small></td>
+													<td><small class="font-weight-bold">{{lifetime_high|floatformat:2}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Lifetime Low:</small></td>
+													<td><small class="font-weight-bold">{{lifetime_low|floatformat:2}}</small></td>												
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="col-md-3">
+								    <div class="table-responsive">
+										<table class="table table-sm table-hover">
+											<tbody>
+												<tr>
+													<td><small>Delta:</small></td>
+													<td><small class="font-weight-bold">{{delta|floatformat:2}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Gamma:</small></td>
+													<td><small class="font-weight-bold">{{gamma|floatformat:2}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Theta per day:</small></td>
+													<td><small class="font-weight-bold">{{theta|floatformat:2}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Vega:</small></td>
+													<td><small class="font-weight-bold">{{vega|floatformat:2}}</small></td>												
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>							
+                    </div>
+
+					<div role="tabpanel" class="tab-pane" id="chart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="optionChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    <div class="btn-group-vertical">
+                                        <button class="btn btn-link" onclick="updateChart()">10D</button>
+                                        <button class="btn btn-link" onclick="updateChart()">10D</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+		</div>
+	</div>
+</div>
+
+<script> 
+
+    $('.hidethis').hide();
+
+    var objId = "{{trade_symbol}}"
+    var dataURL = `/options/chart/${objId}/`
+    var dataURLvol = `/options/chart_vol/${objId}/`
+
+    var state ={	
+		'items':[],
+		'values':[],
+		'items_vol':[],
+		'values_vol':[],        
+        'items10':[],
+		'values10':[],
+        'items_vol10':[],
+		'values_vol10':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				state.items.push(key_stripped_stripped)
+				state.values.push(value)
+
+                state.items10 = state.items.slice(-10)
+                state.values10 = state.values.slice(-10)      
+
+                console.log(state.items)
+                console.log(state.values)
+            }
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    $.ajax({
+        method: "GET",
+        url: dataURLvol,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				state.items_vol.push(key_stripped_stripped)
+				state.values_vol.push(value)
+
+                state.items_vol10 = state.items_vol.slice(-10)
+                state.values_vol10 = state.values_vol.slice(-10)      
+
+                console.log(state.items)
+                console.log(state.values)
+            }
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+
+    //function setChart(){
+    var ctx = document.getElementById("optionChart");
+    
+    var optionChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: state.items,
+        datasets: [{
+            label: objId,
+            data: state.values,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },{
+            type: 'bar',
+            label: 'Volume',
+            data: state.values_vol,
+            yAxisID: 'B',
+            borderWidth: 1,
+            borderColor: 'rgba(244, 137, 244)',
+            order: 2
+        }
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },{
+                id: 'B',
+                position: 'right',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true,
+                    display: false
+                },
+                gridLines: {
+                display:false
+                }
+            }
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: false,
+        }
+    }
+    })
+
+    function updateChart(){
+        optionChart.data.labels = state.items10;
+        optionChart.data.datasets[0].data = state.values10;
+        optionChart.data.datasets[1].data = state.values_vol10;
+        optionChart.update();
+    };
+
+
+
+</script>
+
+
+{% endblock %}

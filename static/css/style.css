@@ -250,3 +250,10 @@ span {
 	width: 40%;
 	border-bottom: 3px solid red;
   }
+
+  p.error-msg {
+	color: #FF0000;
+	display: none;
+	font-size: x-small;
+  }
+
