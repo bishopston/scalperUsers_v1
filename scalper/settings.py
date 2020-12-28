@@ -136,6 +136,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 LOGIN_REDIRECT_URL = 'option_pricing:home'
 LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
 MAILER_EMAIL_BACKEND = EMAIL_BACKEND
