@@ -23,38 +23,39 @@
             <div class="collapse navbar-collapse ml-3" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Markets
-                    </a>
-                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item bg-dark text-white" href="#">Daily Options Statistics</a>
-                      <a class="dropdown-item bg-dark text-white" href="#">Daily Futures Statistics</a>
-                      <a class="dropdown-item bg-dark text-white" href="#">Trending Options Statistics</a>
-                      <a class="dropdown-item bg-dark text-white" href="#">Trending Futures Statistics</a>
-                  </li>
+                  <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Markets
+                  </a>
+                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Options Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Futures Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Options Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Futures Statistics</a></li>
+                  </ul>
+                </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Screeners
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" href="{% url "option_pricing:option" %}">Options Screeners</a>
-                      <a class="dropdown-item" href="#">Futures Screeners</a>
-                      <a class="dropdown-item" href="#">Highest Open Interest Options</a>
-                      <a class="dropdown-item" href="#">Highest Open Interest Futures</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">My Screeners</a>
-                    </div>
-                  </li>
+                  <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Screeners
+                  </a>
+                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:option" %}">Options Screeners</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Futures Screeners</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Highest Open Interest Options</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Highest Open Interest Futures</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">My Screeners</a></li>
+                  </ul>
+                </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Volatility
                   </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
+                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Options Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Futures Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Options Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Futures Statistics</a></li>
+                  </ul>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link active" href="#">Portfolios</a>
@@ -63,10 +64,23 @@
                     <a class="nav-link active" href="#">Tools</a>
                 </li>
               </ul>
+              {% if request.user.is_authenticated %}
+
+                <li class="nav-item my-2 my-lg-0">
+                  <a class="nav-link" href="#"><i class="fas fa-2x fa-user-circle"></i>
+                    
+                  </a>
+
+                </li>
+                
+                
+
+              {% else %}
               <form class="form-inline my-2 my-lg-0">
-                <a class="text-light text-decoration-none mr-2" href="{% url "accounts:register" %}">Sign-In</a>
-                <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url "accounts:login" %}" role="button">Join</a>
+                <a class="text-light text-decoration-none mr-2" href="{% url "accounts:login" %}">Sign-In</a>
+                <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url "accounts:register" %}" role="button">Join</a>
               </form>
+              {% endif %}
             </div>
           </nav>
 

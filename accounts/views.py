@@ -75,12 +75,6 @@ def register(request):
             return redirect('option_pricing:home')
     return render(request, 'registration/register.html', {'form': form})
 """
-def profile(request):
-    return render(request,
-                  'registration/profile.html',
-                  {'section': 'profile'})
-
-
 class EmailValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
