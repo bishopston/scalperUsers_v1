@@ -15,74 +15,75 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="{% url "option_pricing:home" %}">Navbar</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-          
-            <div class="collapse navbar-collapse ml-3" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
+          <a class="navbar-brand" href="{% url "option_pricing:home" %}">Navbar</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse ml-3" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Markets
+                </a>
+                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Daily Options Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Daily Futures Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Trending Options Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Trending Futures Statistics</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Screeners
+                </a>
+                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:option" %}">Options Screeners</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Futures Screeners</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Highest Open Interest Options</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Highest Open Interest Futures</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">My Screeners</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Volatility
+                </a>
+                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Daily Options Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Daily Futures Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Trending Options Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="#">Trending Futures Statistics</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Portfolios</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link active" href="#">Tools</a>
+              </li>
+            </ul>
+            {% if request.user.is_authenticated %}
+            <ul class="navbar-nav mr-2">
                 <li class="nav-item dropdown">
-                  <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Markets
+                  <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="align-self-center rounded rounded-circle mr-1 flex-shrink-0" style="width: 45px; height: 45px;" width="500" height="500" src="https://www.gravatar.com/avatar/6a393bb03869d2d08a861046dde093fc?s=500&amp;d=mp">
                   </a>
-                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Options Statistics</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Futures Statistics</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Options Statistics</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Futures Statistics</a></li>
+                  <ul class="dropdown-menu dropdown-menu-right bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "logout" %}">Sign Out</a></li>
                   </ul>
                 </li>
-                <li class="nav-item dropdown">
-                  <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Screeners
-                  </a>
-                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:option" %}">Options Screeners</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Futures Screeners</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Highest Open Interest Options</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Highest Open Interest Futures</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">My Screeners</a></li>
-                  </ul>
-                </li>
-                <li class="nav-item dropdown">
-                  <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Volatility
-                  </a>
-                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Options Statistics</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Daily Futures Statistics</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Options Statistics</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">Trending Futures Statistics</a></li>
-                  </ul>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">Portfolios</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Tools</a>
-                </li>
-              </ul>
-              {% if request.user.is_authenticated %}
-
-                <li class="nav-item my-2 my-lg-0">
-                  <a class="nav-link" href="#"><i class="fas fa-2x fa-user-circle"></i>
-                    
-                  </a>
-
-                </li>
-                
-                
-
-              {% else %}
-              <form class="form-inline my-2 my-lg-0">
-                <a class="text-light text-decoration-none mr-2" href="{% url "accounts:login" %}">Sign-In</a>
-                <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url "accounts:register" %}" role="button">Join</a>
-              </form>
-              {% endif %}
-            </div>
-          </nav>
+            </ul>          
+            {% else %}
+            <form class="form-inline my-2 mr-2 my-lg-0">
+              <a class="text-light text-decoration-none mr-2" href="{% url "accounts:login" %}">Sign-In</a>
+              <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url "accounts:register" %}" role="button">Join</a>
+            </form>
+            {% endif %}
+          </div>
+        </nav>
 
       <div class="container-fluid">
           {% block content %} 
