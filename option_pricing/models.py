@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from accounts.models import CustomUser
 
 class Optionsymbol(models.Model):
 
@@ -22,6 +24,22 @@ class Optionsymbol(models.Model):
     optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
     strike = models.DecimalField(max_digits=8, decimal_places=2)
     expmonthdate = models.DateField()
+    favourites = models.ManyToManyField(
+	    CustomUser, related_name='favourite', default=None, blank=True)
+    optionscreeners = models.ManyToManyField(
+	    CustomUser, related_name='optionscreeners', default=None, blank=True)
+    likes = models.ManyToManyField(
+	    CustomUser, related_name='likes', default=None, blank=True)
+    #like_count = models.BigIntegerField(default='0')
+
+    def __str__(self):
+        return self.symbol
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def get_absolute_url(self):       
+        return reverse('option_pricing:option_screener_detail', args=[str(self.symbol)])
 
 class Option(models.Model):
 

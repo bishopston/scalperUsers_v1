@@ -96,6 +96,16 @@ def OptionScreenerDetail(request, optionsymbol):
     theta = option_strikespan[0].theta
     vega = option_strikespan[0].vega
 
+    is_fav = False
+    if option_strikespan[0].optionsymbol.optionscreeners.filter(id=request.user.id).exists():
+        is_fav = True
+
+    optionsymbol_id = option_strikespan[0].optionsymbol.id
+  
+    is_liked = False
+    if option_strikespan[0].optionsymbol.likes.filter(id=request.user.id).exists():
+        is_liked = True
+
     context = {
         'option_strikespan' : option_strikespan,
         'trade_symbol' : trade_symbol,
@@ -119,6 +129,11 @@ def OptionScreenerDetail(request, optionsymbol):
         'theta' : theta,
         'gamma' : gamma,
         'vega' : vega,
+        'is_fav' : is_fav,
+        'is_liked': is_liked,
+        'optionsymbol_id' : optionsymbol_id,
+        'total_likes' : option_strikespan[0].optionsymbol.total_likes(),
+        #'optionsymbol_like_count' :optionsymbol_like_count,
     }
 
     return render(request, 'option_pricing/option_screener.html', context)

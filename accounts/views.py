@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -11,12 +11,13 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.views import View
 import json
-from django.http import JsonResponse
 from validate_email import validate_email
 from django.contrib.auth.password_validation import *
+from django.template.loader import render_to_string
 
 from accounts.forms import UserAdminCreationForm
 from accounts.models import CustomUser
+from option_pricing.models import Optionsymbol
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
 
@@ -92,3 +93,117 @@ class PasswordValidationView(View):
         if validate_password(password) is not None:
             return JsonResponse({'password1_error': 'Password is invalid'}, status=400)
         return JsonResponse({'password1_valid': True})
+
+
+@ login_required
+def favourite_list(request):
+    fav_list = Optionsymbol.objects.filter(favourites=request.user)
+    return render(request,
+                  'accounts/favourites.html',
+                  {'fav_list': fav_list})
+"""
+@ login_required
+def favourite_add(request, id):
+    optionsymbol = get_object_or_404(Optionsymbol, id=id)
+    if optionsymbol.favourites.filter(id=request.user.id).exists():
+        optionsymbol.favourites.remove(request.user)
+    else:
+        optionsymbol.favourites.add(request.user)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+"""
+
+@ login_required
+def favourite_add(request, id):
+    data = {'success': True} 
+    if request.POST.get('action') == 'post':
+        print('mitsos')
+        print(request.method)
+        print(request.body)
+        data = json.loads(request.body)
+        print(data)
+        """
+        if request.is_ajax():
+            id = int(request.POST.get('optionsymbolid'))
+            optionsymbol = get_object_or_404(Optionsymbol, id=id)
+            if optionsymbol.favourites.filter(id=request.user.id).exists():
+                optionsymbol.favourites.remove(request.user)
+                optionsymbol.save()
+                data['success'] = True
+                print(optionsymbol)
+            else:
+                optionsymbol.favourites.add(request.user)
+                optionsymbol.save()
+                data['success'] = True
+                print(optionsymbol)
+                """
+    else:
+        print('mitsoulas')
+        print(request.method)
+    return JsonResponse(data)
+"""
+@ login_required
+def like_option(request):
+    option = get_object_or_404(Optionsymbol, id=request.POST.get('optionsymbol_id'))
+    is_liked = False
+    if option.likes.filter(id=request.user.id).exists():
+        option.likes.remove(request.user)
+        is_liked = False
+    else:
+        option.likes.add(request.user)
+        is_liked = True
+    #option.save()
+    return HttpResponseRedirect(option.get_absolute_url())
+"""
+@ login_required
+def like_list(request):
+    like_list = Optionsymbol.objects.filter(likes=request.user)
+    return render(request,
+                  'accounts/likes.html',
+                  {'like_list': like_list})
+
+@ login_required
+def like_option(request):
+    option = get_object_or_404(Optionsymbol, id=request.POST.get('id'))
+    optionsymbol_id = option.id
+    is_liked = False
+    if option.likes.filter(id=request.user.id).exists():
+        option.likes.remove(request.user)
+        is_liked = False
+    else:
+        option.likes.add(request.user)
+        is_liked = True
+    #option.save()
+    context = {
+        'is_liked': is_liked,
+        'optionsymbol_id' : optionsymbol_id,
+        'total_likes' : option.total_likes(),
+    }
+    if request.is_ajax():
+        html = render_to_string('accounts/like_section.html', context, request=request)
+        return JsonResponse({'form' : html})
+
+@ login_required
+def myOptionScreeners(request):
+    option = get_object_or_404(Optionsymbol, id=request.POST.get('id'))
+    optionsymbol_id = option.id
+    is_fav = False
+    if option.optionscreeners.filter(id=request.user.id).exists():
+        option.optionscreeners.remove(request.user)
+        is_fav = False
+    else:
+        option.optionscreeners.add(request.user)
+        is_fav = True
+    #option.save()
+    context = {
+        'is_fav': is_fav,
+        'optionsymbol_id' : optionsymbol_id,
+    }
+    if request.is_ajax():
+        html = render_to_string('accounts/myoptionscreeners_section.html', context, request=request)
+        return JsonResponse({'form' : html})
+
+def myOptionList(request):
+    myoptionlist = Optionsymbol.objects.filter(optionscreeners=request.user)
+    return render(request,
+                  'accounts/myoptionlist.html',
+                  {'myoptionlist': myoptionlist})

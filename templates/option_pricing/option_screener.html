@@ -6,7 +6,7 @@
 
 <div class="container light-blue text-dark mb-3">
 	<div class="row mb-0">
-        <div class="col-md-12">
+        <div class="col-md-12 d-flex justify-content-between">
             <p class="font-weight-bold">{{asset}} {{ optiontype }} {{ expmonth }} {{ expyear }} @ 
                 {% if asset == 'FTSE' %}
                     {{ strike|add:"0" }}
@@ -14,7 +14,14 @@
                     {{ strike }}
                 {% endif %}
             </p>
+            <div id="myoption-section" class="col-md-4 mt-2">
+                {% include 'accounts/myoptionscreeners_section.html' %}
+            </div>
         </div>
+        <!--<div id="like-section" class="col-md-4">
+            {% include 'accounts/like_section.html' %}
+        </div>
+        -->
     </div>
     <div class="pl-3 row align-items-stretch">
  
@@ -331,6 +338,48 @@
 
 
 
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(event){
+        $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "accounts:like_option" %}',
+                data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(response){
+                    $('#like-section').html(response['form'])
+                    console.log($('#like-section').html(response['form']));
+                },
+                error: function(rs, e){
+                    console.log(rs. responseText)
+                },
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(event){
+        $(document).on('click', '#fav', function(event){
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "accounts:myoptionscreeners" %}',
+                data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(response){
+                    $('#myoption-section').html(response['form'])
+                    console.log($('#myoption-section').html(response['form']));
+                },
+                error: function(rs, e){
+                    console.log(rs. responseText)
+                },
+            });
+        });
+    });
 </script>
 
 
