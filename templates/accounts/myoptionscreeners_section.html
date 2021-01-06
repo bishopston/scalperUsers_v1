@@ -1,10 +1,12 @@
 {% if request.user.is_authenticated %}
-<form action='{% url "accounts:myoptionscreeners" %}' method="POST">
-    {% csrf_token %}
-    {% if is_fav %}
-        <button type="submit" id="fav" name="optionsymbol_id" value={{optionsymbol_id}} class="btn btn-outline-danger">Remove from My Screeners</button>
-    {% else %}
-        <button type="submit" id="fav" name="optionsymbol_id" value={{optionsymbol_id}} class="btn btn-outline-primary">Add to My Screeners</button>
-    {% endif %}
-</form>
+    <form action='{% url "accounts:myoptionscreeners" %}' method="POST">
+        {% csrf_token %}
+        {% if is_fav %}
+            <button type="submit" id="fav" name="optionsymbol_id" value={{optionsymbol_id}} class="btn btn-outline-danger">Remove from My Screeners</button>
+        {% else %}
+            <button type="submit" id="fav" name="optionsymbol_id" value={{optionsymbol_id}} class="btn btn-outline-primary">Add to My Screeners</button>
+        {% endif %}
+    </form>
+{% else %}
+    <a class="btn btn-outline-primary" href='{% url "accounts:register" %}' role="button">Add to My Screeners</a>
 {% endif %}

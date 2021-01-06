@@ -6,7 +6,7 @@
 
 <div class="container light-blue text-dark mb-3">
 	<div class="row mb-0">
-        <div class="col-md-12 d-flex justify-content-between">
+        <div class="col-md-12 d-flex justify-content-start">
             <p class="font-weight-bold">{{asset}} {{ optiontype }} {{ expmonth }} {{ expyear }} @ 
                 {% if asset == 'FTSE' %}
                     {{ strike|add:"0" }}
@@ -14,7 +14,7 @@
                     {{ strike }}
                 {% endif %}
             </p>
-            <div id="myoption-section" class="col-md-4 mt-2">
+            <div id="myoption-section" class="col-md-4 mt-1 ml-2">
                 {% include 'accounts/myoptionscreeners_section.html' %}
             </div>
         </div>
@@ -64,7 +64,7 @@
 										<table class="table table-sm table-hover">
 											<tbody>
 												<tr>
-													<td class="pl-1"><small>Asset:</small></td>
+													<td><small>Asset:</small></td>
 													<td><small class="font-weight-bold">{{asset}}</small></td>												
 												</tr>
 												<tr>

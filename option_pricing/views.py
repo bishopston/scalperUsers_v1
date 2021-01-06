@@ -60,12 +60,14 @@ def OptionScreenerDetail(request, optionsymbol):
     trade_symbol = optionsymbol
     closing_price = option_strikespan[0].closing_price
     change = option_strikespan[0].change
-    asset = option_strikespan[0].optionsymbol.asset
-    optiontype = option_strikespan[0].optionsymbol.optiontype
+    asset = option_strikespan[0].optionsymbol.get_asset_display()
+    optiontype = option_strikespan[0].optionsymbol.get_optiontype_display()
+    """
     if optiontype == 'c': 
         optiontype = 'Call'
     else:
         optiontype = 'Put'
+    """
     expmonth = option_strikespan[0].optionsymbol.expmonthdate.strftime("%B")
     expyear = option_strikespan[0].optionsymbol.expmonthdate.strftime("%Y")
     expdate = option_strikespan[0].optionsymbol.expmonthdate.strftime("%#d-%#m-%Y")
@@ -146,7 +148,7 @@ def OptionJSChartView(request, tradesymbol):
     for i in option:
         optiondata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.closing_price})
 
-    print(optiondata)
+    #print(optiondata)
     return JsonResponse(optiondata, safe=False)
 
 def OptionJSChartVolView(request, tradesymbol):
