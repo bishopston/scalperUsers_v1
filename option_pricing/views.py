@@ -102,7 +102,7 @@ def OptionScreenerDetail(request, optionsymbol):
     if option_strikespan[0].optionsymbol.optionscreeners.filter(id=request.user.id).exists():
         is_fav = True
 
-    optionsymbol_id = option_strikespan[0].optionsymbol.id
+    optionsymbol_id = option_strikespan[0].optionsymbol_id
   
     is_liked = False
     if option_strikespan[0].optionsymbol.likes.filter(id=request.user.id).exists():

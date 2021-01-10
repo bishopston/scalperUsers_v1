@@ -6,8 +6,8 @@
 
 <div class="container light-blue text-dark mb-3">
 	<div class="row mb-0">
-        <div class="col-md-12 d-flex justify-content-start">
-            <p class="font-weight-bold">{{asset}} {{ optiontype }} {{ expmonth }} {{ expyear }} @ 
+        <div class="col-md-12 mt-2 d-flex justify-content-start">
+            <p class="font-weight-bold text-center mt-2">{{asset}} {{ optiontype }} {{ expmonth }} {{ expyear }} @ 
                 {% if asset == 'FTSE' %}
                     {{ strike|add:"0" }}
                 {% else %}
@@ -179,9 +179,11 @@
 									<canvas id="optionChart" width="400" height="200">
 								</div>
                                 <div class="col-md-1">
-                                    <div class="btn-group-vertical">
-                                        <button class="btn btn-link" onclick="updateChart()">10D</button>
-                                        <button class="btn btn-link" onclick="updateChart()">10D</button>
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
                                     </div>
                                 </div>
                             </div>
@@ -205,10 +207,18 @@
 		'values':[],
 		'items_vol':[],
 		'values_vol':[],        
-        'items10':[],
-		'values10':[],
-        'items_vol10':[],
-		'values_vol10':[], 
+        'items23':[],
+		'values23':[],
+        'items_vol23':[],
+        'values_vol23':[],
+        'items68':[],
+		'values68':[],
+        'items_vol68':[],
+		'values_vol68':[],  
+        'items135':[],
+		'values135':[],
+        'items_vol135':[],
+		'values_vol135':[], 
 	}
 
     $.ajax({
@@ -224,8 +234,14 @@
 				state.items.push(key_stripped_stripped)
 				state.values.push(value)
 
-                state.items10 = state.items.slice(-10)
-                state.values10 = state.values.slice(-10)      
+                state.items23 = state.items.slice(-23)
+                state.values23 = state.values.slice(-23)      
+
+                state.items68 = state.items.slice(-68)
+                state.values68 = state.values.slice(-68)   
+
+                state.items135 = state.items.slice(-135)
+                state.values135 = state.values.slice(-135)   
 
                 console.log(state.items)
                 console.log(state.values)
@@ -251,8 +267,14 @@
 				state.items_vol.push(key_stripped_stripped)
 				state.values_vol.push(value)
 
-                state.items_vol10 = state.items_vol.slice(-10)
-                state.values_vol10 = state.values_vol.slice(-10)      
+                state.items_vol23 = state.items_vol.slice(-23)
+                state.values_vol23 = state.values_vol.slice(-23)   
+                
+                state.items_vol68 = state.items_vol.slice(-68)
+                state.values_vol68 = state.values_vol.slice(-68) 
+
+                state.items_vol135 = state.items_vol.slice(-135)
+                state.values_vol135 = state.values_vol.slice(-135) 
 
                 console.log(state.items)
                 console.log(state.values)
@@ -324,18 +346,38 @@
             }]
         },
         legend: {
-            display: false,
+            display: true,
         }
     }
     })
 
-    function updateChart(){
-        optionChart.data.labels = state.items10;
-        optionChart.data.datasets[0].data = state.values10;
-        optionChart.data.datasets[1].data = state.values_vol10;
+    function updateChart_1M(){
+        optionChart.data.labels = state.items23;
+        optionChart.data.datasets[0].data = state.values23;
+        optionChart.data.datasets[1].data = state.values_vol23;
         optionChart.update();
     };
 
+    function updateChart_3M(){
+        optionChart.data.labels = state.items68;
+        optionChart.data.datasets[0].data = state.values68;
+        optionChart.data.datasets[1].data = state.values_vol68;
+        optionChart.update();
+    };
+
+    function updateChart_6M(){
+        optionChart.data.labels = state.items135;
+        optionChart.data.datasets[0].data = state.values135;
+        optionChart.data.datasets[1].data = state.values_vol135;
+        optionChart.update();
+    };
+
+    function updateChart_ALL(){
+        optionChart.data.labels = state.items;
+        optionChart.data.datasets[0].data = state.values;
+        optionChart.data.datasets[1].data = state.values_vol;
+        optionChart.update();
+    };
 
 
 </script>
