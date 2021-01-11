@@ -200,7 +200,12 @@
 									<canvas id="deltaChart" width="400" height="200">
 								</div>
                                 <div class="col-md-1">
-                                    mitsos
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updatedeltaChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updatedeltaChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updatedeltaChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updatedeltaChart_ALL()">ALL</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -405,6 +410,135 @@
         optionChart.data.datasets[0].data = state.values;
         optionChart.data.datasets[1].data = state.values_vol;
         optionChart.update();
+    };
+
+
+</script>
+
+<script> 
+
+    $('.hidethis').hide();
+
+    var objId = "{{trade_symbol}}"
+    var dataURL = `/options/deltachart/${objId}/`
+
+    var deltastate ={	
+		'items':[],
+		'values':[],   
+        'items23':[],
+		'values23':[],
+        'items68':[],
+		'values68':[],  
+        'items135':[],
+		'values135':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            for (let i = response.length - 23; i < response.length; i++){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				deltastate.items23.push(key_stripped_stripped)
+                deltastate.values23.push(value)}
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				deltastate.items.push(key_stripped_stripped)
+                deltastate.values.push(value)}
+
+            deltastate.items68 = deltastate.items.slice(-68)
+            deltastate.values68 = deltastate.values.slice(-68)   
+
+            deltastate.items135 = deltastate.items.slice(-135)
+            deltastate.values135 = deltastate.values.slice(-135)   
+
+            console.log(deltastate.items)
+            console.log(deltastate.values)
+            
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+
+    //function setChart(){
+    var ctx = document.getElementById("deltaChart");
+    
+    var deltaChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: deltastate.items23,
+        datasets: [{
+            label: objId.concat(' Delta'),
+            data: deltastate.values23,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+
+    function updatedeltaChart_1M(){
+        deltaChart.data.labels = deltastate.items23;
+        deltaChart.data.datasets[0].data = deltastate.values23;
+        deltaChart.update();
+    };
+
+    function updatedeltaChart_3M(){
+        deltaChart.data.labels = deltastate.items68;
+        deltaChart.data.datasets[0].data = deltastate.values68;
+        deltaChart.update();
+    };
+
+    function updatedeltaChart_6M(){
+        deltaChart.data.labels = deltastate.items135;
+        deltaChart.data.datasets[0].data = deltastate.values135;
+        deltaChart.update();
+    };
+
+    function updatedeltaChart_ALL(){
+        deltaChart.data.labels = deltastate.items;
+        deltaChart.data.datasets[0].data = deltastate.values;
+        deltaChart.update();
     };
 
 
