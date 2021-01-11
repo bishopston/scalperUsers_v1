@@ -51,7 +51,10 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#chart" class="nav-link" role="tab" data-toggle="tab">Chart</a>
+                    <a href="#chart" class="nav-link" role="tab" data-toggle="tab">Price Chart</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#deltachart" class="nav-link" role="tab" data-toggle="tab">Delta Chart</a>
                 </li>
             </ul>
 
@@ -189,6 +192,19 @@
                             </div>
                         </div>
                     </div>
+
+                    <div role="tabpanel" class="tab-pane" id="deltachart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="deltaChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    mitsos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </div>
 		</div>
 	</div>
@@ -225,6 +241,15 @@
         method: "GET",
         url: dataURL,
         success: function(response){
+            for (let i = response.length - 23; i < response.length; i++){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				state.items23.push(key_stripped_stripped)
+                state.values23.push(value)}
+
             for (var i in response){
                 var key = Object.keys(response[i])[0]
 				var key_stripped = key.replace('"', '')
@@ -232,20 +257,17 @@
 				var value = Object.values(response[i])[0]
            
 				state.items.push(key_stripped_stripped)
-				state.values.push(value)
+                state.values.push(value)}
 
-                state.items23 = state.items.slice(-23)
-                state.values23 = state.values.slice(-23)      
+            state.items68 = state.items.slice(-68)
+            state.values68 = state.values.slice(-68)   
 
-                state.items68 = state.items.slice(-68)
-                state.values68 = state.values.slice(-68)   
+            state.items135 = state.items.slice(-135)
+            state.values135 = state.values.slice(-135)   
 
-                state.items135 = state.items.slice(-135)
-                state.values135 = state.values.slice(-135)   
-
-                console.log(state.items)
-                console.log(state.values)
-            }
+            console.log(state.items)
+            console.log(state.values)
+            
             //setChart()
         },
         error: function(error_data){
@@ -258,6 +280,15 @@
         method: "GET",
         url: dataURLvol,
         success: function(response){
+            for (let i = response.length - 23; i < response.length; i++){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				state.items_vol23.push(key_stripped_stripped)
+                state.values_vol23.push(value)}
+                
             for (var i in response){
                 var key = Object.keys(response[i])[0]
 				var key_stripped = key.replace('"', '')
@@ -265,20 +296,17 @@
 				var value = Object.values(response[i])[0]
            
 				state.items_vol.push(key_stripped_stripped)
-				state.values_vol.push(value)
+				state.values_vol.push(value)}
 
-                state.items_vol23 = state.items_vol.slice(-23)
-                state.values_vol23 = state.values_vol.slice(-23)   
-                
-                state.items_vol68 = state.items_vol.slice(-68)
-                state.values_vol68 = state.values_vol.slice(-68) 
+            state.items_vol68 = state.items_vol.slice(-68)
+            state.values_vol68 = state.values_vol.slice(-68) 
 
-                state.items_vol135 = state.items_vol.slice(-135)
-                state.values_vol135 = state.values_vol.slice(-135) 
+            state.items_vol135 = state.items_vol.slice(-135)
+            state.values_vol135 = state.values_vol.slice(-135) 
 
-                console.log(state.items)
-                console.log(state.values)
-            }
+            console.log(state.items)
+            console.log(state.values)
+            
             //setChart()
         },
         error: function(error_data){
@@ -294,10 +322,10 @@
     var optionChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: state.items,
+        labels: state.items23,
         datasets: [{
             label: objId,
-            data: state.values,
+            data: state.values23,
             yAxisID: 'A',
             borderWidth: 1,
             borderColor: 'rgba(66,139,202)',
@@ -306,7 +334,7 @@
         },{
             type: 'bar',
             label: 'Volume',
-            data: state.values_vol,
+            data: state.values_vol23,
             yAxisID: 'B',
             borderWidth: 1,
             borderColor: 'rgba(244, 137, 244)',

@@ -10,4 +10,5 @@ urlpatterns = [
     path('options/<str:optionsymbol>/', views.OptionScreenerDetail, name='option_screener_detail'),
     path('options/chart/<str:tradesymbol>/', views.OptionJSChartView, name="option_jschart"),
     path('options/chart_vol/<str:tradesymbol>/', views.OptionJSChartVolView, name="option_vol_jschart"),
+    path('options/deltachart/<str:tradesymbol>/', views.OptionJSDeltaChartView, name="option_delta_jschart"),
 ]

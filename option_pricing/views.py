@@ -58,6 +58,7 @@ def OptionView(request):
 def OptionScreenerDetail(request, optionsymbol):
     option_strikespan = Option.objects.filter(optionsymbol__symbol=optionsymbol).order_by('-date')
     trade_symbol = optionsymbol
+    option_count = option_strikespan.count()
     closing_price = option_strikespan[0].closing_price
     change = option_strikespan[0].change
     asset = option_strikespan[0].optionsymbol.get_asset_display()
@@ -80,13 +81,13 @@ def OptionScreenerDetail(request, optionsymbol):
     stock = option_strikespan[0].stock
     moneyness = 'moneyness'
 
-    if optiontype == 'c' and stock > strike: 
+    if optiontype == 'Call' and stock > strike: 
         moneyness = 'ITM'
-    elif optiontype == 'c' and stock < strike:
+    elif optiontype == 'Call' and stock < strike:
         moneyness = 'OTM'
-    elif optiontype == 'p' and stock > strike: 
+    elif optiontype == 'Put' and stock > strike: 
         moneyness = 'OTM'
-    elif optiontype == 'c' and stock < strike:
+    elif optiontype == 'Put' and stock < strike:
         moneyness = 'ITM'
     else:
         moneyness = 'ATM'
@@ -111,6 +112,7 @@ def OptionScreenerDetail(request, optionsymbol):
     context = {
         'option_strikespan' : option_strikespan,
         'trade_symbol' : trade_symbol,
+        'option_count' : option_count,
         'closing_price' : round(closing_price,3),
         'change' : change,
         'asset' : asset,
@@ -161,3 +163,14 @@ def OptionJSChartVolView(request, tradesymbol):
     
     #print(voldata)
     return JsonResponse(voldata, safe=False)
+
+def OptionJSDeltaChartView(request, tradesymbol):
+    deltadata = []
+
+    option_delta = Option.objects.filter(optionsymbol__symbol=tradesymbol).order_by('date')
+
+    for i in option_delta:
+        deltadata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.delta})
+
+    #print(optiondata)
+    return JsonResponse(deltadata, safe=False)
