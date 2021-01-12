@@ -246,14 +246,26 @@
         method: "GET",
         url: dataURL,
         success: function(response){
-            for (let i = response.length - 23; i < response.length; i++){
-                var key = Object.keys(response[i])[0]
-				var key_stripped = key.replace('"', '')
-				var key_stripped_stripped = key_stripped.replace('"', '')
-				var value = Object.values(response[i])[0]
-           
-				state.items23.push(key_stripped_stripped)
-                state.values23.push(value)}
+            
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    state.items23.push(key_stripped_stripped)
+                    state.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    state.items23.push(key_stripped_stripped)
+                    state.values23.push(value)}
+            }
 
             for (var i in response){
                 var key = Object.keys(response[i])[0]
@@ -285,14 +297,26 @@
         method: "GET",
         url: dataURLvol,
         success: function(response){
-            for (let i = response.length - 23; i < response.length; i++){
-                var key = Object.keys(response[i])[0]
-				var key_stripped = key.replace('"', '')
-				var key_stripped_stripped = key_stripped.replace('"', '')
-				var value = Object.values(response[i])[0]
-           
-				state.items_vol23.push(key_stripped_stripped)
-                state.values_vol23.push(value)}
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    state.itemsvol23.push(key_stripped_stripped)
+                    state.valuesvol23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    state.itemsvol23.push(key_stripped_stripped)
+                    state.valuesvol23.push(value)}
+                }
+            
                 
             for (var i in response){
                 var key = Object.keys(response[i])[0]
@@ -437,14 +461,25 @@
         method: "GET",
         url: dataURL,
         success: function(response){
-            for (let i = response.length - 23; i < response.length; i++){
-                var key = Object.keys(response[i])[0]
-				var key_stripped = key.replace('"', '')
-				var key_stripped_stripped = key_stripped.replace('"', '')
-				var value = Object.values(response[i])[0]
-           
-				deltastate.items23.push(key_stripped_stripped)
-                deltastate.values23.push(value)}
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    deltastate.items23.push(key_stripped_stripped)
+                    deltastate.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    deltastate.items23.push(key_stripped_stripped)
+                    deltastate.values23.push(value)}
+                }
 
             for (var i in response){
                 var key = Object.keys(response[i])[0]
