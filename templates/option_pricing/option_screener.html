@@ -56,6 +56,15 @@
                 <li class="nav-item">
                     <a href="#deltachart" class="nav-link" role="tab" data-toggle="tab">Delta Chart</a>
                 </li>
+                <li class="nav-item">
+                    <a href="#gammachart" class="nav-link" role="tab" data-toggle="tab">Gamma Chart</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#thetachart" class="nav-link" role="tab" data-toggle="tab">Theta Chart</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#vegachart" class="nav-link" role="tab" data-toggle="tab">Vega Chart</a>
+                </li>
             </ul>
 
             <div class="my-3 tab-content">
@@ -205,6 +214,60 @@
                                         <button class="btn btn-link" onclick="updatedeltaChart_3M()">3M</button>
                                         <button class="btn btn-link" onclick="updatedeltaChart_6M()">6M</button>
                                         <button class="btn btn-link" onclick="updatedeltaChart_ALL()">ALL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="gammachart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="gammaChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updategammaChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updategammaChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updategammaChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updategammaChart_ALL()">ALL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="thetachart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="thetaChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updatethetaChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updatethetaChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updatethetaChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updatethetaChart_ALL()">ALL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="vegachart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="vegaChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updatevegaChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updatevegaChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updatevegaChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updatevegaChart_ALL()">ALL</button>
                                     </div>
                                 </div>
                             </div>
@@ -574,6 +637,426 @@
         deltaChart.data.labels = deltastate.items;
         deltaChart.data.datasets[0].data = deltastate.values;
         deltaChart.update();
+    };
+
+
+</script>
+
+<script> 
+
+    $('.hidethis').hide();
+
+    var objId = "{{trade_symbol}}"
+    var dataURL = `/options/gammachart/${objId}/`
+
+    var gammastate ={	
+		'items':[],
+		'values':[],   
+        'items23':[],
+		'values23':[],
+        'items68':[],
+		'values68':[],  
+        'items135':[],
+		'values135':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    gammastate.items23.push(key_stripped_stripped)
+                    gammastate.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    gammastate.items23.push(key_stripped_stripped)
+                    gammastate.values23.push(value)}
+                }
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				gammastate.items.push(key_stripped_stripped)
+                gammastate.values.push(value)}
+
+            gammastate.items68 = gammastate.items.slice(-68)
+            gammastate.values68 = gammastate.values.slice(-68)   
+
+            gammastate.items135 = gammastate.items.slice(-135)
+            gammastate.values135 = gammastate.values.slice(-135)   
+
+            console.log(gammastate.items)
+            console.log(gammastate.values)
+            
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+
+    //function setChart(){
+    var ctx = document.getElementById("gammaChart");
+    
+    var gammaChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: gammastate.items23,
+        datasets: [{
+            label: objId.concat(' gamma'),
+            data: gammastate.values23,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+
+    function updategammaChart_1M(){
+        gammaChart.data.labels = gammastate.items23;
+        gammaChart.data.datasets[0].data = gammastate.values23;
+        gammaChart.update();
+    };
+
+    function updategammaChart_3M(){
+        gammaChart.data.labels = gammastate.items68;
+        gammaChart.data.datasets[0].data = gammastate.values68;
+        gammaChart.update();
+    };
+
+    function updategammaChart_6M(){
+        gammaChart.data.labels = gammastate.items135;
+        gammaChart.data.datasets[0].data = gammastate.values135;
+        gammaChart.update();
+    };
+
+    function updategammaChart_ALL(){
+        gammaChart.data.labels = gammastate.items;
+        gammaChart.data.datasets[0].data = gammastate.values;
+        gammaChart.update();
+    };
+
+
+</script>
+
+<script> 
+
+    $('.hidethis').hide();
+
+    var objId = "{{trade_symbol}}"
+    var dataURL = `/options/thetachart/${objId}/`
+
+    var thetastate ={	
+		'items':[],
+		'values':[],   
+        'items23':[],
+		'values23':[],
+        'items68':[],
+		'values68':[],  
+        'items135':[],
+		'values135':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    thetastate.items23.push(key_stripped_stripped)
+                    thetastate.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    thetastate.items23.push(key_stripped_stripped)
+                    thetastate.values23.push(value)}
+                }
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				thetastate.items.push(key_stripped_stripped)
+                thetastate.values.push(value)}
+
+            thetastate.items68 = thetastate.items.slice(-68)
+            thetastate.values68 = thetastate.values.slice(-68)   
+
+            thetastate.items135 = thetastate.items.slice(-135)
+            thetastate.values135 = thetastate.values.slice(-135)   
+
+            console.log(thetastate.items)
+            console.log(thetastate.values)
+            
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+
+    //function setChart(){
+    var ctx = document.getElementById("thetaChart");
+    
+    var thetaChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: thetastate.items23,
+        datasets: [{
+            label: objId.concat(' theta'),
+            data: thetastate.values23,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+
+    function updatethetaChart_1M(){
+        thetaChart.data.labels = thetastate.items23;
+        thetaChart.data.datasets[0].data = thetastate.values23;
+        thetaChart.update();
+    };
+
+    function updatethetaChart_3M(){
+        thetaChart.data.labels = thetastate.items68;
+        thetaChart.data.datasets[0].data = thetastate.values68;
+        thetaChart.update();
+    };
+
+    function updatethetaChart_6M(){
+        thetaChart.data.labels = thetastate.items135;
+        thetaChart.data.datasets[0].data = thetastate.values135;
+        thetaChart.update();
+    };
+
+    function updatethetaChart_ALL(){
+        thetaChart.data.labels = thetastate.items;
+        thetaChart.data.datasets[0].data = thetastate.values;
+        thetaChart.update();
+    };
+
+
+</script>
+
+<script> 
+
+    $('.hidethis').hide();
+
+    var objId = "{{trade_symbol}}"
+    var dataURL = `/options/vegachart/${objId}/`
+
+    var vegastate ={	
+		'items':[],
+		'values':[],   
+        'items23':[],
+		'values23':[],
+        'items68':[],
+		'values68':[],  
+        'items135':[],
+		'values135':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    vegastate.items23.push(key_stripped_stripped)
+                    vegastate.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    vegastate.items23.push(key_stripped_stripped)
+                    vegastate.values23.push(value)}
+                }
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				vegastate.items.push(key_stripped_stripped)
+                vegastate.values.push(value)}
+
+            vegastate.items68 = vegastate.items.slice(-68)
+            vegastate.values68 = vegastate.values.slice(-68)   
+
+            vegastate.items135 = vegastate.items.slice(-135)
+            vegastate.values135 = vegastate.values.slice(-135)   
+
+            console.log(vegastate.items)
+            console.log(vegastate.values)
+            
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+
+    //function setChart(){
+    var ctx = document.getElementById("vegaChart");
+    
+    var vegaChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: vegastate.items23,
+        datasets: [{
+            label: objId.concat(' vega'),
+            data: vegastate.values23,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+
+    function updatevegaChart_1M(){
+        vegaChart.data.labels = vegastate.items23;
+        vegaChart.data.datasets[0].data = vegastate.values23;
+        vegaChart.update();
+    };
+
+    function updatevegaChart_3M(){
+        vegaChart.data.labels = vegastate.items68;
+        vegaChart.data.datasets[0].data = vegastate.values68;
+        vegaChart.update();
+    };
+
+    function updatevegaChart_6M(){
+        vegaChart.data.labels = vegastate.items135;
+        vegaChart.data.datasets[0].data = vegastate.values135;
+        vegaChart.update();
+    };
+
+    function updatevegaChart_ALL(){
+        vegaChart.data.labels = vegastate.items;
+        vegaChart.data.datasets[0].data = vegastate.values;
+        vegaChart.update();
     };
 
 

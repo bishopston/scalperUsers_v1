@@ -174,3 +174,36 @@ def OptionJSDeltaChartView(request, tradesymbol):
 
     #print(optiondata)
     return JsonResponse(deltadata, safe=False)
+
+def OptionJSGammaChartView(request, tradesymbol):
+    gammadata = []
+
+    option_gamma = Option.objects.filter(optionsymbol__symbol=tradesymbol).order_by('date')
+
+    for i in option_gamma:
+        gammadata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.gamma})
+
+    #print(optiondata)
+    return JsonResponse(gammadata, safe=False)
+
+def OptionJSThetaChartView(request, tradesymbol):
+    thetadata = []
+
+    option_theta = Option.objects.filter(optionsymbol__symbol=tradesymbol).order_by('date')
+
+    for i in option_theta:
+        thetadata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.theta})
+
+    #print(optiondata)
+    return JsonResponse(thetadata, safe=False)
+
+def OptionJSVegaChartView(request, tradesymbol):
+    vegadata = []
+
+    option_vega = Option.objects.filter(optionsymbol__symbol=tradesymbol).order_by('date')
+
+    for i in option_vega:
+        vegadata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.vega})
+
+    #print(optiondata)
+    return JsonResponse(vegadata, safe=False)
