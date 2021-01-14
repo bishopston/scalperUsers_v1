@@ -65,6 +65,9 @@
                 <li class="nav-item">
                     <a href="#vegachart" class="nav-link" role="tab" data-toggle="tab">Vega Chart</a>
                 </li>
+                <li class="nav-item">
+                    <a href="#impliedchart" class="nav-link" role="tab" data-toggle="tab">Implied Chart</a>
+                </li>
             </ul>
 
             <div class="my-3 tab-content">
@@ -268,6 +271,24 @@
                                         <button class="btn btn-link" onclick="updatevegaChart_3M()">3M</button>
                                         <button class="btn btn-link" onclick="updatevegaChart_6M()">6M</button>
                                         <button class="btn btn-link" onclick="updatevegaChart_ALL()">ALL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="impliedchart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="impliedChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updateimpliedChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updateimpliedChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updateimpliedChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updateimpliedChart_ALL()">ALL</button>
                                     </div>
                                 </div>
                             </div>
@@ -1057,6 +1078,149 @@
         vegaChart.data.labels = vegastate.items;
         vegaChart.data.datasets[0].data = vegastate.values;
         vegaChart.update();
+    };
+
+
+</script>
+
+<script> 
+    function decimaltwo(x) {
+    return Number.parseFloat(x).toFixed(2);
+    }
+
+    $('.hidethis').hide();
+
+    var objId = "{{trade_symbol}}"
+    var dataURL = `/options/impliedchart/${objId}/`
+
+    var impliedstate ={	
+		'items':[],
+		'values':[],   
+        'items23':[],
+		'values23':[],
+        'items68':[],
+		'values68':[],  
+        'items135':[],
+		'values135':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = decimaltwo(Object.values(response[i])[0]*100)
+            
+                    impliedstate.items23.push(key_stripped_stripped)
+                    impliedstate.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = decimaltwo(Object.values(response[i])[0]*100)
+            
+                    impliedstate.items23.push(key_stripped_stripped)
+                    impliedstate.values23.push(value)}
+                }
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = decimaltwo(Object.values(response[i])[0]*100)
+           
+				impliedstate.items.push(key_stripped_stripped)
+                impliedstate.values.push(value)}
+
+            impliedstate.items68 = impliedstate.items.slice(-68)
+            impliedstate.values68 = impliedstate.values.slice(-68)   
+
+            impliedstate.items135 = impliedstate.items.slice(-135)
+            impliedstate.values135 = impliedstate.values.slice(-135)   
+
+            console.log(impliedstate.items)
+            console.log(impliedstate.values)
+            
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+
+    //function setChart(){
+    var ctx = document.getElementById("impliedChart");
+    
+    var impliedChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: impliedstate.items23,
+        datasets: [{
+            label: objId.concat(' implied'),
+            data: impliedstate.values23,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+
+    function updateimpliedChart_1M(){
+        impliedChart.data.labels = impliedstate.items23;
+        impliedChart.data.datasets[0].data = impliedstate.values23;
+        impliedChart.update();
+    };
+
+    function updateimpliedChart_3M(){
+        impliedChart.data.labels = impliedstate.items68;
+        impliedChart.data.datasets[0].data = impliedstate.values68;
+        impliedChart.update();
+    };
+
+    function updateimpliedChart_6M(){
+        impliedChart.data.labels = impliedstate.items135;
+        impliedChart.data.datasets[0].data = impliedstate.values135;
+        impliedChart.update();
+    };
+
+    function updateimpliedChart_ALL(){
+        impliedChart.data.labels = impliedstate.items;
+        impliedChart.data.datasets[0].data = impliedstate.values;
+        impliedChart.update();
     };
 
 

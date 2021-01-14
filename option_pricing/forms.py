@@ -36,6 +36,7 @@ OPTION_TYPE = [
     ('p', 'Put'),
 ]
 
+
 class OptionScreenerForm(forms.Form):
     asset = forms.CharField(
         label="Underlying Asset",
@@ -56,6 +57,25 @@ class OptionScreenerForm(forms.Form):
 
     )
 
+    exp_month = forms.CharField(
+        label="Expiration Month",
+        widget=forms.Select(
+        choices=EXP_MONTH_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm'
+    }
+    ))
+
+    exp_year = forms.CharField(
+        label="Expiration Year",
+        widget=forms.Select(
+        choices=EXP_YEAR_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm'
+    }
+    ))
+
+class FutureScreenerForm(forms.Form):
     exp_month = forms.CharField(
         label="Expiration Month",
         widget=forms.Select(

@@ -6,8 +6,8 @@ from django.http import JsonResponse
 from datetime import datetime
 import json
 
-from .models import Option, Optionsymbol
-from .forms import OptionScreenerForm
+from .models import Option, Optionsymbol, Future, Futuresymbol
+from .forms import OptionScreenerForm, FutureScreenerForm
 
 
 def home(request):
@@ -207,3 +207,46 @@ def OptionJSVegaChartView(request, tradesymbol):
 
     #print(optiondata)
     return JsonResponse(vegadata, safe=False)
+
+def OptionJSImpliedChartView(request, tradesymbol):
+    implieddata = []
+
+    option_implied = Option.objects.filter(optionsymbol__symbol=tradesymbol).order_by('date')
+
+    for i in option_implied:
+        implieddata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.imp_vol})
+
+    #print(optiondata)
+    return JsonResponse(implieddata, safe=False)
+
+def FutureView(request):
+    future = Future.objects.all()
+    
+    exp_month_query = request.GET.get('exp_month')
+    exp_year_query = request.GET.get('exp_year')
+
+    if exp_month_query != '' and exp_month_query is not None:
+        future = future.filter(futuresymbol__expmonthdate__month=exp_month_query)
+
+    if exp_year_query != '' and exp_year_query is not None:
+        future = future.filter(futuresymbol__expmonthdate__year=exp_year_query)
+
+    max_date = future.aggregate(Max('date'))
+    queryset = future.filter(date=max_date['date__max']).order_by('futuresymbol__asset')
+
+    queryset_num = queryset.count()
+
+    paginator = Paginator(queryset, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'queryset' : queryset,
+        'max_date' : max_date,
+        'exp_month_query' : exp_month_query,
+        'exp_year_query' : exp_year_query,
+        'futurescreenerform' : FutureScreenerForm(),
+        'queryset_num' : queryset_num,
+        'page_obj': page_obj
+    }
+    return render(request, 'option_pricing/future.html', context)
