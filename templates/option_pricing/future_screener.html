@@ -1,0 +1,441 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<div class="container light-blue text-dark mb-3">
+	<div class="row mb-0">
+        <div class="col-md-12 mt-2 d-flex justify-content-start">
+            <p class="font-weight-bold text-center mt-2">{{asset}} Future Contract {{ expmonth }} {{ expyear }}</p>
+            <!--<div id="myoption-section" class="col-md-4 mt-1 ml-2">
+                {% include 'accounts/myoptionscreeners_section.html' %}
+            </div>
+            -->
+        </div>
+        <!--<div id="like-section" class="col-md-4">
+            {% include 'accounts/like_section.html' %}
+        </div>
+        -->
+    </div>
+    <div class="pl-3 row align-items-stretch">
+ 
+            <div>
+                <h3 class="font-weight-bold">
+					{% if asset == 'FTSE' %}
+					{{closing_price|floatformat:2}}
+				  {% else %}
+					  {{closing_price|floatformat:3}}
+				  {% endif %}
+				</h3>
+            </div>
+            <div class="p-2 my-auto">
+                <h5 class="vertical">
+                    {% if change < 0 %}
+                    <div class="change-negative"> 
+                    {% else %} 
+                    <div class="change-positive">
+                    {% endif %}
+                    {{ change }}%
+                </h5>
+            </div>
+
+    </div>
+    <div class="row"><div class="col-md-2 align-text-top"><p class="subtext">At close: {{latest_trad_date}}</p></div></div>
+</div>
+<div class="container bg-white text-dark">
+	<div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#chart" class="nav-link" role="tab" data-toggle="tab">Price Chart</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#spotchart" class="nav-link" role="tab" data-toggle="tab">Future vs Spot Chart</a>
+                </li>
+            </ul>
+
+            <div class="my-3 tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="summary">
+						<div class="container bg-white">
+							<div class="row">
+								<div class="col-md-4">
+								    <div class="table-responsive">
+										<table class="table table-sm table-hover">
+											<tbody>
+												<tr>
+													<td><small>Asset:</small></td>
+													<td><small class="font-weight-bold">{{asset}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Expiration Date:</small></td>
+													<td><small class="font-weight-bold">{{expdate}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Latest Trading:</small></td>
+													<td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
+												</tr>
+												<tr>
+													<tr>
+														<td><small>Volume:</small></td>
+														<td><small class="font-weight-bold">{{volume}}</small></td>												
+													</tr>												
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="col-md-4">
+								    <div class="table-responsive">
+										<table class="table table-sm table-hover">
+											<tbody>
+												<tr>
+													<td><small>Trades:</small></td>
+													<td><small class="font-weight-bold">{{trades}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Open Interest:</small></td>
+													<td><small class="font-weight-bold">{{open_interest}}</small></td>												
+												</tr>
+												<tr>
+													<td><small>Intraday High:</small></td>
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{max|floatformat:2}}
+													  	{% else %}
+														  {{max|floatformat:3}}
+													  	{% endif %}
+													</small></td>												
+												</tr>
+												<tr>
+													<td><small>Intraday High:</small></td>
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{min|floatformat:2}}
+													  	{% else %}
+														  {{min|floatformat:3}}
+													  	{% endif %}
+													</small></td>												
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="col-md-4">
+								    <div class="table-responsive">
+										<table class="table table-sm table-hover">
+											<tbody>
+												<tr>
+													<td><small>Lifetime High:</small></td>
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{lifetime_high|floatformat:2}}
+													  	{% else %}
+														  	{{lifetime_high|floatformat:3}}
+													  	{% endif %}
+													</small></td>												
+												</tr>
+												<tr>
+													<td><small>Lifetime Low:</small></td>
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{lifetime_low|floatformat:2}}
+													  	{% else %}
+														  	{{lifetime_low|floatformat:3}}
+													  	{% endif %}
+													</small></td>												
+												</tr>
+												<tr>
+													<td><small>Spot Price:</small></td>
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{stock|floatformat:2}}
+													  	{% else %}
+														  	{{stock|floatformat:3}}
+													  	{% endif %}
+													</small></td>												
+												</tr>
+												<tr>
+													<td><small>Basis:</small></td>
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{basis|floatformat:2}}
+													  	{% else %}
+														  	{{basis|floatformat:3}}
+													  	{% endif %}
+													</small></td>												
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>							
+                    </div>
+
+					<div role="tabpanel" class="tab-pane" id="chart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="futureChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+
+					<div role="tabpanel" class="tab-pane" id="spotchart">
+						<div class="container bg-white text-dark">
+							<div class="row">
+								<div class="col-md-11">
+									<canvas id="spotChart" width="400" height="200">
+								</div>
+                                <div class="col-md-1">
+                                    <div class="btn-group-vertical mt-3">
+                                        <button class="btn btn-link" onclick="updatespotChart_1M()">1M</button>
+                                        <button class="btn btn-link" onclick="updatespotChart_3M()">3M</button>
+                                        <button class="btn btn-link" onclick="updatespotChart_6M()">6M</button>
+                                        <button class="btn btn-link" onclick="updatespotChart_ALL()">ALL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+					
+<script> 
+
+	$('.hidethis').hide();
+
+	var objId = "{{trade_symbol}}"
+	var dataURL = `/futures/chart/${objId}/`
+	var dataURLvol = `/futures/chart_vol/${objId}/`
+
+	var state ={	
+		'items':[],
+		'values':[],
+		'items_vol':[],
+		'values_vol':[],        
+		'items23':[],
+		'values23':[],
+		'items_vol23':[],
+		'values_vol23':[],
+		'items68':[],
+		'values68':[],
+		'items_vol68':[],
+		'values_vol68':[],  
+		'items135':[],
+		'values135':[],
+		'items_vol135':[],
+		'values_vol135':[], 
+	}
+
+	$.ajax({
+		method: "GET",
+		url: dataURL,
+		success: function(response){
+			
+			if (response.length > 22) {
+				for (let i = response.length - 23; i < response.length; i++){
+					var key = Object.keys(response[i])[0]
+					var key_stripped = key.replace('"', '')
+					var key_stripped_stripped = key_stripped.replace('"', '')
+					var value = Object.values(response[i])[0]
+			
+					state.items23.push(key_stripped_stripped)
+					state.values23.push(value)}
+			} else {
+				for (let i = response.length - response.length; i < response.length; i++){
+					var key = Object.keys(response[i])[0]
+					var key_stripped = key.replace('"', '')
+					var key_stripped_stripped = key_stripped.replace('"', '')
+					var value = Object.values(response[i])[0]
+			
+					state.items23.push(key_stripped_stripped)
+					state.values23.push(value)}
+			}
+
+			for (var i in response){
+				var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+			
+				state.items.push(key_stripped_stripped)
+				state.values.push(value)}
+
+			state.items68 = state.items.slice(-68)
+			state.values68 = state.values.slice(-68)   
+
+			state.items135 = state.items.slice(-135)
+			state.values135 = state.values.slice(-135)   
+
+			console.log(state.items)
+			console.log(state.values)
+			
+			//setChart()
+		},
+		error: function(error_data){
+			console.log("error")
+			console.log(error_data)
+		}
+	})
+
+	$.ajax({
+		method: "GET",
+		url: dataURLvol,
+		success: function(response){
+			if (response.length > 22) {
+				for (let i = response.length - 23; i < response.length; i++){
+					var key = Object.keys(response[i])[0]
+					var key_stripped = key.replace('"', '')
+					var key_stripped_stripped = key_stripped.replace('"', '')
+					var value = Object.values(response[i])[0]
+			
+					state.items_vol23.push(key_stripped_stripped)
+					state.values_vol23.push(value)}
+			} else {
+				for (let i = response.length - response.length; i < response.length; i++){
+					var key = Object.keys(response[i])[0]
+					var key_stripped = key.replace('"', '')
+					var key_stripped_stripped = key_stripped.replace('"', '')
+					var value = Object.values(response[i])[0]
+			
+					state.items_vol23.push(key_stripped_stripped)
+					state.values_vol23.push(value)}
+				}
+			
+				
+			for (var i in response){
+				var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+			
+				state.items_vol.push(key_stripped_stripped)
+				state.values_vol.push(value)}
+
+			state.items_vol68 = state.items_vol.slice(-68)
+			state.values_vol68 = state.values_vol.slice(-68) 
+
+			state.items_vol135 = state.items_vol.slice(-135)
+			state.values_vol135 = state.values_vol.slice(-135) 
+
+			console.log(state.items)
+			console.log(state.values)
+			
+			//setChart()
+		},
+		error: function(error_data){
+			console.log("error")
+			console.log(error_data)
+		}
+	})
+
+
+	//function setChart(){
+	var ctx = document.getElementById("futureChart");
+	
+	var futureChart = new Chart(ctx, {
+	type: 'line',
+	data: {
+		labels: state.items23,
+		datasets: [{
+			label: objId,
+			data: state.values23,
+			yAxisID: 'A',
+			borderWidth: 1,
+			borderColor: 'rgba(66,139,202)',
+			fill: false,
+			order: 1
+		},{
+			type: 'bar',
+			label: 'Volume',
+			data: state.values_vol23,
+			yAxisID: 'B',
+			borderWidth: 1,
+			borderColor: 'rgba(244, 137, 244)',
+			order: 2
+		}
+		]
+	},
+	options: {
+		scales: {
+			yAxes: [{
+				id: 'A',
+				position: 'left',
+				type: 'linear',
+				ticks: {
+					beginAtZero:true
+				}
+			},{
+				id: 'B',
+				position: 'right',
+				type: 'linear',
+				ticks: {
+					beginAtZero:true,
+					display: false
+				},
+				gridLines: {
+				display:false
+				}
+			}
+			],
+			xAxes: [{
+				ticks: {
+					autoSkip: true,
+					maxTicksLimit: 20,
+					maxRotation: 45,
+					minRotation: 45
+				}
+			}]
+		},
+		legend: {
+			display: true,
+		}
+	}
+	})
+
+	function updateChart_1M(){
+		futureChart.data.labels = state.items23;
+		futureChart.data.datasets[0].data = state.values23;
+		futureChart.data.datasets[1].data = state.values_vol23;
+		futureChart.update();
+	};
+
+	function updateChart_3M(){
+		futureChart.data.labels = state.items68;
+		futureChart.data.datasets[0].data = state.values68;
+		futureChart.data.datasets[1].data = state.values_vol68;
+		futureChart.update();
+	};
+
+	function updateChart_6M(){
+		futureChart.data.labels = state.items135;
+		futureChart.data.datasets[0].data = state.values135;
+		futureChart.data.datasets[1].data = state.values_vol135;
+		futureChart.update();
+	};
+
+	function updateChart_ALL(){
+		futureChart.data.labels = state.items;
+		futureChart.data.datasets[0].data = state.values;
+		futureChart.data.datasets[1].data = state.values_vol;
+		futureChart.update();
+	};
+					
+					
+</script>
+
+
+
+{% endblock %}

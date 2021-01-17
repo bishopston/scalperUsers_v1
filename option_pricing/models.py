@@ -66,7 +66,7 @@ class Option(models.Model):
 
 class Futuresymbol(models.Model):
 
-    ASSETS = [
+    FUTUREASSETS = [
     ('ADMIE', 'ADMIE'),
     ('ALPHA', 'ALPHA'),
     ('BELA', 'JUMBO'),
@@ -82,6 +82,7 @@ class Futuresymbol(models.Model):
     ('FTSE', 'FTSE'),
     ('GEKTE', 'GEKTERNA'),
     ('HTO', 'OTE'),
+    ('INLOT', 'INTRALOT'),
     ('INTRK', 'INTRACOM'),
     ('LAMDA', 'LAMDA'),
     ('MIG', 'MIG'),
@@ -99,7 +100,7 @@ class Futuresymbol(models.Model):
 
     symbol = models.CharField(max_length=15)
     asset = models.CharField(max_length=5,
-        choices=ASSETS,)
+        choices=FUTUREASSETS,)
     expmonthdate = models.DateField()
     favourites = models.ManyToManyField(
 	    CustomUser, related_name='favourite_future', default=None, blank=True)
@@ -126,13 +127,14 @@ class Future(models.Model):
     open_interest = models.IntegerField()
     stock = models.DecimalField(max_digits=8, decimal_places=2)
 
-class Stock(models.Model):
+class Stocksymbol(models.Model):
 
     ASSETS = [
     ('ADMIE', 'ADMIE'),
     ('ALPHA', 'ALPHA'),
     ('BELA', 'JUMBO'),
     ('CENER', 'CENERGY'),
+    ('GD', 'GD'),
     ('EEE', 'COCA-COLA'),
     ('ELLAKTOR', 'ELLAKTOR'),
     ('ELPE', 'ELPE'),
@@ -144,6 +146,7 @@ class Stock(models.Model):
     ('FTSE', 'FTSE'),
     ('GEKTERNA', 'GEKTERNA'),
     ('HTO', 'OTE'),
+    ('INLOT', 'INTRALOT'),
     ('INTRK', 'INTRACOM'),
     ('LAMDA', 'LAMDA'),
     ('MIG', 'MIG'),
@@ -162,12 +165,15 @@ class Stock(models.Model):
     symbol = models.CharField(max_length=15)
     asset = models.CharField(max_length=10,
         choices=ASSETS,)
+
+    def __str__(self):
+	    return self.symbol
+
+class Stock(models.Model):
+    stocksymbol = models.ForeignKey(Stocksymbol, on_delete=models.CASCADE, default=0)
     date = models.DateTimeField()
     high = models.DecimalField(max_digits=8, decimal_places=3)
     low = models.DecimalField(max_digits=8, decimal_places=3)
     open = models.DecimalField(max_digits=8, decimal_places=3)
     close = models.DecimalField(max_digits=8, decimal_places=3)
     volume = models.FloatField()
-
-    def __str__(self):
-	    return self.symbol

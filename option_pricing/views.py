@@ -250,3 +250,95 @@ def FutureView(request):
         'page_obj': page_obj
     }
     return render(request, 'option_pricing/future.html', context)
+
+def FutureScreenerDetail(request, futuresymbol):
+    future_strikespan = Future.objects.filter(futuresymbol__symbol=futuresymbol).order_by('-date')
+    trade_symbol = futuresymbol
+    future_count = future_strikespan.count()
+    closing_price = future_strikespan[0].closing_price
+    change = future_strikespan[0].change
+    asset = future_strikespan[0].futuresymbol.get_asset_display()
+
+    expmonth = future_strikespan[0].futuresymbol.expmonthdate.strftime("%B")
+    expyear = future_strikespan[0].futuresymbol.expmonthdate.strftime("%Y")
+    expdate = future_strikespan[0].futuresymbol.expmonthdate.strftime("%#d-%#m-%Y")
+
+    latest_trad_date = future_strikespan[0].date.strftime("%#d-%#m-%Y")
+    volume = future_strikespan[0].volume
+    trades = future_strikespan[0].trades
+    open_interest = future_strikespan[0].open_interest
+
+    stock = future_strikespan[0].stock 
+    basis = stock - closing_price
+ 
+    max = future_strikespan[0].max
+    min = future_strikespan[0].min
+    lifetime_high = future_strikespan.aggregate(Max('closing_price'))
+    lifetime_low = future_strikespan.aggregate(Min('closing_price'))
+
+    is_fav = False
+    if future_strikespan[0].futuresymbol.futurescreeners.filter(id=request.user.id).exists():
+        is_fav = True
+
+    futuresymbol_id = future_strikespan[0].futuresymbol_id
+  
+    context = {
+        'future_strikespan' : future_strikespan,
+        'trade_symbol' : trade_symbol,
+        'future_count' : future_count,
+        'closing_price' : round(closing_price,3),
+        'change' : change,
+        'asset' : asset,
+        'expmonth' : expmonth,
+        'expyear' : expyear,
+        'expdate' : expdate,
+        'latest_trad_date' : latest_trad_date,
+        'volume' : volume,
+        'trades' : trades,
+        'open_interest' : open_interest,
+        'stock' : stock,
+        'basis' : basis,
+        'max' : max,
+        'min' : min,
+        'lifetime_high' : lifetime_high['closing_price__max'],
+        'lifetime_low' : lifetime_low['closing_price__min'],
+        'is_fav' : is_fav,
+        'futuresymbol_id' : futuresymbol_id,
+        #'total_likes' : option_strikespan[0].optionsymbol.total_likes(),
+        #'optionsymbol_like_count' :optionsymbol_like_count,
+    }
+    #print(trade_symbol)
+    return render(request, 'option_pricing/future_screener.html', context)
+
+def FutureJSChartView(request, tradesymbol):
+    futuredata = []
+
+    future = Future.objects.filter(futuresymbol__symbol=tradesymbol).order_by('date')
+
+    for i in future:
+        futuredata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.closing_price})
+
+    #print(optiondata)
+    return JsonResponse(futuredata, safe=False)
+
+def FutureJSChartVolView(request, tradesymbol):
+    voldata = []
+
+    vol = Future.objects.filter(futuresymbol__symbol=tradesymbol).order_by('date')
+
+    for i in vol:
+        voldata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.volume})
+    
+    #print(voldata)
+    return JsonResponse(voldata, safe=False)
+
+def FutureJSSportChartView(request, tradesymbol):
+    futurespotdata = []
+
+    futurespot = Future.objects.filter(futuresymbol__symbol=tradesymbol).order_by('date')
+
+    for i in futurespot:
+        futurespotdata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.stock})
+
+    #print(optiondata)
+    return JsonResponse(futurespotdata, safe=False)

@@ -26,7 +26,13 @@
     <div class="pl-3 row align-items-stretch">
  
             <div>
-                <h3 class="font-weight-bold">{{closing_price|floatformat:2}}</h3>
+                <h3 class="font-weight-bold">
+					{% if asset == 'FTSE' %}
+					{{closing_price|floatformat:2}}
+				  {% else %}
+					  {{closing_price|floatformat:3}}
+				  {% endif %}
+				</h3>
             </div>
             <div class="p-2 my-auto">
                 <h5 class="vertical">
@@ -149,11 +155,23 @@
 												</tr>
 												<tr>
 													<td><small>Lifetime High:</small></td>
-													<td><small class="font-weight-bold">{{lifetime_high|floatformat:2}}</small></td>												
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{lifetime_high|floatformat:2}}
+													  	{% else %}
+														  	{{lifetime_high|floatformat:3}}
+													  	{% endif %}
+													</small></td>													
 												</tr>
 												<tr>
 													<td><small>Lifetime Low:</small></td>
-													<td><small class="font-weight-bold">{{lifetime_low|floatformat:2}}</small></td>												
+													<td><small class="font-weight-bold">
+														{% if asset == 'FTSE' %}
+															{{lifetime_low|floatformat:2}}
+													  	{% else %}
+														  	{{lifetime_low|floatformat:3}}
+													  	{% endif %}
+													</small></td>												
 												</tr>
 											</tbody>
 										</table>
@@ -388,8 +406,8 @@
                     var key_stripped_stripped = key_stripped.replace('"', '')
                     var value = Object.values(response[i])[0]
             
-                    state.itemsvol23.push(key_stripped_stripped)
-                    state.valuesvol23.push(value)}
+                    state.items_vol23.push(key_stripped_stripped)
+                    state.values_vol23.push(value)}
             } else {
                 for (let i = response.length - response.length; i < response.length; i++){
                     var key = Object.keys(response[i])[0]
@@ -397,8 +415,8 @@
                     var key_stripped_stripped = key_stripped.replace('"', '')
                     var value = Object.values(response[i])[0]
             
-                    state.itemsvol23.push(key_stripped_stripped)
-                    state.valuesvol23.push(value)}
+                    state.items_vol23.push(key_stripped_stripped)
+                    state.values_vol23.push(value)}
                 }
             
                 

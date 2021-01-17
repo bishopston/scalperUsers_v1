@@ -16,4 +16,8 @@ urlpatterns = [
     path('options/vegachart/<str:tradesymbol>/', views.OptionJSVegaChartView, name="option_vega_jschart"),
     path('options/impliedchart/<str:tradesymbol>/', views.OptionJSImpliedChartView, name="option_implied_jschart"),
     path('futures/', views.FutureView, name='future'),
+    path('futures/<str:futuresymbol>/', views.FutureScreenerDetail, name='future_screener_detail'),
+    path('futures/chart/<str:tradesymbol>/', views.FutureJSChartView, name="future_jschart"),
+    path('futures/chart_vol/<str:tradesymbol>/', views.FutureJSChartVolView, name="future_vol_jschart"),
+    path('futures/spotchart/<str:tradesymbol>/', views.FutureJSSportChartView, name="future_spot_jschart"),
 ]
