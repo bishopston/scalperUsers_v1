@@ -17,7 +17,7 @@ from django.template.loader import render_to_string
 
 from accounts.forms import UserAdminCreationForm
 from accounts.models import CustomUser
-from option_pricing.models import Optionsymbol
+from option_pricing.models import Optionsymbol, Futuresymbol
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
 
@@ -207,3 +207,29 @@ def myOptionList(request):
     return render(request,
                   'accounts/myoptionlist.html',
                   {'myoptionlist': myoptionlist})
+
+@ login_required
+def myFutureScreeners(request):
+    future = get_object_or_404(Futuresymbol, id=request.POST.get('id'))
+    futuresymbol_id = future.id
+    is_fav = False
+    if future.futurescreeners.filter(id=request.user.id).exists():
+        future.futurescreeners.remove(request.user)
+        is_fav = False
+    else:
+        future.futurescreeners.add(request.user)
+        is_fav = True
+    #option.save()
+    context = {
+        'is_fav': is_fav,
+        'futuresymbol_id' : futuresymbol_id,
+    }
+    if request.is_ajax():
+        html = render_to_string('accounts/myfuturescreeners_section.html', context, request=request)
+        return JsonResponse({'form' : html})
+
+def myFutureList(request):
+    myfuturelist = Futuresymbol.objects.filter(futurescreeners=request.user)
+    return render(request,
+                  'accounts/myfuturelist.html',
+                  {'myfuturelist': myfuturelist})

@@ -8,10 +8,9 @@
 	<div class="row mb-0">
         <div class="col-md-12 mt-2 d-flex justify-content-start">
             <p class="font-weight-bold text-center mt-2">{{asset}} Future Contract {{ expmonth }} {{ expyear }}</p>
-            <!--<div id="myoption-section" class="col-md-4 mt-1 ml-2">
-                {% include 'accounts/myoptionscreeners_section.html' %}
+            <div id="myfuture-section" class="col-md-4 mt-1 ml-2">
+                {% include 'accounts/myfuturescreeners_section.html' %}
             </div>
-            -->
         </div>
         <!--<div id="like-section" class="col-md-4">
             {% include 'accounts/like_section.html' %}
@@ -103,21 +102,29 @@
 												<tr>
 													<td><small>Intraday High:</small></td>
 													<td><small class="font-weight-bold">
-														{% if asset == 'FTSE' %}
-															{{max|floatformat:2}}
-													  	{% else %}
-														  {{max|floatformat:3}}
-													  	{% endif %}
+														{% if max > 0 %}
+															{% if asset == 'FTSE' %}
+																{{max|floatformat:2}}
+															{% else %}
+																{{max|floatformat:3}}
+															{% endif %}
+														{% else %}
+															NA
+														{% endif %}
 													</small></td>												
 												</tr>
 												<tr>
 													<td><small>Intraday High:</small></td>
 													<td><small class="font-weight-bold">
-														{% if asset == 'FTSE' %}
-															{{min|floatformat:2}}
-													  	{% else %}
-														  {{min|floatformat:3}}
-													  	{% endif %}
+														{% if min > 0 %}
+															{% if asset == 'FTSE' %}
+																{{min|floatformat:2}}
+															{% else %}
+																{{min|floatformat:3}}
+															{% endif %}
+														{% else %}
+															NA
+														{% endif %}
 													</small></td>												
 												</tr>
 											</tbody>
@@ -219,24 +226,33 @@
 	var objId = "{{trade_symbol}}"
 	var dataURL = `/futures/chart/${objId}/`
 	var dataURLvol = `/futures/chart_vol/${objId}/`
+	var dataURLspot = `/futures/spotchart/${objId}/`
 
 	var state ={	
 		'items':[],
 		'values':[],
 		'items_vol':[],
-		'values_vol':[],        
+		'values_vol':[],  
+		'items_spot':[],
+		'values_spot':[],		
 		'items23':[],
 		'values23':[],
 		'items_vol23':[],
 		'values_vol23':[],
+		'items_spot23':[],
+		'values_spot23':[],
 		'items68':[],
 		'values68':[],
 		'items_vol68':[],
-		'values_vol68':[],  
+		'values_vol68':[],
+		'items_spot68':[],
+		'values_spot68':[], 		
 		'items135':[],
 		'values135':[],
 		'items_vol135':[],
-		'values_vol135':[], 
+		'values_vol135':[],  
+		'items_spot135':[],
+		'values_spot135':[], 
 	}
 
 	$.ajax({
@@ -341,7 +357,56 @@
 		}
 	})
 
+	$.ajax({
+		method: "GET",
+		url: dataURLspot,
+		success: function(response){
+			if (response.length > 22) {
+				for (let i = response.length - 23; i < response.length; i++){
+					var key = Object.keys(response[i])[0]
+					var key_stripped = key.replace('"', '')
+					var key_stripped_stripped = key_stripped.replace('"', '')
+					var value = Object.values(response[i])[0]
+			
+					state.items_spot23.push(key_stripped_stripped)
+					state.values_spot23.push(value)}
+			} else {
+				for (let i = response.length - response.length; i < response.length; i++){
+					var key = Object.keys(response[i])[0]
+					var key_stripped = key.replace('"', '')
+					var key_stripped_stripped = key_stripped.replace('"', '')
+					var value = Object.values(response[i])[0]
+			
+					state.items_spot23.push(key_stripped_stripped)
+					state.values_spot23.push(value)}
+				}
+			
+				
+			for (var i in response){
+				var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+			
+				state.items_spot.push(key_stripped_stripped)
+				state.values_spot.push(value)}
 
+			state.items_spot68 = state.items_spot.slice(-68)
+			state.values_spot68 = state.values_spot.slice(-68) 
+
+			state.items_spot135 = state.items_spot.slice(-135)
+			state.values_spot135 = state.values_spot.slice(-135) 
+
+			console.log(state.items)
+			console.log(state.values)
+			
+			//setChart()
+		},
+		error: function(error_data){
+			console.log("error")
+			console.log(error_data)
+		}
+	})
 	//function setChart(){
 	var ctx = document.getElementById("futureChart");
 	
@@ -433,9 +498,120 @@
 		futureChart.update();
 	};
 					
+
+	//function setChart(){
+		var ctx = document.getElementById("spotChart");
+	
+	var spotChart = new Chart(ctx, {
+	type: 'line',
+	data: {
+		labels: state.items23,
+		datasets: [{
+			label: objId,
+			data: state.values23,
+			yAxisID: 'A',
+			borderWidth: 1,
+			borderColor: 'rgba(66,139,202)',
+			fill: false,
+			order: 1
+		},{
+			type: 'line',
+			label: 'Spot',
+			data: state.values_spot23,
+			yAxisID: 'B',
+			borderWidth: 1,
+			borderColor: 'rgba(244, 137, 244)',
+			fill: false,
+			order: 2
+		}
+		]
+	},
+	options: {
+		scales: {
+			yAxes: [{
+				id: 'A',
+				position: 'left',
+				type: 'linear',
+				ticks: {
+					beginAtZero:true
+				}
+			},{
+				id: 'B',
+				position: 'right',
+				type: 'linear',
+				ticks: {
+					beginAtZero:true,
+					display: false
+				},
+				gridLines: {
+				display:false
+				}
+			}
+			],
+			xAxes: [{
+				ticks: {
+					autoSkip: true,
+					maxTicksLimit: 20,
+					maxRotation: 45,
+					minRotation: 45
+				}
+			}]
+		},
+		legend: {
+			display: true,
+		}
+	}
+	})
+
+	function updatespotChart_1M(){
+		spotChart.data.labels = state.items23;
+		spotChart.data.datasets[0].data = state.values23;
+		spotChart.data.datasets[1].data = state.values_spot23;
+		spotChart.update();
+	};
+
+	function updatespotChart_3M(){
+		spotChart.data.labels = state.items68;
+		spotChart.data.datasets[0].data = state.values68;
+		spotChart.data.datasets[1].data = state.values_spot68;
+		spotChart.update();
+	};
+
+	function updatespotChart_6M(){
+		spotChart.data.labels = state.items135;
+		spotChart.data.datasets[0].data = state.values135;
+		spotChart.data.datasets[1].data = state.values_spot135;
+		spotChart.update();
+	};
+
+	function updatespotChart_ALL(){
+		spotChart.data.labels = state.items;
+		spotChart.data.datasets[0].data = state.values;
+		spotChart.data.datasets[1].data = state.values_spot;
+		spotChart.update();
+	};
 					
 </script>
 
-
+<script type="text/javascript">
+    $(document).ready(function(event){
+        $(document).on('click', '#fav', function(event){
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "accounts:myfuturescreeners" %}',
+                data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(response){
+                    $('#myfuture-section').html(response['form'])
+                    console.log($('#myfuture-section').html(response['form']));
+                },
+                error: function(rs, e){
+                    console.log(rs. responseText)
+                },
+            });
+        });
+    });
+</script>
 
 {% endblock %}

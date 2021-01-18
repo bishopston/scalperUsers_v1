@@ -1,0 +1,13 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<div class="row">
+    {% for futuresymbol in myfuturelist %}
+    <div class="col-md-4">
+        {{ futuresymbol.symbol }}
+        <a href="{% url 'option_pricing:future_screener_detail' futuresymbol.symbol %}">{{ futuresymbol.symbol }}</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
