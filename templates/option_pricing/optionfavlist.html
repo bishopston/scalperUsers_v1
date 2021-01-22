@@ -32,8 +32,10 @@
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <tr>
+            <th><small><strong></strong></small></th>
             <th><small><strong>Symbol</strong></small></th>
             <th><small><strong>Asset</strong></small></th>
+            <th><small><strong>Option Type</strong></small></th>
             <th><small><strong>Latest Trading Date</strong></small></th>
             <th><small><strong>Strike</strong></small></th>
             <th><small><strong>Closing Price</strong></small></th>
@@ -43,38 +45,47 @@
             <th><small><strong>Open Interest</strong></small></th>
             <th><small><strong>Expiration Date</strong></small></th>
           </tr>
+          {%csrf_token%}
           {% for option in page_obj %}
             <tr>
-              <td><small><a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a></small></td>
-              <td><small>{{ option.optionsymbol.get_asset_display}}</small></td>
-              <td><small>{{ option.date|date:"SHORT_DATE_FORMAT" }}</small></td>
-              <td><small>
-                {% if asset_query == 'FTSE' %}
-                  {{ option.optionsymbol.strike|add:"0" }}
-                {% else %}
-                  {{ option.optionsymbol.strike }}
-                {% endif %}
-              </small></td>
-              <td><small>{{ option.closing_price|floatformat:3 }}</small></td>
-              <td><small>
-                {% if option.change < 0 %}
-                  <div class="change-negative"> 
-                {% else %} 
-                  <div class="change-positive">
-                {% endif %}
-                  {{ option.change }}%
-                </div>
-              </small></td>
-              <td><small>{{ option.volume }}</small></td>
-              <td><small>{{ option.trades }}</small></td>
-              <td><small>{{ option.open_interest }}</small></td>
-              <td><small>{{ option.optionsymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                <td><input type="checkbox" name="option_id[]" value="{{option.id}}" id="fav_option"></td>
+                <td><small><a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a></small></td>
+                <td><small>{{ option.optionsymbol.get_asset_display}}</small></td>
+                <td><small>{{ option.optionsymbol.get_optiontype_display}}</small></td>
+                <td><small>{{ option.date|date:"SHORT_DATE_FORMAT" }}</small></td>
+                <td><small>
+                    {% if asset_query == 'FTSE' %}
+                    {{ option.optionsymbol.strike|add:"0" }}
+                    {% else %}
+                    {{ option.optionsymbol.strike }}
+                    {% endif %}
+                </small></td>
+                <td><small>{{ option.closing_price|floatformat:3 }}</small></td>
+                <td><small>
+                    {% if option.change < 0 %}
+                    <div class="change-negative"> 
+                    {% else %} 
+                    <div class="change-positive">
+                    {% endif %}
+                    {{ option.change }}%
+                    </div>
+                </small></td>
+                <td><small>{{ option.volume }}</small></td>
+                <td><small>{{ option.trades }}</small></td>
+                <td><small>{{ option.open_interest }}</small></td>
+                <td><small>{{ option.optionsymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
             </tr>
           {% endfor %}
         </table>
+
       </div>
     </div>
-    <div class="row d-flex justify-content-end">
+    <div class="mt-2 row d-flex justify-content-between">
+        {% if request.user.is_authenticated %}
+            <button id="fav_btn" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My Screeners</button>
+        {% else %}
+            <a class="btn btn-sm btn-primary" href='{% url "accounts:register" %}' role="button">Add to My Screeners</a>
+        {% endif %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-end">
           {% if page_obj.has_previous %}
@@ -95,6 +106,35 @@
     </div>
   </div>
 {% endif %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#fav_btn').click(function(){
 
+                var id=[];
+                var csrf=$('input[name=csrfmiddlewaretoken]').val();
+                $(':checkbox:checked').each(function(i){
+                    id[i]=$(this).val()
+                })
+                if(id.length===0){
+                    alert("Please select at least one option to add to my screeners")
+                }else{
+                    console.log(id)
+                    $.ajax({
+                        url:".",
+                        method:"POST",
+                        data:{
+                            id,
+                            csrfmiddlewaretoken:csrf
+                        },
+                        success:function(response){
+                            alert("Options successfully added to my screeners")
+                        }
+                    })
+                }
+            
+        })
+    })
+</script>
 
 {% endblock content %}

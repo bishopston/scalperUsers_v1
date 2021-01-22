@@ -202,6 +202,7 @@ def myOptionScreeners(request):
         html = render_to_string('accounts/myoptionscreeners_section.html', context, request=request)
         return JsonResponse({'form' : html})
 
+@ login_required
 def myOptionList(request):
     myoptionlist = Optionsymbol.objects.filter(optionscreeners=request.user)
     return render(request,
@@ -228,6 +229,7 @@ def myFutureScreeners(request):
         html = render_to_string('accounts/myfuturescreeners_section.html', context, request=request)
         return JsonResponse({'form' : html})
 
+@ login_required
 def myFutureList(request):
     myfuturelist = Futuresymbol.objects.filter(futurescreeners=request.user)
     return render(request,

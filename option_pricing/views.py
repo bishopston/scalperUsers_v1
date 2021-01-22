@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Max, Min
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.views.generic import View
+from django.contrib.auth.decorators import login_required
 
 from datetime import datetime
 import json
 
 from .models import Option, Optionsymbol, Future, Futuresymbol
+from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm
 
 
@@ -342,3 +345,64 @@ def FutureJSSportChartView(request, tradesymbol):
 
     #print(optiondata)
     return JsonResponse(futurespotdata, safe=False)
+
+
+class OptionScreenersListCBV(View):
+    def get(self, request):
+        option = Option.objects.all()
+        
+        asset_query = request.GET.get('asset')
+        callputflag_query = request.GET.get('option_type')
+        exp_month_query = request.GET.get('exp_month')
+        exp_year_query = request.GET.get('exp_year')
+
+        if asset_query != '' and asset_query is not None:
+            option = option.filter(optionsymbol__asset__iexact=asset_query)
+
+        if callputflag_query != '' and callputflag_query is not None:
+            option = option.filter(optionsymbol__optiontype__iexact=callputflag_query)
+
+        if exp_month_query != '' and exp_month_query is not None:
+            option = option.filter(optionsymbol__expmonthdate__month=exp_month_query)
+
+        if exp_year_query != '' and exp_year_query is not None:
+            option = option.filter(optionsymbol__expmonthdate__year=exp_year_query)
+
+        max_date = option.aggregate(Max('date'))
+        queryset = option.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
+
+        queryset_num = queryset.count()
+
+        paginator = Paginator(queryset, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'queryset' : queryset,
+            'max_date' : max_date,
+            'asset_query': asset_query,
+            'callputflag_query': callputflag_query,
+            'exp_month_query' : exp_month_query,
+            'exp_year_query' : exp_year_query,
+            'optionscreenerform' : OptionScreenerForm(),
+            'queryset_num' : queryset_num,
+            'page_obj': page_obj
+        }
+        return render(request, 'option_pricing/optionfavlist.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            option_ids = request.POST.getlist('id[]')
+            is_fav = False
+            for id in option_ids:
+                opt = Option.objects.get(pk=id)
+                if opt.optionsymbol.optionscreeners.filter(id=request.user.id).exists():
+                    #opt.optionsymbol.optionscreeners.remove(request.user)
+                    is_fav = False
+                else:
+                    opt.optionsymbol.optionscreeners.add(request.user)
+                    is_fav = True
+            return redirect('option_pricing:myoptionscreenerlistcbv')
+
+
+
