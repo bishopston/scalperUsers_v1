@@ -128,11 +128,12 @@
                             csrfmiddlewaretoken:csrf
                         },
                         success:function(response){
-                            alert("Options successfully added to my screeners")
+                            alert("Options successfully added to my screeners");
+                            
                         }
                     })
                 }
-            
+                $( 'input[type="checkbox"]' ).prop('checked', false);
         })
     })
 </script>

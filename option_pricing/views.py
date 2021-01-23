@@ -15,7 +15,7 @@ from .forms import OptionScreenerForm, FutureScreenerForm
 
 def home(request):
     return render(request, 'option_pricing/home.html')
-
+"""
 def OptionView(request):
     option = Option.objects.all()
     
@@ -57,7 +57,7 @@ def OptionView(request):
         'page_obj': page_obj
     }
     return render(request, 'option_pricing/option.html', context)
-
+"""
 def OptionScreenerDetail(request, optionsymbol):
     option_strikespan = Option.objects.filter(optionsymbol__symbol=optionsymbol).order_by('-date')
     trade_symbol = optionsymbol
