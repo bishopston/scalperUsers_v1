@@ -1,14 +1,18 @@
 from django.urls import path
 from . import views
-from option_pricing.views import OptionScreenersListCBV
+from option_pricing.views import OptionScreenersListCBV, OptionDescendingOI, FutureDescendingOI
 app_name = 'option_pricing'
 
 urlpatterns = [
     path('', views.home, name="home"),
     #path('options/', views.OptionView, name='option'),
     #path('optionsajax/', views.OptionAjaxView, name='option_ajax'),
+    path('options/greatestOI/', views.OptionGreatestOI, name='option_greatestOI'),
+    path('options/greatestOIfetch/', views.OptionGreatestOIFetch, name='option_greatestOI_fetch'),
+    #path('options/descendingOI/', views.OptionDescendingOI, name='option_descendingOI'),
+    path('options/descendingOI', OptionDescendingOI.as_view(), name='option_descendingOI'),
+    path('futures/descendingOI', FutureDescendingOI.as_view(), name='future_descendingOI'),
     path('options/<str:optionsymbol>/', views.OptionScreenerDetail, name='option_screener_detail'),
-    #path('options/greatestOI/', views.OptionGreatestOI, name='option_greatestOI'),
     path('options/chart/<str:tradesymbol>/', views.OptionJSChartView, name="option_jschart"),
     path('options/chart_vol/<str:tradesymbol>/', views.OptionJSChartVolView, name="option_vol_jschart"),
     path('options/deltachart/<str:tradesymbol>/', views.OptionJSDeltaChartView, name="option_delta_jschart"),

@@ -1,0 +1,62 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-9 mx-auto">
+              <div class="content" id="option-container">
+
+              </div>
+              <div class="load-img" id="more-data">
+
+              </div>
+        </div>
+    </div> 
+</div>
+
+<script>
+    $(document).ready(function(){
+        var limit=10;
+        var start=0;
+        var action='inactive'
+        function load_post_data(limit, start)
+        {
+            $.ajax({
+                url:'{% url "option_pricing:option_greatestOI_fetch" %}',
+                method:"GET",
+                data:{
+                    limit:limit,
+                    start:start
+                },
+                caches:false,
+                success:function(response){
+                    $("#option-container").append(response);
+                    if(response==""){
+                        $('#more-data').html("<button type='button' class='btn btn-info'>No more options</button>")
+                         action='active';
+                    }else{
+                        $('#more-data').html("<button class='btn btn-success'>Loading more options...</button>")
+                         action='inactive';
+                    }
+                }
+            })
+        }
+
+
+        if(action=='inactive'){
+            action='active',
+            load_post_data(limit, start);
+        }
+        $(window).scroll(function(){
+          if($(window).scrollTop() + $(window).height() > $('#option-container').height() && action =='inactive'){
+              action='active';
+              start=start + limit;
+              setTimeout(function(){
+                  load_post_data(limit, start);
+              }, 1000)
+          }
+      })
+    })
+</script>
+
+{% endblock content %}

@@ -405,4 +405,88 @@ class OptionScreenersListCBV(View):
             return redirect('option_pricing:myoptionscreenerlistcbv')
 
 
+def OptionGreatestOI(request):
+    return render(request, "option_pricing/optionsgreatestOI.html")
 
+def OptionGreatestOIFetch(request):
+    limit=request.GET.get('limit')
+    start=request.GET.get('start')
+    max_date = Option.objects.all().aggregate(Max('date'))
+    qs = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__expmonthdate__gte=max_date['date__max']).order_by('-open_interest')[:30][int(start):int(start) + int(limit)]
+    #optionsOI = options[int(start):int(start) + int(limit)]
+    context={
+        'qs':qs
+    }
+    return render(request, 'option_pricing/optionsgreatestOI_fetch.html', context)
+"""
+def OptionDescendingOI(request):
+    max_date = Option.objects.all().aggregate(Max('date'))
+    queryset = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__expmonthdate__gte=max_date['date__max']).order_by('-open_interest')[:30]
+    paginator = Paginator(queryset, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    context={
+        'queryset':queryset,
+        'page_obj':page_obj
+    }
+    return render(request, 'option_pricing/option_descendingOI.html', context)
+"""
+
+class OptionDescendingOI(View):
+    def get(self, request):
+        max_date = Option.objects.all().aggregate(Max('date'))
+        queryset = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__expmonthdate__gte=max_date['date__max']).order_by('-open_interest')[:30]
+
+        paginator = Paginator(queryset, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'queryset' : queryset,
+            'page_obj': page_obj
+        }
+        return render(request, 'option_pricing/option_descendingOI.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            option_ids = request.POST.getlist('id[]')
+            is_fav = False
+            for id in option_ids:
+                opt = Option.objects.get(pk=id)
+                if opt.optionsymbol.optionscreeners.filter(id=request.user.id).exists():
+                    #opt.optionsymbol.optionscreeners.remove(request.user)
+                    is_fav = False
+                else:
+                    opt.optionsymbol.optionscreeners.add(request.user)
+                    is_fav = True
+            return redirect('option_pricing:option_descendingOI')
+
+
+class FutureDescendingOI(View):
+    def get(self, request):
+        max_date = Future.objects.all().aggregate(Max('date'))
+        queryset = Future.objects.all().filter(date=max_date['date__max']).filter(futuresymbol__expmonthdate__gte=max_date['date__max']).order_by('-open_interest')[:30]
+
+        paginator = Paginator(queryset, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'queryset' : queryset,
+            'page_obj': page_obj
+        }
+        return render(request, 'option_pricing/future_descendingOI.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            future_ids = request.POST.getlist('id[]')
+            is_fav = False
+            for id in future_ids:
+                item = Future.objects.get(pk=id)
+                if item.futuresymbol.futurescreeners.filter(id=request.user.id).exists():
+                    #opt.optionsymbol.optionscreeners.remove(request.user)
+                    is_fav = False
+                else:
+                    item.futuresymbol.futurescreeners.add(request.user)
+                    is_fav = True
+            return redirect('option_pricing:future_descendingOI')
