@@ -17,6 +17,19 @@ ul{
 	list-style:none
 }
 
+.nav-tabs {
+	white-space: nowrap;
+	display:block!important;
+	flex-wrap: nowrap;
+	max-width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch
+  }
+.nav li {
+	display: inline-block
+  }
+
 .container-fluid{
 	margin-top: 20px;
 	padding-left: 80px;
