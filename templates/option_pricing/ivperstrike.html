@@ -1,0 +1,170 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<div class="container bg-light text-dark">
+    <div class="row">
+        <div class="col-sm-7 mb-2">
+            <h3>Implied Volatility Screeners</h3>
+            <form method="GET">
+                {{ ivperstrikescreenerform.as_p }}
+                <button class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="vline col-sm-3">
+            <div class="row">
+                <p class="num-results">Number of results</p>
+            </div>
+            <div id="results" class="row">
+                {% if asset_query and callputflag_query and exp_month_query and exp_year_query %}
+                    <h1 class="results">{{ queryset_num }}</h1>
+                {% else %}
+                    <h1 class="results">0</h1>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if asset_query and callputflag_query and exp_month_query and exp_year_query %}
+<script> 
+
+    $('.hidethis').hide();
+
+    var objId = "{{trade_symbol}}"
+    var dataURL = `/options/deltachart/${objId}/`
+
+    var deltastate ={	
+		'items':[],
+		'values':[],   
+        'items23':[],
+		'values23':[],
+        'items68':[],
+		'values68':[],  
+        'items135':[],
+		'values135':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    deltastate.items23.push(key_stripped_stripped)
+                    deltastate.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var key_stripped = key.replace('"', '')
+                    var key_stripped_stripped = key_stripped.replace('"', '')
+                    var value = Object.values(response[i])[0]
+            
+                    deltastate.items23.push(key_stripped_stripped)
+                    deltastate.values23.push(value)}
+                }
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				deltastate.items.push(key_stripped_stripped)
+                deltastate.values.push(value)}
+
+            deltastate.items68 = deltastate.items.slice(-68)
+            deltastate.values68 = deltastate.values.slice(-68)   
+
+            deltastate.items135 = deltastate.items.slice(-135)
+            deltastate.values135 = deltastate.values.slice(-135)   
+
+            console.log(deltastate.items)
+            console.log(deltastate.values)
+            
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+
+    //function setChart(){
+    var ctx = document.getElementById("deltaChart");
+    
+    var deltaChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: deltastate.items23,
+        datasets: [{
+            label: objId.concat(' Delta'),
+            data: deltastate.values23,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+
+    function updatedeltaChart_1M(){
+        deltaChart.data.labels = deltastate.items23;
+        deltaChart.data.datasets[0].data = deltastate.values23;
+        deltaChart.update();
+    };
+
+    function updatedeltaChart_3M(){
+        deltaChart.data.labels = deltastate.items68;
+        deltaChart.data.datasets[0].data = deltastate.values68;
+        deltaChart.update();
+    };
+
+    function updatedeltaChart_6M(){
+        deltaChart.data.labels = deltastate.items135;
+        deltaChart.data.datasets[0].data = deltastate.values135;
+        deltaChart.update();
+    };
+
+    function updatedeltaChart_ALL(){
+        deltaChart.data.labels = deltastate.items;
+        deltaChart.data.datasets[0].data = deltastate.values;
+        deltaChart.update();
+    };
+
+
+</script>
+{% endif %}
+
+{% endblock content %}

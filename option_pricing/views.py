@@ -10,7 +10,7 @@ import json
 
 from .models import Option, Optionsymbol, Future, Futuresymbol
 from accounts.models import CustomUser
-from .forms import OptionScreenerForm, FutureScreenerForm
+from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
 
 
 def home(request):
@@ -490,3 +490,93 @@ class FutureDescendingOI(View):
                     item.futuresymbol.futurescreeners.add(request.user)
                     is_fav = True
             return redirect('option_pricing:future_descendingOI')
+
+
+class FutureScreenersListCBV(View):
+    def get(self, request):
+        future = Future.objects.all()
+        
+        exp_month_query = request.GET.get('exp_month')
+        exp_year_query = request.GET.get('exp_year')
+
+        if exp_month_query != '' and exp_month_query is not None:
+            future = future.filter(futuresymbol__expmonthdate__month=exp_month_query)
+
+        if exp_year_query != '' and exp_year_query is not None:
+            future = future.filter(futuresymbol__expmonthdate__year=exp_year_query)
+
+        max_date = future.aggregate(Max('date'))
+        queryset = future.filter(date=max_date['date__max']).order_by('futuresymbol__asset')
+
+        queryset_num = queryset.count()
+
+        paginator = Paginator(queryset, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'queryset' : queryset,
+            'max_date' : max_date,
+            'exp_month_query' : exp_month_query,
+            'exp_year_query' : exp_year_query,
+            'futurescreenerform' : FutureScreenerForm(),
+            'queryset_num' : queryset_num,
+            'page_obj': page_obj
+        }
+        return render(request, 'option_pricing/futurefavlist.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            future_ids = request.POST.getlist('id[]')
+            is_fav = False
+            for id in future_ids:
+                item = Future.objects.get(pk=id)
+                if item.futuresymbol.futurescreeners.filter(id=request.user.id).exists():
+                    #opt.optionsymbol.optionscreeners.remove(request.user)
+                    is_fav = False
+                else:
+                    item.futuresymbol.futurescreeners.add(request.user)
+                    is_fav = True
+            return redirect('option_pricing:myfuturescreenerlistcbv')
+
+def ImpliedperStrikeScreenerView(request):
+    option = Option.objects.all()
+    
+    asset_query = request.GET.get('asset')
+    callputflag_query = request.GET.get('option_type')
+    exp_month_query = request.GET.get('exp_month')
+    exp_year_query = request.GET.get('exp_year')
+
+    if asset_query != '' and asset_query is not None:
+        option = option.filter(optionsymbol__asset__iexact=asset_query)
+
+    if callputflag_query != '' and callputflag_query is not None:
+        option = option.filter(optionsymbol__optiontype__iexact=callputflag_query)
+
+    if exp_month_query != '' and exp_month_query is not None:
+        option = option.filter(optionsymbol__expmonthdate__month=exp_month_query)
+
+    if exp_year_query != '' and exp_year_query is not None:
+        option = option.filter(optionsymbol__expmonthdate__year=exp_year_query)
+
+    max_date = option.aggregate(Max('date'))
+    queryset = option.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
+
+    queryset_num = queryset.count()
+
+    paginator = Paginator(queryset, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'queryset' : queryset,
+        'max_date' : max_date,
+        'asset_query': asset_query,
+        'callputflag_query': callputflag_query,
+        'exp_month_query' : exp_month_query,
+        'exp_year_query' : exp_year_query,
+        'ivperstrikescreenerform' : ImpliedperStrikeScreenerForm(),
+        'queryset_num' : queryset_num,
+        'page_obj': page_obj
+    }
+    return render(request, 'option_pricing/ivperstrike.html', context)

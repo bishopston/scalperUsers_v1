@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from option_pricing.views import OptionScreenersListCBV, OptionDescendingOI, FutureDescendingOI
+from option_pricing.views import OptionScreenersListCBV, FutureScreenersListCBV, OptionDescendingOI, FutureDescendingOI
 app_name = 'option_pricing'
 
 urlpatterns = [
@@ -21,7 +21,7 @@ urlpatterns = [
     path('options/vegachart/<str:tradesymbol>/', views.OptionJSVegaChartView, name="option_vega_jschart"),
     path('options/impliedchart/<str:tradesymbol>/', views.OptionJSImpliedChartView, name="option_implied_jschart"),
     path('options/', OptionScreenersListCBV.as_view(), name='myoptionscreenerlistcbv'),
-    path('futures/', views.FutureView, name='future'),
+    path('futures/', FutureScreenersListCBV.as_view(), name='myfuturescreenerlistcbv'),
     path('futures/<str:futuresymbol>/', views.FutureScreenerDetail, name='future_screener_detail'),
     path('futures/chart/<str:tradesymbol>/', views.FutureJSChartView, name="future_jschart"),
     path('futures/chart_vol/<str:tradesymbol>/', views.FutureJSChartVolView, name="future_vol_jschart"),

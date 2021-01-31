@@ -5,9 +5,9 @@
 <div class="container bg-light text-dark">
   <div class="row">
     <div class="col-sm-7 mb-2">
-      <h3>Options Screeners</h3>
+      <h3>Futures Screeners</h3>
       <form method="GET">
-        {{ optionscreenerform.as_p }}
+        {{ futurescreenerform.as_p }}
         <button class="btn btn-primary">Submit</button>
       </form>
     </div>
@@ -16,7 +16,7 @@
         <p class="num-results">Number of results</p>
       </div>
       <div id="results" class="row">
-        {% if asset_query and callputflag_query and exp_month_query and exp_year_query %}
+        {% if exp_month_query and exp_year_query %}
           <h1 class="results">{{ queryset_num }}</h1>
         {% else %}
           <h1 class="results">0</h1>
@@ -26,7 +26,7 @@
   </div>
 </div>
 
-{% if asset_query and callputflag_query and exp_month_query and exp_year_query %}
+{% if exp_month_query and exp_year_query %}
   <div class="mt-5 container bg-white text-dark">
     <div class="row">
       <div class="table-responsive">
@@ -35,9 +35,7 @@
             <th><small><strong></strong></small></th>
             <th><small><strong>Symbol</strong></small></th>
             <th><small><strong>Asset</strong></small></th>
-            <th><small><strong>Option Type</strong></small></th>
             <th><small><strong>Latest Trading Date</strong></small></th>
-            <th><small><strong>Strike</strong></small></th>
             <th><small><strong>Closing Price</strong></small></th>
             <th><small><strong>Change</strong></small></th>
             <th><small><strong>Volume</strong></small></th>
@@ -46,38 +44,28 @@
             <th><small><strong>Expiration Date</strong></small></th>
           </tr>
           {%csrf_token%}
-          {% for option in page_obj %}
+          {% for future in page_obj %}
             <tr>
-                <td><input type="checkbox" name="option_id[]" value="{{option.id}}" id="fav_option"></td>
-                <td><small><a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a></small></td>
-                <td><small>{{ option.optionsymbol.get_asset_display}}</small></td>
-                <td><small>{{ option.optionsymbol.get_optiontype_display}}</small></td>
-                <td><small>{{ option.date|date:"SHORT_DATE_FORMAT" }}</small></td>
-                <td><small>
-                    {% if asset_query == 'FTSE' %}
-                    {{ option.optionsymbol.strike|add:"0" }}
-                    {% else %}
-                    {{ option.optionsymbol.strike }}
-                    {% endif %}
-                </small></td>
-                <td><small>{{ option.closing_price|floatformat:3 }}</small></td>
-                <td><small>
-                    {% if option.change < 0 %}
-                    <div class="change-negative"> 
-                    {% else %} 
-                    <div class="change-positive">
-                    {% endif %}
-                    {{ option.change }}%
-                    </div>
-                </small></td>
-                <td><small>{{ option.volume }}</small></td>
-                <td><small>{{ option.trades }}</small></td>
-                <td><small>{{ option.open_interest }}</small></td>
-                <td><small>{{ option.optionsymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-            </tr>
+              <td><input type="checkbox" name="future_id[]" value="{{future.id}}" id="fav_future"></td>
+              <td><small><a href="{% url 'option_pricing:future_screener_detail' future.futuresymbol.symbol %}">{{ future.futuresymbol.symbol }}</a></small></td>
+              <td><small>{{ future.futuresymbol.get_asset_display}}</small></td>
+              <td><small>{{ future.date|date:"SHORT_DATE_FORMAT" }}</small></td>
+              <td><small>{{ future.closing_price|floatformat:2 }}</small></td>
+              <td><small>
+                {% if future.change < 0 %}
+                  <div class="change-negative"> 
+                {% else %} 
+                  <div class="change-positive">
+                {% endif %}
+                  {{ future.change }}%
+                </div>
+              </small></td>
+              <td><small>{{ future.volume }}</small></td>
+              <td><small>{{ future.trades }}</small></td>
+              <td><small>{{ future.open_interest }}</small></td>
+              <td><small>{{ future.futuresymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
           {% endfor %}
         </table>
-
       </div>
     </div>
     <div class="mt-2 row d-flex justify-content-between">
@@ -117,7 +105,7 @@
                     id[i]=$(this).val()
                 })
                 if(id.length===0){
-                    alert("Please select at least one option to add to my screeners")
+                    alert("Please select at least one future to add to my screeners")
                 }else{
                     console.log(id)
                     $.ajax({
@@ -128,7 +116,7 @@
                             csrfmiddlewaretoken:csrf
                         },
                         success:function(response){
-                            alert("Options successfully added to my screeners");
+                            alert("Futures successfully added to my screeners");
                             
                         }
                     })
@@ -137,5 +125,6 @@
         })
     })
 </script>
+
 
 {% endblock content %}

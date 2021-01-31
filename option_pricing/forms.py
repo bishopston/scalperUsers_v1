@@ -93,3 +93,41 @@ class FutureScreenerForm(forms.Form):
         'class': 'form-control form-control-sm'
     }
     ))
+
+class ImpliedperStrikeScreenerForm(forms.Form):
+    asset = forms.CharField(
+        label="Underlying Asset",
+        widget=forms.Select(
+        choices=ASSETS,
+        attrs={
+            'class': 'form-control form-control-sm',
+        }
+    ))
+
+    option_type = forms.ChoiceField(
+        label="Option Type",
+        widget=forms.RadioSelect(attrs={
+        'class': 'form-check-label'
+        }),
+        choices=OPTION_TYPE,
+        initial = 'c'
+
+    )
+
+    exp_month = forms.CharField(
+        label="Expiration Month",
+        widget=forms.Select(
+        choices=EXP_MONTH_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm'
+    }
+    ))
+
+    exp_year = forms.CharField(
+        label="Expiration Year",
+        widget=forms.Select(
+        choices=EXP_YEAR_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm'
+    }
+    ))
