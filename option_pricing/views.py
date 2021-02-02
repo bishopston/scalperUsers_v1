@@ -564,10 +564,6 @@ def ImpliedperStrikeScreenerView(request):
 
     queryset_num = queryset.count()
 
-    paginator = Paginator(queryset, 10)
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-
     context = {
         'queryset' : queryset,
         'max_date' : max_date,
@@ -577,6 +573,18 @@ def ImpliedperStrikeScreenerView(request):
         'exp_year_query' : exp_year_query,
         'ivperstrikescreenerform' : ImpliedperStrikeScreenerForm(),
         'queryset_num' : queryset_num,
-        'page_obj': page_obj
     }
     return render(request, 'option_pricing/ivperstrike.html', context)
+
+def IVscreenerChartView(request, asset, optiontype, expmonth, expyear):
+    ivdata = []
+
+    screener = Option.objects.filter(optionsymbol__asset=asset).filter(optionsymbol__optiontype=optiontype).filter(optionsymbol__expmonthdate__month=expmonth).filter(optionsymbol__expmonthdate__year=expyear)
+    max_date = screener.aggregate(Max('date'))
+    queryset = screener.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
+
+    for i in screener:
+        ivdata.append({i.optionsymbol__strike:i.closing_price})
+
+    #print(optiondata)
+    return JsonResponse(ivdata, safe=False)
