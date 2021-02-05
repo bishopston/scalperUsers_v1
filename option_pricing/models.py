@@ -38,6 +38,14 @@ class Optionsymbol(models.Model):
     def total_likes(self):
         return self.likes.count()
 
+    @property
+    def get_full_name(self):
+        return '%s %s %s %s' % (self.asset, self.optiontype, self.expmonthdate__month, self.expmonthdate__year)
+    #full_name = property(get_full_name)
+
+    def exp_series(self):
+        return self.get_full_name
+
     def get_absolute_url(self):       
         return reverse('option_pricing:option_screener_detail', args=[str(self.symbol)])
 

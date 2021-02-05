@@ -55,17 +55,17 @@
                 <td><small>{{ option.date|date:"SHORT_DATE_FORMAT" }}</small></td>
                 <td><small>
                     {% if asset_query == 'FTSE' %}
-                    {{ option.optionsymbol.strike|add:"0" }}
+                      {{ option.optionsymbol.strike|add:"0" }}
                     {% else %}
-                    {{ option.optionsymbol.strike }}
+                      {{ option.optionsymbol.strike }}
                     {% endif %}
                 </small></td>
                 <td><small>{{ option.closing_price|floatformat:3 }}</small></td>
                 <td><small>
                     {% if option.change < 0 %}
-                    <div class="change-negative"> 
+                      <div class="change-negative"> 
                     {% else %} 
-                    <div class="change-positive">
+                      <div class="change-positive">
                     {% endif %}
                     {{ option.change }}%
                     </div>

@@ -5,8 +5,9 @@ from django.http import JsonResponse
 from django.views.generic import View
 from django.contrib.auth.decorators import login_required
 
-from datetime import datetime
+from datetime import datetime, date
 import json
+from decimal import Decimal
 
 from .models import Option, Optionsymbol, Future, Futuresymbol
 from accounts.models import CustomUser
@@ -576,6 +577,12 @@ def ImpliedperStrikeScreenerView(request):
     }
     return render(request, 'option_pricing/ivperstrike.html', context)
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
+
 def IVscreenerChartView(request, asset, optiontype, expmonth, expyear):
     ivdata = []
 
@@ -583,8 +590,28 @@ def IVscreenerChartView(request, asset, optiontype, expmonth, expyear):
     max_date = screener.aggregate(Max('date'))
     queryset = screener.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
 
-    for i in screener:
-        ivdata.append({i.optionsymbol__strike:i.closing_price})
+    for i in queryset:
+        ivdata.append({json.dumps(i.optionsymbol.strike, cls=DecimalEncoder):i.closing_price})
 
     #print(optiondata)
     return JsonResponse(ivdata, safe=False)
+
+def ImpliedScreenerView(request):
+    qs_ftse = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='FTSE').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    qs_alpha = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='ALPHA').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    qs_ote = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='HTO').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    qs_ete = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='ETE').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    qs_opap = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='OPAP').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    qs_deh = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='PPC').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    qs_peiraios = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='TPEIR').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    context = {
+        'qs_ftse' : qs_ftse,
+        'qs_alpha' : qs_alpha,
+        'qs_ote': qs_ote,
+        'qs_ete': qs_ete,
+        'qs_opap' : qs_opap,
+        'qs_deh' : qs_deh,
+        'qs_peiraios' : qs_peiraios,
+    }
+
+    return render(request, 'option_pricing/ivscreeners.html', context)

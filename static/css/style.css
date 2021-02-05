@@ -270,5 +270,9 @@ p.error-msg {
 	font-size: x-small;
   }
 
-
+#table-summary {
+	margin: auto !important;
+	width: 100% !important; 
+	float: none !important;
+ }
 
