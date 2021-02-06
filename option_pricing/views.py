@@ -591,7 +591,7 @@ def IVscreenerChartView(request, asset, optiontype, expmonth, expyear):
     queryset = screener.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
 
     for i in queryset:
-        ivdata.append({json.dumps(i.optionsymbol.strike, cls=DecimalEncoder):i.closing_price})
+        ivdata.append({json.dumps(i.optionsymbol.strike, cls=DecimalEncoder):i.imp_vol})
 
     #print(optiondata)
     return JsonResponse(ivdata, safe=False)
@@ -604,6 +604,13 @@ def ImpliedScreenerView(request):
     qs_opap = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='OPAP').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
     qs_deh = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='PPC').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
     qs_peiraios = Optionsymbol.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='TPEIR').values('asset','optiontype','expmonthdate').order_by('expmonthdate','optiontype').distinct()
+    qs_ftse_count = qs_ftse.count()
+    qs_alpha_count = qs_alpha.count()
+    qs_ote_count = qs_alpha.count()
+    qs_ete_count = qs_alpha.count()
+    qs_opap_count = qs_alpha.count()
+    qs_deh_count = qs_alpha.count()
+    qs_peiraios_count = qs_alpha.count()
     context = {
         'qs_ftse' : qs_ftse,
         'qs_alpha' : qs_alpha,
@@ -612,6 +619,28 @@ def ImpliedScreenerView(request):
         'qs_opap' : qs_opap,
         'qs_deh' : qs_deh,
         'qs_peiraios' : qs_peiraios,
+        'qs_ftse_count' : qs_ftse_count,
+        'qs_alpha_count' : qs_alpha_count,
+        'qs_ote_count' : qs_ote_count,
+        'qs_ete_count' : qs_ete_count,
+        'qs_opap_count' : qs_opap_count,
+        'qs_deh_count' : qs_deh_count,
+        'qs_peiraios_count': qs_peiraios_count,
     }
 
     return render(request, 'option_pricing/ivscreeners.html', context)
+
+def ImpliedSmileView(request, asset, optiontype, expmonth, expyear):
+    series = Option.objects.filter(optionsymbol__asset=asset).filter(optionsymbol__optiontype=optiontype).filter(optionsymbol__expmonthdate__month=expmonth).filter(optionsymbol__expmonthdate__year=expyear)
+    qs_asset = series[0].optionsymbol.asset
+    qs_optiontype = series[0].optionsymbol.optiontype
+    qs_month = series[0].optionsymbol.expmonthdate.month
+    qs_year = series[0].optionsymbol.expmonthdate.year
+    context = {
+        'series':series,
+        'qs_asset':qs_asset,
+        'qs_optiontype':qs_optiontype,
+        'qs_month':qs_month,
+        'qs_year':qs_year,
+    }
+    return render(request, 'option_pricing/ivsmile.html', context)

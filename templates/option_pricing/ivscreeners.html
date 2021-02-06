@@ -2,6 +2,13 @@
 {% block content %}
 
 <div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
+    <div class="container light-blue text-dark mb-3">
+        <div class="row">
+            <div class="col-md-12 mt-2 d-flex justify-content-start">
+                <h4>Active Expiration Series</h4>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <ul class="nav nav-tabs">
@@ -29,7 +36,7 @@
             </ul>
             <div class="my-3 tab-content justify-content-center">
                 <div role="tabpanel" class="tab-pane active" id="ftse">
-                    <div class="row">
+                    <div class="d-flex justify-content-center">
                         <div class="table-responsive">
                             <table class="table table-striped table-sm">
                                 <tr>
@@ -37,12 +44,24 @@
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Exercise Prices</strong></small></th>
+                                    <th><small><strong></strong></small></th>
                                 </tr>
                                 {%csrf_token%}
                                 {% for series in qs_ftse %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">{{series.asset}}</a></small></td>
+                                        <td><small><a href="#">
+                                            {% if series.asset == 'HTO' %}
+                                                OTE
+                                            {% elif series.asset == 'PPC' %}
+                                                DEH
+                                            {% elif series.asset == 'TPEIR' %}
+                                                PEIRAIOS
+                                            {% else %}
+                                                {{series.asset}}
+                                            {% endif %}
+                                        </a></small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -51,6 +70,266 @@
                                             {% endif %}
                                         </small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                                        <td><small>{{qs_ftse_count}}</small></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Implied Volatility</small></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="alpha">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <tr>
+                                    <th><small><strong></strong></small></th>
+                                    <th><small><strong>Asset</strong></small></th>
+                                    <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Exercise Prices</strong></small></th>
+                                    <th><small><strong></strong></small></th>
+                                </tr>
+                                {%csrf_token%}
+                                {% for series in qs_alpha %}
+                                    <tr>
+                                        <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
+                                        <td><small><a href="#">
+                                            {% if series.asset == 'HTO' %}
+                                                OTE
+                                            {% elif series.asset == 'PPC' %}
+                                                DEH
+                                            {% elif series.asset == 'TPEIR' %}
+                                                PEIRAIOS
+                                            {% else %}
+                                                {{series.asset}}
+                                            {% endif %}
+                                        </a></small></td>
+                                        <td><small>
+                                            {% if series.optiontype == 'c' %}
+                                                Call
+                                            {% else %}
+                                                Put
+                                            {% endif %}
+                                        </small></td>
+                                        <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                                        <td><small>{{qs_alpha_count}}</small></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="ote">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <tr>
+                                    <th><small><strong></strong></small></th>
+                                    <th><small><strong>Asset</strong></small></th>
+                                    <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Exercise Prices</strong></small></th>
+                                    <th><small><strong></strong></small></th>
+                                </tr>
+                                {%csrf_token%}
+                                {% for series in qs_ote %}
+                                    <tr>
+                                        <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
+                                        <td><small><a href="#">
+                                            {% if series.asset == 'HTO' %}
+                                                OTE
+                                            {% elif series.asset == 'PPC' %}
+                                                DEH
+                                            {% elif series.asset == 'TPEIR' %}
+                                                PEIRAIOS
+                                            {% else %}
+                                                {{series.asset}}
+                                            {% endif %}
+                                        </a></small></td>
+                                        <td><small>
+                                            {% if series.optiontype == 'c' %}
+                                                Call
+                                            {% else %}
+                                                Put
+                                            {% endif %}
+                                        </small></td>
+                                        <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                                        <td><small>{{qs_ote_count}}</small></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="ete">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <tr>
+                                    <th><small><strong></strong></small></th>
+                                    <th><small><strong>Asset</strong></small></th>
+                                    <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Exercise Prices</strong></small></th>
+                                    <th><small><strong></strong></small></th>
+                                </tr>
+                                {%csrf_token%}
+                                {% for series in qs_ete %}
+                                    <tr>
+                                        <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
+                                        <td><small><a href="#">
+                                            {% if series.asset == 'HTO' %}
+                                                OTE
+                                            {% elif series.asset == 'PPC' %}
+                                                DEH
+                                            {% elif series.asset == 'TPEIR' %}
+                                                PEIRAIOS
+                                            {% else %}
+                                                {{series.asset}}
+                                            {% endif %}
+                                        </a></small></td>
+                                        <td><small>
+                                            {% if series.optiontype == 'c' %}
+                                                Call
+                                            {% else %}
+                                                Put
+                                            {% endif %}
+                                        </small></td>
+                                        <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                                        <td><small>{{qs_ete_count}}</small></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="opap">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <tr>
+                                    <th><small><strong></strong></small></th>
+                                    <th><small><strong>Asset</strong></small></th>
+                                    <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Exercise Prices</strong></small></th>
+                                    <th><small><strong></strong></small></th>
+                                </tr>
+                                {%csrf_token%}
+                                {% for series in qs_opap %}
+                                    <tr>
+                                        <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
+                                        <td><small><a href="#">
+                                            {% if series.asset == 'HTO' %}
+                                                OTE
+                                            {% elif series.asset == 'PPC' %}
+                                                DEH
+                                            {% elif series.asset == 'TPEIR' %}
+                                                PEIRAIOS
+                                            {% else %}
+                                                {{series.asset}}
+                                            {% endif %}
+                                        </a></small></td>
+                                        <td><small>
+                                            {% if series.optiontype == 'c' %}
+                                                Call
+                                            {% else %}
+                                                Put
+                                            {% endif %}
+                                        </small></td>
+                                        <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                                        <td><small>{{qs_opap_count}}</small></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="deh">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <tr>
+                                    <th><small><strong></strong></small></th>
+                                    <th><small><strong>Asset</strong></small></th>
+                                    <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Exercise Prices</strong></small></th>
+                                    <th><small><strong></strong></small></th>
+                                </tr>
+                                {%csrf_token%}
+                                {% for series in qs_deh %}
+                                    <tr>
+                                        <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
+                                        <td><small><a href="#">
+                                            {% if series.asset == 'HTO' %}
+                                                OTE
+                                            {% elif series.asset == 'PPC' %}
+                                                DEH
+                                            {% elif series.asset == 'TPEIR' %}
+                                                PEIRAIOS
+                                            {% else %}
+                                                {{series.asset}}
+                                            {% endif %}
+                                        </a></small></td>
+                                        <td><small>
+                                            {% if series.optiontype == 'c' %}
+                                                Call
+                                            {% else %}
+                                                Put
+                                            {% endif %}
+                                        </small></td>
+                                        <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                                        <td><small>{{qs_deh_count}}</small></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="peiraios">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <tr>
+                                    <th><small><strong></strong></small></th>
+                                    <th><small><strong>Asset</strong></small></th>
+                                    <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Exercise Prices</strong></small></th>
+                                    <th><small><strong></strong></small></th>
+                                </tr>
+                                {%csrf_token%}
+                                {% for series in qs_peiraios %}
+                                    <tr>
+                                        <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
+                                        <td><small><a href="#">
+                                            {% if series.asset == 'HTO' %}
+                                                OTE
+                                            {% elif series.asset == 'PPC' %}
+                                                DEH
+                                            {% elif series.asset == 'TPEIR' %}
+                                                PEIRAIOS
+                                            {% else %}
+                                                {{series.asset}}
+                                            {% endif %}
+                                        </a></small></td>
+                                        <td><small>
+                                            {% if series.optiontype == 'c' %}
+                                                Call
+                                            {% else %}
+                                                Put
+                                            {% endif %}
+                                        </small></td>
+                                        <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                                        <td><small>{{qs_peiraios_count}}</small></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
