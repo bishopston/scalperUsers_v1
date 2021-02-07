@@ -591,7 +591,7 @@ def IVscreenerChartView(request, asset, optiontype, expmonth, expyear):
     queryset = screener.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
 
     for i in queryset:
-        ivdata.append({json.dumps(i.optionsymbol.strike, cls=DecimalEncoder):i.imp_vol})
+        ivdata.append({json.dumps(i.optionsymbol.strike, cls=DecimalEncoder):float(i.imp_vol)})
 
     #print(optiondata)
     return JsonResponse(ivdata, safe=False)
