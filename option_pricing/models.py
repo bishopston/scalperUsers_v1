@@ -71,6 +71,27 @@ class Option(models.Model):
     gamma = models.DecimalField(max_digits=8, decimal_places=3)
     vega = models.DecimalField(max_digits=8, decimal_places=3)
 
+class Optionseries(models.Model):
+
+    ASSETS = [
+    ('FTSE', 'FTSE'),
+    ('ALPHA', 'ALPHA'),
+    ('HTO', 'OTE'),
+    ('ETE', 'ETE'),
+    ('OPAP', 'OPAP'),
+    ('PPC', 'DEH'),
+    ('TPEIR', 'PEIRAIOS'),
+    ]
+
+    OPTION_TYPE = [
+        ('c', 'Call'),
+        ('p', 'Put'),
+    ]
+    asset = models.CharField(max_length=5,
+        choices=ASSETS,)
+    optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
+    expmonthdate = models.DateField()
+
 
 class Futuresymbol(models.Model):
 

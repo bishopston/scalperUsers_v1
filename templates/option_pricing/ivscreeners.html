@@ -51,7 +51,7 @@
                                 {% for series in qs_ftse %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">
+                                        <td><small>
                                             {% if series.asset == 'HTO' %}
                                                 OTE
                                             {% elif series.asset == 'PPC' %}
@@ -61,7 +61,7 @@
                                             {% else %}
                                                 {{series.asset}}
                                             {% endif %}
-                                        </a></small></td>
+                                        </small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -94,7 +94,7 @@
                                 {% for series in qs_alpha %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">
+                                        <td><small>
                                             {% if series.asset == 'HTO' %}
                                                 OTE
                                             {% elif series.asset == 'PPC' %}
@@ -104,7 +104,7 @@
                                             {% else %}
                                                 {{series.asset}}
                                             {% endif %}
-                                        </a></small></td>
+                                        </small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -114,7 +114,7 @@
                                         </small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_alpha_count}}</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Implied Volatility</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -137,7 +137,7 @@
                                 {% for series in qs_ote %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">
+                                        <td><small>
                                             {% if series.asset == 'HTO' %}
                                                 OTE
                                             {% elif series.asset == 'PPC' %}
@@ -147,7 +147,7 @@
                                             {% else %}
                                                 {{series.asset}}
                                             {% endif %}
-                                        </a></small></td>
+                                        </small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -157,7 +157,7 @@
                                         </small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_ote_count}}</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Implied Volatility</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -180,7 +180,7 @@
                                 {% for series in qs_ete %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">
+                                        <td><small>
                                             {% if series.asset == 'HTO' %}
                                                 OTE
                                             {% elif series.asset == 'PPC' %}
@@ -190,7 +190,7 @@
                                             {% else %}
                                                 {{series.asset}}
                                             {% endif %}
-                                        </a></small></td>
+                                        </small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -200,7 +200,7 @@
                                         </small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_ete_count}}</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Implied Volatility</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -223,7 +223,7 @@
                                 {% for series in qs_opap %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">
+                                        <td><small>
                                             {% if series.asset == 'HTO' %}
                                                 OTE
                                             {% elif series.asset == 'PPC' %}
@@ -233,7 +233,7 @@
                                             {% else %}
                                                 {{series.asset}}
                                             {% endif %}
-                                        </a></small></td>
+                                        </small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -243,7 +243,7 @@
                                         </small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_opap_count}}</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Implied Volatility</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -266,7 +266,7 @@
                                 {% for series in qs_deh %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">
+                                        <td><small>
                                             {% if series.asset == 'HTO' %}
                                                 OTE
                                             {% elif series.asset == 'PPC' %}
@@ -276,7 +276,7 @@
                                             {% else %}
                                                 {{series.asset}}
                                             {% endif %}
-                                        </a></small></td>
+                                        </small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -286,7 +286,7 @@
                                         </small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_deh_count}}</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Implied Volatility</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -309,7 +309,7 @@
                                 {% for series in qs_peiraios %}
                                     <tr>
                                         <td><input type="checkbox" name="series_id[]" value="{{series.id}}" id="fav_series"></td>
-                                        <td><small><a href="#">
+                                        <td><small>
                                             {% if series.asset == 'HTO' %}
                                                 OTE
                                             {% elif series.asset == 'PPC' %}
@@ -319,7 +319,7 @@
                                             {% else %}
                                                 {{series.asset}}
                                             {% endif %}
-                                        </a></small></td>
+                                        </small></td>
                                         <td><small>
                                             {% if series.optiontype == 'c' %}
                                                 Call
@@ -329,7 +329,7 @@
                                         </small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_peiraios_count}}</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="#" role="button"><small>Implied Volatility</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Implied Volatility</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
