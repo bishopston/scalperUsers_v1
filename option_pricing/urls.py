@@ -24,10 +24,10 @@ urlpatterns = [
     path('futures/', FutureScreenersListCBV.as_view(), name='myfuturescreenerlistcbv'),
     #iv screeners urls
     path('impliedvolscreeners_a/', views.ImpliedperStrikeScreenerView, name="impliedvolscreeners_a"),
-    path('impliedvolscreeners/', views.ImpliedScreenerView, name="impliedvolscreeners"),
+    #path('impliedvolscreeners/', views.ImpliedScreenerView, name="impliedvolscreeners"),
     path('impliedvolatilitysmile/<str:asset>/<str:optiontype>/<int:expmonth>/<int:expyear>/', views.ImpliedSmileView, name="impliedvolsmile"),
     path('ivscreeners/<str:asset>/<str:optiontype>/<int:expmonth>/<int:expyear>/', views.IVscreenerChartView, name="ivscreenerchartview"),
-    path('impliedvolscreeners_b/', ImpliedScreenerListCBV.as_view(), name='myseriesscreenerlistcbv'),
+    path('impliedvolscreeners/', ImpliedScreenerListCBV.as_view(), name='myseriesscreenerlistcbv'),
     #iv screeners urls end
     path('futures/<str:futuresymbol>/', views.FutureScreenerDetail, name='future_screener_detail'),
     path('futures/chart/<str:tradesymbol>/', views.FutureJSChartView, name="future_jschart"),
