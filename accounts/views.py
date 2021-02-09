@@ -242,3 +242,23 @@ def myImpliedList(request):
     return render(request,
                   'accounts/myimplied.html',
                   {'myimpliedlist': myimpliedlist})
+
+@ login_required
+def myImpliedScreeners(request):
+    series = get_object_or_404(Optionseries, id=request.POST.get('id'))
+    optionseries_id = series.id
+    is_fav = False
+    if series.seriesscreeners.filter(id=request.user.id).exists():
+        series.seriesscreeners.remove(request.user)
+        is_fav = False
+    else:
+        series.seriesscreeners.add(request.user)
+        is_fav = True
+    #option.save()
+    context = {
+        'is_fav': is_fav,
+        'optionseries_id' : optionseries_id,
+    }
+    if request.is_ajax():
+        html = render_to_string('accounts/myimpliedscreeners_section.html', context, request=request)
+        return JsonResponse({'form' : html})

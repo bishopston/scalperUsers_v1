@@ -276,3 +276,7 @@ p.error-msg {
 	float: none !important;
  }
 
+ div.scrollmenu {
+	overflow: auto;
+	white-space: nowrap;
+  }

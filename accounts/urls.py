@@ -15,6 +15,7 @@ urlpatterns = [
      path('activate/<uidb64>/<token>/',views.activate, name='activate'),
      path('myoptionscreeners/', views.myOptionScreeners, name='myoptionscreeners'),
      path('myfuturescreeners/', views.myFutureScreeners, name='myfuturescreeners'),
+     path('myimpliedscreeners/', views.myImpliedScreeners, name='myimpliedscreeners'),
      path('myoptionlist/', views.myOptionList, name='myoptionlist'),
      path('myfuturelist/', views.myFutureList, name='myfuturelist'),
      path('myimpliedlist/', views.myImpliedList, name='myimpliedlist'),

@@ -6,6 +6,7 @@ from django.views.generic import View
 from django.contrib.auth.decorators import login_required
 
 from datetime import datetime, date
+import calendar
 import json
 from decimal import Decimal
 
@@ -631,17 +632,27 @@ def ImpliedScreenerView(request):
     return render(request, 'option_pricing/ivscreeners.html', context)
 
 def ImpliedSmileView(request, asset, optiontype, expmonth, expyear):
-    series = Option.objects.filter(optionsymbol__optionseries__asset=asset).filter(optionsymbol__optionseries__optiontype=optiontype).filter(optionsymbol__optionseries__expmonthdate__month=expmonth).filter(optionsymbol__optionseries__expmonthdate__year=expyear)
+    series = Option.objects.filter(optionsymbol__optionseries__asset=asset).filter(optionsymbol__optionseries__optiontype=optiontype).filter(optionsymbol__optionseries__expmonthdate__month=expmonth).filter(optionsymbol__optionseries__expmonthdate__year=expyear).order_by('-date')
     qs_asset = series[0].optionsymbol.optionseries.asset
     qs_optiontype = series[0].optionsymbol.optionseries.optiontype
     qs_month = series[0].optionsymbol.optionseries.expmonthdate.month
+    qs_month_name = calendar.month_name[series[0].optionsymbol.optionseries.expmonthdate.month]
     qs_year = series[0].optionsymbol.optionseries.expmonthdate.year
+    latest_trad_date = series[0].date.strftime("%#d-%#m-%Y")
+    optionseries_id = series[0].optionsymbol.optionseries.id
+    is_fav = False
+    if series[0].optionsymbol.optionseries.seriesscreeners.filter(id=request.user.id).exists():
+        is_fav = True
     context = {
         'series':series,
         'qs_asset':qs_asset,
         'qs_optiontype':qs_optiontype,
         'qs_month':qs_month,
+        'qs_month_name':qs_month_name,
         'qs_year':qs_year,
+        'latest_trad_date':latest_trad_date,
+        'optionseries_id':optionseries_id,
+        'is_fav':is_fav,
     }
     return render(request, 'option_pricing/ivsmile.html', context)
 
@@ -687,7 +698,7 @@ class ImpliedScreenerListCBV(View):
             for id in series_ids:
                 opt = Optionseries.objects.get(pk=id)
                 if opt.seriesscreeners.filter(id=request.user.id).exists():
-                    #opt.optionsymbol.optionscreeners.remove(request.user)
+                    #opt.seriesscreeners.remove(request.user)
                     is_fav = False
                 else:
                     opt.seriesscreeners.add(request.user)
