@@ -77,6 +77,13 @@
                             </table>
                         </div>
                     </div>
+                    <div class="mt-2 row">
+                        {% if request.user.is_authenticated %}
+                            <button id="fav_btn_ftse" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My Screeners</button>
+                        {% else %}
+                            <a class="btn btn-sm btn-primary h-25 d-inline-block" href='{% url "accounts:register" %}' role="button">Add to My Screeners</a>
+                        {% endif %}
+                    </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="alpha">
                     <div class="d-flex justify-content-center">
@@ -340,5 +347,37 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#fav_btn_ftse').click(function(){
+
+                var id=[];
+                var csrf=$('input[name=csrfmiddlewaretoken]').val();
+                $(':checkbox:checked').each(function(i){
+                    id[i]=$(this).val()
+                })
+                if(id.length===0){
+                    alert("Please select at least one option to add to my screeners")
+                }else{
+                    console.log(id)
+                    $.ajax({
+                        url:".",
+                        method:"POST",
+                        data:{
+                            id,
+                            csrfmiddlewaretoken:csrf
+                        },
+                        success:function(response){
+                            alert("Options successfully added to my screeners");
+                            
+                        }
+                    })
+                }
+                $( 'input[type="checkbox"]' ).prop('checked', false);
+        })
+    })
+</script>
 
 {% endblock %}

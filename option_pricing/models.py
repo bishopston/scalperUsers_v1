@@ -2,6 +2,29 @@ from django.db import models
 from django.urls import reverse
 from accounts.models import CustomUser
 
+class Optionseries(models.Model):
+
+    ASSETS = [
+    ('FTSE', 'FTSE'),
+    ('ALPHA', 'ALPHA'),
+    ('HTO', 'OTE'),
+    ('ETE', 'ETE'),
+    ('OPAP', 'OPAP'),
+    ('PPC', 'DEH'),
+    ('TPEIR', 'PEIRAIOS'),
+    ]
+
+    OPTION_TYPE = [
+        ('c', 'Call'),
+        ('p', 'Put'),
+    ]
+    asset = models.CharField(max_length=5,
+        choices=ASSETS,)
+    optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
+    expmonthdate = models.DateField()
+    seriesscreeners = models.ManyToManyField(
+	    CustomUser, related_name='seriesscreeners', default=None, blank=True)
+    
 class Optionsymbol(models.Model):
 
     ASSETS = [
@@ -24,6 +47,7 @@ class Optionsymbol(models.Model):
     optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
     strike = models.DecimalField(max_digits=8, decimal_places=2)
     expmonthdate = models.DateField()
+    optionseries = models.ForeignKey(Optionseries, on_delete=models.CASCADE)
     favourites = models.ManyToManyField(
 	    CustomUser, related_name='favourite', default=None, blank=True)
     optionscreeners = models.ManyToManyField(
@@ -70,27 +94,6 @@ class Option(models.Model):
     theta = models.DecimalField(max_digits=8, decimal_places=3)
     gamma = models.DecimalField(max_digits=8, decimal_places=3)
     vega = models.DecimalField(max_digits=8, decimal_places=3)
-
-class Optionseries(models.Model):
-
-    ASSETS = [
-    ('FTSE', 'FTSE'),
-    ('ALPHA', 'ALPHA'),
-    ('HTO', 'OTE'),
-    ('ETE', 'ETE'),
-    ('OPAP', 'OPAP'),
-    ('PPC', 'DEH'),
-    ('TPEIR', 'PEIRAIOS'),
-    ]
-
-    OPTION_TYPE = [
-        ('c', 'Call'),
-        ('p', 'Put'),
-    ]
-    asset = models.CharField(max_length=5,
-        choices=ASSETS,)
-    optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
-    expmonthdate = models.DateField()
 
 
 class Futuresymbol(models.Model):

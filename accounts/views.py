@@ -17,7 +17,7 @@ from django.template.loader import render_to_string
 
 from accounts.forms import UserAdminCreationForm
 from accounts.models import CustomUser
-from option_pricing.models import Optionsymbol, Futuresymbol
+from option_pricing.models import Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
 
@@ -235,3 +235,10 @@ def myFutureList(request):
     return render(request,
                   'accounts/myfuturelist.html',
                   {'myfuturelist': myfuturelist})
+
+@ login_required
+def myImpliedList(request):
+    myimpliedlist = Optionseries.objects.filter(seriesscreeners=request.user)
+    return render(request,
+                  'accounts/myimplied.html',
+                  {'myimpliedlist': myimpliedlist})

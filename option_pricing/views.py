@@ -9,7 +9,7 @@ from datetime import datetime, date
 import json
 from decimal import Decimal
 
-from .models import Option, Optionsymbol, Future, Futuresymbol
+from .models import Option, Optionsymbol, Optionseries, Future, Futuresymbol
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
 
@@ -631,11 +631,11 @@ def ImpliedScreenerView(request):
     return render(request, 'option_pricing/ivscreeners.html', context)
 
 def ImpliedSmileView(request, asset, optiontype, expmonth, expyear):
-    series = Option.objects.filter(optionsymbol__asset=asset).filter(optionsymbol__optiontype=optiontype).filter(optionsymbol__expmonthdate__month=expmonth).filter(optionsymbol__expmonthdate__year=expyear)
-    qs_asset = series[0].optionsymbol.asset
-    qs_optiontype = series[0].optionsymbol.optiontype
-    qs_month = series[0].optionsymbol.expmonthdate.month
-    qs_year = series[0].optionsymbol.expmonthdate.year
+    series = Option.objects.filter(optionsymbol__optionseries__asset=asset).filter(optionsymbol__optionseries__optiontype=optiontype).filter(optionsymbol__optionseries__expmonthdate__month=expmonth).filter(optionsymbol__optionseries__expmonthdate__year=expyear)
+    qs_asset = series[0].optionsymbol.optionseries.asset
+    qs_optiontype = series[0].optionsymbol.optionseries.optiontype
+    qs_month = series[0].optionsymbol.optionseries.expmonthdate.month
+    qs_year = series[0].optionsymbol.optionseries.expmonthdate.year
     context = {
         'series':series,
         'qs_asset':qs_asset,
@@ -644,3 +644,52 @@ def ImpliedSmileView(request, asset, optiontype, expmonth, expyear):
         'qs_year':qs_year,
     }
     return render(request, 'option_pricing/ivsmile.html', context)
+
+class ImpliedScreenerListCBV(View):
+    def get(self, request):
+        qs_ftse = Optionseries.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='FTSE').order_by('expmonthdate','optiontype')
+        qs_alpha = Optionseries.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='ALPHA').order_by('expmonthdate','optiontype')
+        qs_ote = Optionseries.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='HTO').order_by('expmonthdate','optiontype')
+        qs_ete = Optionseries.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='ETE').order_by('expmonthdate','optiontype')
+        qs_opap = Optionseries.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='OPAP').order_by('expmonthdate','optiontype')
+        qs_deh = Optionseries.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='PPC').order_by('expmonthdate','optiontype')
+        qs_peiraios = Optionseries.objects.all().filter(expmonthdate__gte=date.today()).filter(asset='TPEIR').order_by('expmonthdate','optiontype')
+        qs_ftse_count = qs_ftse.count()
+        qs_alpha_count = qs_alpha.count()
+        qs_ote_count = qs_alpha.count()
+        qs_ete_count = qs_alpha.count()
+        qs_opap_count = qs_alpha.count()
+        qs_deh_count = qs_alpha.count()
+        qs_peiraios_count = qs_alpha.count()
+        context = {
+            'qs_ftse' : qs_ftse,
+            'qs_alpha' : qs_alpha,
+            'qs_ote': qs_ote,
+            'qs_ete': qs_ete,
+            'qs_opap' : qs_opap,
+            'qs_deh' : qs_deh,
+            'qs_peiraios' : qs_peiraios,
+            'qs_ftse_count' : qs_ftse_count,
+            'qs_alpha_count' : qs_alpha_count,
+            'qs_ote_count' : qs_ote_count,
+            'qs_ete_count' : qs_ete_count,
+            'qs_opap_count' : qs_opap_count,
+            'qs_deh_count' : qs_deh_count,
+            'qs_peiraios_count': qs_peiraios_count,
+        }
+
+        return render(request, 'option_pricing/ivscreeners.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            series_ids = request.POST.getlist('id[]')
+            is_fav = False
+            for id in series_ids:
+                opt = Optionseries.objects.get(pk=id)
+                if opt.seriesscreeners.filter(id=request.user.id).exists():
+                    #opt.optionsymbol.optionscreeners.remove(request.user)
+                    is_fav = False
+                else:
+                    opt.seriesscreeners.add(request.user)
+                    is_fav = True
+            return redirect('option_pricing:myseriesscreenerlistcbv')

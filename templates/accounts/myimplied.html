@@ -1,0 +1,13 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<div class="row">
+    {% for implied in myimpliedlist %}
+    <div class="col-md-4">
+        {{ implied.asset }}&nbsp;{{ implied.optiontype }}&nbsp;{{ implied.expmonthdate }}
+        <a href="{% url 'option_pricing:impliedvolsmile' implied.asset implied.optiontype implied.expmonthdate.month implied.expmonthdate.year %}">{{ implied.asset }}&nbsp;{{ implied.optiontype }}&nbsp;{{ implied.expmonthdate }}</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
