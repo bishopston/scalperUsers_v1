@@ -23,7 +23,7 @@ urlpatterns = [
     path('options/', OptionScreenersListCBV.as_view(), name='myoptionscreenerlistcbv'),
     path('futures/', FutureScreenersListCBV.as_view(), name='myfuturescreenerlistcbv'),
     #iv screeners urls
-    path('impliedvolscreeners_a/', views.ImpliedperStrikeScreenerView, name="impliedvolscreeners_a"),
+    #path('impliedvolscreeners_a/', views.ImpliedperStrikeScreenerView, name="impliedvolscreeners_a"),
     #path('impliedvolscreeners/', views.ImpliedScreenerView, name="impliedvolscreeners"),
     path('impliedvolatilitysmile/<str:asset>/<str:optiontype>/<int:expmonth>/<int:expyear>/', views.ImpliedSmileView, name="impliedvolsmile"),
     path('ivscreeners/<str:asset>/<str:optiontype>/<int:expmonth>/<int:expyear>/', views.IVscreenerChartView, name="ivscreenerchartview"),

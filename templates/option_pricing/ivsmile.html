@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="row ml-1 mt-2">
-            <div class="col-md-12 d-flex justify-content-start">
+            <div class="col-md-12 d-flex align-content-end justify-content-start">
                 <p class="font-weight-bold text-center my-0">
                     {% if qs_asset == 'HTO' %}
                         OTE
@@ -33,14 +33,14 @@
                     {% endif %}
                 </p>&nbsp;
                 <p class="font-weight-bold text-center my-0">{{qs_month_name}}&nbsp;{{qs_year}}</p>
-                <div id="myimplied-section" class="col-md-4 ml-2 d-flex align-items-start">
+                <div id="myimplied-section" class="ml-3 d-flex align-items-start">
                     {% include 'accounts/myimpliedscreeners_section.html' %}
                 </div>
             </div>
         </div>
         <div class="row ml-1">
             <div class="col-md-2 align-text-top">
-                <p class="subtext">At close: {{latest_trad_date}}</p>
+                <p class="font-weight-bold subtext">At close: {{latest_trad_date}}</p>
             </div>
         </div>
     </div>

@@ -540,7 +540,7 @@ class FutureScreenersListCBV(View):
                     item.futuresymbol.futurescreeners.add(request.user)
                     is_fav = True
             return redirect('option_pricing:myfuturescreenerlistcbv')
-
+"""
 def ImpliedperStrikeScreenerView(request):
     option = Option.objects.all()
     
@@ -577,7 +577,7 @@ def ImpliedperStrikeScreenerView(request):
         'queryset_num' : queryset_num,
     }
     return render(request, 'option_pricing/ivperstrike.html', context)
-
+"""
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Decimal):
