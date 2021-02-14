@@ -860,8 +860,8 @@ def ImpliedATMView(request, asset, optiontype, expmonth, expyear):
     latest_trad_date = series[0].date.strftime("%#d-%#m-%Y")
     optionseries_id = series[0].optionsymbol.optionseries.id
     is_fav = False
-    #if series[0].optionsymbol.optionseries.seriesscreeners.filter(id=request.user.id).exists():
-        #is_fav = True
+    if series[0].optionsymbol.optionseries.seriesatmscreeners.filter(id=request.user.id).exists():
+        is_fav = True
     context = {
         'series':series,
         'qs_asset':qs_asset,
@@ -879,14 +879,30 @@ def IVATMChartView(request, asset, optiontype, expmonth, expyear):
     ivatmdata = []
 
     seriesid = Optionseries.objects.filter(asset=asset).filter(optiontype=optiontype).filter(expmonthdate__month=expmonth).filter(expmonthdate__year=expyear)
-    qs = Optionsymbol.objects.filter(optionseries_id=seriesid[0].id)
-    strike0=qs[0]
-    queryset = Option.objects.filter(optionsymbol__symbol=strike0.symbol).order_by('date')
+    option = Option.objects.filter(optionsymbol__optionseries__id=seriesid[0].id)
+    qs = option.values('date').annotate(Avg('expmonth_atm_impvol')).order_by('date')
+    
+    list1=[]
+    for i in range(len(qs)):
+        list1.append(qs[i]['date'])
 
-    for i in queryset:
-        ivatmdata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):json.dumps(i.expmonth_atm_impvol__avg, cls=DecimalEncoder)})
+    list2=[]
+    for i in range(len(qs)):
+        list2.append(json.dumps(list1[i].strftime("%#d-%#m-%Y")))
+
+    list3=[]
+    for i in range(len(qs)):
+        list3.append(qs[i]['expmonth_atm_impvol__avg'])
+
+    list4=[]
+    for i in range(len(qs)):
+        list4.append(json.dumps(list3[i], cls=DecimalEncoder))
+
+    list5=[]
+    for i in range(len(list2)):
+        list5.append({list2[i]:list4[i]})
                                                                     
     #print(optiondata)
-    return JsonResponse(ivatmdata, safe=False)
+    return JsonResponse(list5, safe=False)
 
     

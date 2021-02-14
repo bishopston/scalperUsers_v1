@@ -265,7 +265,27 @@ def myImpliedScreeners(request):
 
 @ login_required
 def myImpliedATMList(request):
-    myimpliedATMlist = Optionseries.objects.filter(seriessatmcreeners=request.user)
+    myimpliedATMlist = Optionseries.objects.filter(seriesatmscreeners=request.user)
     return render(request,
                   'accounts/myimpliedatm.html',
                   {'myimpliedATMlist': myimpliedATMlist})
+
+@ login_required
+def myImpliedATMScreeners(request):
+    series = get_object_or_404(Optionseries, id=request.POST.get('id'))
+    optionseries_id = series.id
+    is_fav = False
+    if series.seriesatmscreeners.filter(id=request.user.id).exists():
+        series.seriesatmscreeners.remove(request.user)
+        is_fav = False
+    else:
+        series.seriesatmscreeners.add(request.user)
+        is_fav = True
+    #option.save()
+    context = {
+        'is_fav': is_fav,
+        'optionseries_id' : optionseries_id,
+    }
+    if request.is_ajax():
+        html = render_to_string('accounts/myimpliedatmscreeners_section.html', context, request=request)
+        return JsonResponse({'form' : html})

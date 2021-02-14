@@ -16,6 +16,7 @@ urlpatterns = [
      path('myoptionscreeners/', views.myOptionScreeners, name='myoptionscreeners'),
      path('myfuturescreeners/', views.myFutureScreeners, name='myfuturescreeners'),
      path('myimpliedscreeners/', views.myImpliedScreeners, name='myimpliedscreeners'),
+     path('myimpliedatmscreeners/', views.myImpliedATMScreeners, name='myimpliedatmscreeners'),
      path('myoptionlist/', views.myOptionList, name='myoptionlist'),
      path('myfuturelist/', views.myFutureList, name='myfuturelist'),
      path('myimpliedlist/', views.myImpliedList, name='myimpliedlist'),
