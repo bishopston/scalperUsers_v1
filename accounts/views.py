@@ -262,3 +262,10 @@ def myImpliedScreeners(request):
     if request.is_ajax():
         html = render_to_string('accounts/myimpliedscreeners_section.html', context, request=request)
         return JsonResponse({'form' : html})
+
+@ login_required
+def myImpliedATMList(request):
+    myimpliedATMlist = Optionseries.objects.filter(seriessatmcreeners=request.user)
+    return render(request,
+                  'accounts/myimpliedatm.html',
+                  {'myimpliedATMlist': myimpliedATMlist})

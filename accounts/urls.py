@@ -19,6 +19,7 @@ urlpatterns = [
      path('myoptionlist/', views.myOptionList, name='myoptionlist'),
      path('myfuturelist/', views.myFutureList, name='myfuturelist'),
      path('myimpliedlist/', views.myImpliedList, name='myimpliedlist'),
+     path('myimpliedatmlist/', views.myImpliedATMList, name='myimpliedatmlist'),
      path('fav/<int:id>/', views.favourite_add, name='favourite_add'),
      path('like/', views.like_option, name='like_option'),
      path('user/favourites/', views.favourite_list, name='favourite_list'),

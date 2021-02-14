@@ -29,6 +29,8 @@ urlpatterns = [
     path('ivscreeners/<str:asset>/<str:optiontype>/<int:expmonth>/<int:expyear>/', views.IVscreenerChartView, name="ivscreenerchartview"),
     path('impliedvolscreeners/', ImpliedScreenerListCBV.as_view(), name='myseriesscreenerlistcbv'),
     path('impliedvolatmscreeners/', ImpliedScreenerATMListCBV.as_view(), name='myseriesatmscreenerlistcbv'),
+    path('impliedvolatilityatm/<str:asset>/<str:optiontype>/<int:expmonth>/<int:expyear>/', views.ImpliedATMView, name="impliedvolatm"),
+    path('ivatm/<str:asset>/<str:optiontype>/<int:expmonth>/<int:expyear>/', views.IVATMChartView, name="ivatmchartview"),
     #iv screeners urls end
     path('futures/<str:futuresymbol>/', views.FutureScreenerDetail, name='future_screener_detail'),
     path('futures/chart/<str:tradesymbol>/', views.FutureJSChartView, name="future_jschart"),

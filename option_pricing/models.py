@@ -24,6 +24,8 @@ class Optionseries(models.Model):
     expmonthdate = models.DateField()
     seriesscreeners = models.ManyToManyField(
 	    CustomUser, related_name='seriesscreeners', default=None, blank=True)
+    seriesatmscreeners = models.ManyToManyField(
+	    CustomUser, related_name='seriesatmscreeners', default=None, blank=True)
     
 class Optionsymbol(models.Model):
 

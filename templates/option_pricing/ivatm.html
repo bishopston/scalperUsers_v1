@@ -1,0 +1,163 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+<div class="container text-dark mb-3 d-flex flex-wrap overflow-auto">
+    <div class="container light-blue text-dark mb-3">
+        <div class="row ml-1">
+            <div class="col-md-12 d-flex justify-content-start">
+                <h4>At The Money Implied Volatility</h4>
+            </div>
+        </div>
+        <div class="row ml-1 mt-2">
+            <div class="col-md-12 d-flex align-content-end justify-content-start">
+                <p class="font-weight-bold text-center my-0">
+                    {% if qs_asset == 'HTO' %}
+                        OTE
+                    {% elif qs_asset == 'PPC' %}
+                        DEH
+                    {% elif qs_asset == 'TPEIR' %}
+                        PEIRAIOS
+                    {% else %}
+                        {{qs_asset}}
+                    {% endif %}
+                </p>&nbsp;
+                <p class="font-weight-bold text-center my-0">
+                    {% if qs_optiontype == 'c' %}
+                        Call
+                    {% else %}
+                        Put
+                    {% endif %}
+                </p>&nbsp;
+                <p class="font-weight-bold text-center my-0">{{qs_month_name}}&nbsp;{{qs_year}}</p>
+                <!--<div id="myimplied-section" class="ml-3 d-flex align-items-start">
+                    {% include 'accounts/myimpliedscreeners_section.html' %}
+                </div>-->
+            </div>
+        </div>
+        <div class="row ml-1">
+            <div class="col-md-2 align-text-top">
+                <p class="font-weight-bold subtext">At close: {{latest_trad_date}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="chart-container" style="position: relative;">
+        <div class="row">
+            <div class="col-md-12">
+                <canvas id="ivseriesChart"></canvas>
+            </div>
+        </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script> 
+
+    var assetId = "{{qs_asset}}"
+    var optiontypeId = "{{qs_optiontype}}"
+    var expmonthId = "{{qs_month}}"
+    var expmonthName = "{{qs_month_name}}"
+    var expyearId = "{{qs_year}}"
+    var dataURL = `/ivatm/${assetId}/${optiontypeId}/${expmonthId}/${expyearId}/`
+
+    var ivstate ={	
+		'items':[],
+		'values':[]  
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				ivstate.items.push(key)
+                ivstate.values.push(value)
+
+            console.log(ivstate.items)
+            console.log(ivstate.values)
+            }
+            setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+    function setChart(){
+    var ctx = document.getElementById("ivseriesChart").getContext('2d');
+    
+    var ivseriesChart = new Chart(ctx, {
+    responsive: true,
+    type: 'line',
+    data: {
+        labels: ivstate.items,
+        datasets: [{
+            label: 'Implied Volatility ATM',
+            data: ivstate.values,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: true,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+    }
+    })
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(event){
+        $(document).on('click', '#fav', function(event){
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            console.log(pk)
+            $.ajax({
+                type: 'POST',
+                url: '{% url "accounts:myimpliedscreeners" %}',
+                data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(response){
+                    $('#myimplied-section').html(response['form'])
+                    console.log($('#myimplied-section').html(response['form']));
+                },
+                error: function(rs, e){
+                    console.log(rs. responseText)
+                },
+            });
+        });
+    });
+</script>
+
+
+
+{% endblock %}

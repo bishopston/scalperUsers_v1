@@ -77,7 +77,7 @@
                                         <td><small>{{qs_ftse_count}}</small></td>
                                         <td><small>{{atm_strikes_ftse.0|add:"0"}}</small></td>
                                         <td><small>{{expmonth_atm_impvols_ftse|index:forloop.counter0}}&nbsp;%</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -137,7 +137,7 @@
                                             {% endif %}
                                         </small></td>
                                         <td><small>{{expmonth_atm_impvols_alpha|index:forloop.counter0}}&nbsp;%</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -197,7 +197,7 @@
                                             {% endif %}
                                         </small></td>
                                         <td><small>{{expmonth_atm_impvols_ote|index:forloop.counter0}}&nbsp;%</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -257,7 +257,7 @@
                                             {% endif %}
                                         </small></td>
                                         <td><small>{{expmonth_atm_impvols_ete|index:forloop.counter0}}&nbsp;%</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -317,7 +317,7 @@
                                             {% endif %}
                                         </small></td>
                                         <td><small>{{expmonth_atm_impvols_opap|index:forloop.counter0}}&nbsp;%</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -377,7 +377,7 @@
                                             {% endif %}
                                         </small></td>
                                         <td><small>{{expmonth_atm_impvols_deh|index:forloop.counter0}}&nbsp;%</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -437,7 +437,7 @@
                                             {% endif %}
                                         </small></td>
                                         <td><small>{{expmonth_atm_impvols_peiraios|index:forloop.counter0}}&nbsp;%</small></td>
-                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
+                                        <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>

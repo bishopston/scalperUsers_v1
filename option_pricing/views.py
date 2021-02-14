@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import Max, Min
+from django.db.models import Max, Min, Avg
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.generic import View
@@ -587,7 +587,7 @@ class DecimalEncoder(json.JSONEncoder):
 def IVscreenerChartView(request, asset, optiontype, expmonth, expyear):
     ivdata = []
 
-    screener = Option.objects.filter(optionsymbol__asset=asset).filter(optionsymbol__optiontype=optiontype).filter(optionsymbol__expmonthdate__month=expmonth).filter(optionsymbol__expmonthdate__year=expyear)
+    screener = Option.objects.filter(optionsymbol__optionseries__asset=asset).filter(optionsymbol__optionseries__optiontype=optiontype).filter(optionsymbol__optionseries__expmonthdate__month=expmonth).filter(optionsymbol__optionseries__expmonthdate__year=expyear)
     max_date = screener.aggregate(Max('date'))
     queryset = screener.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
 
@@ -833,18 +833,60 @@ class ImpliedScreenerATMListCBV(View):
         #print(expmonth_atm_impvols)
 
         return render(request, 'option_pricing/ivatmscreeners.html', context)
-"""    
+ 
     def post(self, request, *args, **kwargs):
         if request.method == "POST":
             series_ids = request.POST.getlist('id[]')
             is_fav = False
             for id in series_ids:
                 opt = Optionseries.objects.get(pk=id)
-                if opt.seriesscreeners.filter(id=request.user.id).exists():
+                if opt.seriesatmscreeners.filter(id=request.user.id).exists():
                     #opt.seriesscreeners.remove(request.user)
                     is_fav = False
                 else:
-                    opt.seriesscreeners.add(request.user)
+                    opt.seriesatmscreeners.add(request.user)
                     is_fav = True
-            return redirect('option_pricing:myseriesscreenerlistcbv')
-"""
+            return redirect('option_pricing:myseriesatmscreenerlistcbv')
+
+def ImpliedATMView(request, asset, optiontype, expmonth, expyear):
+    series = Option.objects.filter(optionsymbol__optionseries__asset=asset).filter(optionsymbol__optionseries__optiontype=optiontype).filter(optionsymbol__optionseries__expmonthdate__month=expmonth).filter(optionsymbol__optionseries__expmonthdate__year=expyear).order_by('-date')
+    max_date = series.aggregate(Max('date'))
+    queryset = series.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
+    qs_asset = series[0].optionsymbol.optionseries.asset
+    qs_optiontype = series[0].optionsymbol.optionseries.optiontype
+    qs_month = series[0].optionsymbol.optionseries.expmonthdate.month
+    qs_month_name = calendar.month_name[series[0].optionsymbol.optionseries.expmonthdate.month]
+    qs_year = series[0].optionsymbol.optionseries.expmonthdate.year
+    latest_trad_date = series[0].date.strftime("%#d-%#m-%Y")
+    optionseries_id = series[0].optionsymbol.optionseries.id
+    is_fav = False
+    #if series[0].optionsymbol.optionseries.seriesscreeners.filter(id=request.user.id).exists():
+        #is_fav = True
+    context = {
+        'series':series,
+        'qs_asset':qs_asset,
+        'qs_optiontype':qs_optiontype,
+        'qs_month':qs_month,
+        'qs_month_name':qs_month_name,
+        'qs_year':qs_year,
+        'latest_trad_date':latest_trad_date,
+        'optionseries_id':optionseries_id,
+        'is_fav':is_fav,
+    }
+    return render(request, 'option_pricing/ivatm.html', context)
+
+def IVATMChartView(request, asset, optiontype, expmonth, expyear):
+    ivatmdata = []
+
+    seriesid = Optionseries.objects.filter(asset=asset).filter(optiontype=optiontype).filter(expmonthdate__month=expmonth).filter(expmonthdate__year=expyear)
+    qs = Optionsymbol.objects.filter(optionseries_id=seriesid[0].id)
+    strike0=qs[0]
+    queryset = Option.objects.filter(optionsymbol__symbol=strike0.symbol).order_by('date')
+
+    for i in queryset:
+        ivatmdata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):json.dumps(i.expmonth_atm_impvol__avg, cls=DecimalEncoder)})
+                                                                    
+    #print(optiondata)
+    return JsonResponse(ivatmdata, safe=False)
+
+    
