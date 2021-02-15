@@ -896,7 +896,7 @@ def IVATMChartView(request, asset, optiontype, expmonth, expyear):
 
     list4=[]
     for i in range(len(qs)):
-        list4.append(json.dumps(list3[i], cls=DecimalEncoder))
+        list4.append(json.dumps(float(100*list3[i]), cls=DecimalEncoder))
 
     list5=[]
     for i in range(len(list2)):
