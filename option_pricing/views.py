@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.generic import View
 from django.contrib.auth.decorators import login_required
+from django.views.generic.base import TemplateView
 
 from datetime import datetime, date
 import calendar
@@ -905,4 +906,17 @@ def IVATMChartView(request, asset, optiontype, expmonth, expyear):
     #print(optiondata)
     return JsonResponse(list5, safe=False)
 
-    
+class OptionDailyStatsView(TemplateView):
+    template_name = "option_pricing/optiondailystats.html"
+
+def OptionDailyGraphView(request):
+    optiondata = []
+
+    max_date = Option.objects.all().aggregate(Max('date'))
+    qs_asset = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='FTSE').order_by('optionsymbol__strike')
+
+    for i in option:
+        optiondata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.closing_price})
+
+    #print(optiondata)
+    return JsonResponse(optiondata, safe=False)

@@ -55,18 +55,19 @@
                 </ul>
                 <div class="my-3 tab-content justify-content-center">
                     <div role="tabpanel" class="tab-pane active" id="chart">
-                        <div class="container bg-white text-dark">
+                        <div class="container bg-white text-dark" style="position: relative;">
+                            <div class="row mx-3">
+                                <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
+                                <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
+                                <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
+                                <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <canvas id="ivseriesChart" width="400" height="150">
+                                    <canvas id="ivseriesChart"></canvas>
                                 </div>
-                                <div class="row">
-                                    <div class="btn-group-vertical mt-3">
-                                        <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
-                                        <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
-                                        <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
-                                        <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
-                                    </div>
+                                <div class="btn-group-vertical mt-3 mx-2">
+
                                 </div>
                             </div>
                         </div>
@@ -208,6 +209,7 @@
             xAxes: [{
                 ticks: {
                     autoSkip: true,
+                    maxTicksLimit: 20,
                     maxRotation: 45,
                     minRotation: 45
                 }

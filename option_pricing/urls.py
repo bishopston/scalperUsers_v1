@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from option_pricing.views import OptionScreenersListCBV, FutureScreenersListCBV, ImpliedScreenerListCBV, ImpliedScreenerATMListCBV, OptionDescendingOI, FutureDescendingOI
+from option_pricing.views import OptionScreenersListCBV, FutureScreenersListCBV, ImpliedScreenerListCBV, ImpliedScreenerATMListCBV, OptionDescendingOI, FutureDescendingOI, OptionDailyStatsView
 app_name = 'option_pricing'
 
 urlpatterns = [
@@ -9,6 +9,7 @@ urlpatterns = [
     #path('optionsajax/', views.OptionAjaxView, name='option_ajax'),
     path('options/greatestOI/', views.OptionGreatestOI, name='option_greatestOI'),
     path('options/greatestOIfetch/', views.OptionGreatestOIFetch, name='option_greatestOI_fetch'),
+    path('options/dailystats/', OptionDailyStatsView.as_view(), name='optiondailystats'),
     #path('options/descendingOI/', views.OptionDescendingOI, name='option_descendingOI'),
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),
