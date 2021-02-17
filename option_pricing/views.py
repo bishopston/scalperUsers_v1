@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import Max, Min, Avg
+from django.db.models import Max, Min, Avg, Sum
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.generic import View
@@ -906,17 +906,63 @@ def IVATMChartView(request, asset, optiontype, expmonth, expyear):
     #print(optiondata)
     return JsonResponse(list5, safe=False)
 
-class OptionDailyStatsView(TemplateView):
-    template_name = "option_pricing/optiondailystats.html"
+def OptionDailyStatsView(request):
+    max_date = Option.objects.all().aggregate(Max('date'))
+    
+    context = {
+        'max_date': max_date['date__max'].strftime("%#d-%#m-%Y"),
+    }
 
-def OptionDailyGraphView(request):
-    optiondata = []
+    return render(request, 'option_pricing/optiondailystats.html', context)
+
+def OptionDailyGraphCallView(request):
+    daily_volumes = []
+    asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
 
     max_date = Option.objects.all().aggregate(Max('date'))
-    qs_asset = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='FTSE').order_by('optionsymbol__strike')
+    qs_ftse_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='FTSE').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ftse_call['volume__sum'])
+    qs_alpha_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ALPHA').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_alpha_call['volume__sum'])
+    qs_ote_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='HTO').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ote_call['volume__sum'])
+    qs_ete_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ETE').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ete_call['volume__sum'])
+    qs_opap_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='OPAP').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_opap_call['volume__sum'])
+    qs_deh_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='PPC').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_deh_call['volume__sum'])
+    qs_peiraios_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='TPEIR').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_peiraios_call['volume__sum'])
 
-    for i in option:
-        optiondata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.closing_price})
+    daily_call_volumes=[]
+    for i in range(len(daily_volumes)):
+        daily_call_volumes.append({asset_names[i]:daily_volumes[i]})
 
-    #print(optiondata)
-    return JsonResponse(optiondata, safe=False)
+    return JsonResponse(daily_call_volumes, safe=False)
+
+def OptionDailyGraphPutView(request):
+    daily_volumes = []
+    asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
+
+    max_date = Option.objects.all().aggregate(Max('date'))
+    qs_ftse_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='FTSE').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ftse_put['volume__sum'])
+    qs_alpha_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ALPHA').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_alpha_put['volume__sum'])
+    qs_ote_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='HTO').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ote_put['volume__sum'])
+    qs_ete_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ETE').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ete_put['volume__sum'])
+    qs_opap_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='OPAP').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_opap_put['volume__sum'])
+    qs_deh_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='PPC').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_deh_put['volume__sum'])
+    qs_peiraios_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='TPEIR').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_peiraios_put['volume__sum'])
+
+    daily_put_volumes=[]
+    for i in range(len(daily_volumes)):
+        daily_put_volumes.append({asset_names[i]:daily_volumes[i]})
+
+    return JsonResponse(daily_put_volumes, safe=False)
