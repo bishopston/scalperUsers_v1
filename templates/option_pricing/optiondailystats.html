@@ -4,41 +4,84 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
-<div class="container">
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-      <div class="carousel-inner">
-        <div class="carousel-item active bg-light">
-          <!--<img src="..." class="d-block w-100" alt="...">--><canvas id="dailyVolumeChart" width="400" height="150"></canvas>
-        </div>
-        <div class="carousel-item bg-secondary">
-          <!--<img src="..." class="d-block w-100" alt="...">-->Kostas
-        </div>
-        <div class="carousel-item bg-secondary">
-          <!--<img src="..." class="d-block w-100" alt="...">-->Koulis
-        </div>
+
+<div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
+  <div class="row">
+      <div class="col-md-12">
+          <ul class="nav nav-tabs">
+              <li class="nav-item">
+                  <a href="#chart" class="nav-link" role="tab" data-toggle="tab"></a>
+              </li>
+          </ul>
+          <div class="my-3 tab-content justify-content-center">
+            <div role="tabpanel" class="tab-pane active" id="chart">
+                <div class="container bg-white text-dark" style="position: relative;">
+                    <div id="carouselOptionIndicators" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active bg-light">
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyVolumeChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
+                          <div class="carousel-item bg-light">
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyVolumeAllChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
+                          <div class="carousel-item bg-light">
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyVolumeCallPutChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselOptionIndicators" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselOptionIndicators" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+          </div>
       </div>
-      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-      </a>
-      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-      </a>
   </div>
 </div>
 
+
+
 <script> 
+  $('.hidethis').hide();
 
   var latest_date = "{{max_date}}"
   var dataURLcall = `/options/dailyvolumecallgraph/`
   var dataURLput = `/options/dailyvolumeputgraph/`
+  var dataURLvolumeall = `/options/dailyvolumeallgraph/`
+  var dataURLvolumecallput = `/options/dailyvolumecallputgraph/`
 
   var state ={	
   'itemscall':[],
   'valuescall':[],
   'itemsput':[],
   'valuesput':[],
+  'itemsvolumeall':[],
+  'valuesvolumeall':[],
+  'itemsvolumecallput':[],
+  'valuesvolumecallput':[],
   }
 
   $.ajax({
@@ -75,7 +118,49 @@
             }
             console.log(state.itemsput)
             console.log(state.valuesput)
-            setChart()
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  $.ajax({
+        method: "GET",
+        url: dataURLvolumeall,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+            state.itemsvolumeall.push(key)
+            state.valuesvolumeall.push(value)
+            }
+            console.log(state.itemsvolumeall)
+            console.log(state.valuesvolumeall)
+            setvolumeChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  $.ajax({
+        method: "GET",
+        url: dataURLvolumecallput,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+            state.itemsvolumecallput.push(key)
+            state.valuesvolumecallput.push(value)
+            }
+            console.log(state.itemsvolumecallput)
+            console.log(state.valuesvolumecallput)
+            setvolumeCallPutChart()
         },
         error: function(error_data){
             console.log("error")
@@ -84,7 +169,7 @@
   })
 
   function setChart(){
-  Chart.defaults.global.defaultFontStyle = 'Bold'
+  //Chart.defaults.global.defaultFontStyle = 'Bold'
   var ctx = document.getElementById("dailyVolumeChart").getContext('2d');
   
   var dailyVolumeChart = new Chart(ctx, {
@@ -98,27 +183,121 @@
           borderWidth: 1,
           borderColor: '#11ff00',
           backgroundColor: '#11ff00',
+          order: 1
       },{
           label: "Puts",
           data: state.valuesput,
           borderWidth: 1,
           borderColor: '#ff4a4a',
           backgroundColor: '#ff4a4a',
+          order: 2
       },
       ]
   },
   options: {
-      scales: {
-          yAxes: [{
-
-          },
-          ],
-          xAxes: [{
-
-          }]
-      },
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },{
+                id: 'B',
+                position: 'right',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true,
+                    display: false
+                },
+                gridLines: {
+                display:false
+                }
+            }
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
   }
-  })
+
+  function setvolumeChart(){
+    var ctx = document.getElementById("dailyVolumeAllChart").getContext('2d');
+    
+    var dailyVolumeAllChart = new Chart(ctx, {
+    responsive: true,
+    type: 'doughnut',
+    data: {
+        labels: state.itemsvolumeall,
+        datasets: [{
+            label: 'Daily Volume Distribution',
+            data: state.valuesvolumeall,
+            yAxisID: 'A',
+            borderWidth: 1,
+            backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(63, 191, 136, 0.5)',
+            'rgba(57, 49, 49, 0.5)',
+
+            'rgba(48, 32, 197, 0.5)'
+            ],
+            borderColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(63, 191, 136, 0.5)',
+            'rgba(57, 49, 49, 0.5)',
+
+            'rgba(48, 32, 197, 0.5)'
+            ],
+            fill: true,
+            order: 1
+        },
+        ]
+    },
+
+    })
+  }
+
+  function setvolumeCallPutChart(){
+    var ctx = document.getElementById("dailyVolumeCallPutChart").getContext('2d');
+    
+    var dailyVolumeCallPutChart = new Chart(ctx, {
+    responsive: true,
+    type: 'pie',
+    data: {
+        labels: state.itemsvolumecallput,
+        datasets: [{
+            label: 'Daily Volume Distribution',
+            data: state.valuesvolumecallput,
+            yAxisID: 'A',
+            borderWidth: 1,
+            backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            ],
+            borderColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            ],
+            fill: true,
+            order: 1
+        },
+        ]
+    },
+
+    })
   }
 
 </script>
