@@ -65,9 +65,8 @@
 
 
 <script> 
-  $('.hidethis').hide();
 
-  var latest_date = "{{max_date}}"
+
   var dataURLcall = `/options/dailyvolumecallgraph/`
   var dataURLput = `/options/dailyvolumeputgraph/`
   var dataURLvolumeall = `/options/dailyvolumeallgraph/`
@@ -181,15 +180,15 @@
           label: "Calls",
           data: state.valuescall,
           borderWidth: 1,
-          borderColor: '#11ff00',
-          backgroundColor: '#11ff00',
+          borderColor: 'rgba(63, 243, 27, 0.5)',
+          backgroundColor: 'rgba(63, 243, 27, 0.5)',
           order: 1
       },{
           label: "Puts",
           data: state.valuesput,
           borderWidth: 1,
-          borderColor: '#ff4a4a',
-          backgroundColor: '#ff4a4a',
+          borderColor: 'rgba(243, 45, 27, 0.5)',
+          backgroundColor: 'rgba(243, 45, 27, 0.5)',
           order: 2
       },
       ]
@@ -219,7 +218,7 @@
             xAxes: [{
                 ticks: {
                     autoSkip: true,
-                    maxTicksLimit: 20,
+                    sampleSize: 7
                 }
             }]
         },

@@ -919,20 +919,22 @@ def OptionDailyGraphCallView(request):
     daily_volumes = []
     asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
 
-    max_date = Option.objects.all().aggregate(Max('date'))
-    qs_ftse_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='FTSE').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs = Option.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    qs_ftse_call = queryset.filter(optionsymbol__asset='FTSE').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(qs_ftse_call['volume__sum'])
-    qs_alpha_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ALPHA').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs_alpha_call = queryset.filter(optionsymbol__asset='ALPHA').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(qs_alpha_call['volume__sum'])
-    qs_ote_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='HTO').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs_ote_call = queryset.filter(optionsymbol__asset='HTO').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(qs_ote_call['volume__sum'])
-    qs_ete_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ETE').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs_ete_call = queryset.filter(optionsymbol__asset='ETE').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(qs_ete_call['volume__sum'])
-    qs_opap_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='OPAP').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs_opap_call = queryset.filter(optionsymbol__asset='OPAP').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(qs_opap_call['volume__sum'])
-    qs_deh_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='PPC').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs_deh_call = queryset.filter(optionsymbol__asset='PPC').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(qs_deh_call['volume__sum'])
-    qs_peiraios_call = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='TPEIR').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs_peiraios_call = queryset.filter(optionsymbol__asset='TPEIR').filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(qs_peiraios_call['volume__sum'])
 
     daily_call_volumes=[]
@@ -945,20 +947,22 @@ def OptionDailyGraphPutView(request):
     daily_volumes = []
     asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
 
-    max_date = Option.objects.all().aggregate(Max('date'))
-    qs_ftse_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='FTSE').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    qs = Option.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    qs_ftse_put = queryset.filter(optionsymbol__asset='FTSE').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(qs_ftse_put['volume__sum'])
-    qs_alpha_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ALPHA').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    qs_alpha_put = queryset.filter(optionsymbol__asset='ALPHA').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(qs_alpha_put['volume__sum'])
-    qs_ote_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='HTO').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    qs_ote_put = queryset.filter(optionsymbol__asset='HTO').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(qs_ote_put['volume__sum'])
-    qs_ete_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ETE').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    qs_ete_put = queryset.filter(optionsymbol__asset='ETE').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(qs_ete_put['volume__sum'])
-    qs_opap_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='OPAP').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    qs_opap_put = queryset.filter(optionsymbol__asset='OPAP').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(qs_opap_put['volume__sum'])
-    qs_deh_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='PPC').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    qs_deh_put = queryset.filter(optionsymbol__asset='PPC').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(qs_deh_put['volume__sum'])
-    qs_peiraios_put = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='TPEIR').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    qs_peiraios_put = queryset.filter(optionsymbol__asset='TPEIR').filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(qs_peiraios_put['volume__sum'])
 
     daily_put_volumes=[]
@@ -971,20 +975,22 @@ def OptionDailyVolumeGraphAllView(request):
     daily_volumes = []
     asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
 
-    max_date = Option.objects.all().aggregate(Max('date'))
-    qs_ftse = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='FTSE').aggregate(Sum('volume'))
+    qs = Option.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    qs_ftse = queryset.filter(optionsymbol__asset='FTSE').aggregate(Sum('volume'))
     daily_volumes.append(qs_ftse['volume__sum'])
-    qs_alpha = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ALPHA').aggregate(Sum('volume'))
+    qs_alpha = queryset.filter(optionsymbol__asset='ALPHA').aggregate(Sum('volume'))
     daily_volumes.append(qs_alpha['volume__sum'])
-    qs_ote = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='HTO').aggregate(Sum('volume'))
+    qs_ote = queryset.filter(optionsymbol__asset='HTO').aggregate(Sum('volume'))
     daily_volumes.append(qs_ote['volume__sum'])
-    qs_ete = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='ETE').aggregate(Sum('volume'))
+    qs_ete = queryset.filter(optionsymbol__asset='ETE').aggregate(Sum('volume'))
     daily_volumes.append(qs_ete['volume__sum'])
-    qs_opap = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='OPAP').aggregate(Sum('volume'))
+    qs_opap = queryset.filter(optionsymbol__asset='OPAP').aggregate(Sum('volume'))
     daily_volumes.append(qs_opap['volume__sum'])
-    qs_deh = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='PPC').aggregate(Sum('volume'))
+    qs_deh = queryset.filter(optionsymbol__asset='PPC').aggregate(Sum('volume'))
     daily_volumes.append(qs_deh['volume__sum'])
-    qs_peiraios = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__asset='TPEIR').aggregate(Sum('volume'))
+    qs_peiraios = queryset.filter(optionsymbol__asset='TPEIR').aggregate(Sum('volume'))
     daily_volumes.append(qs_peiraios['volume__sum'])
 
     daily_call_volumes=[]
@@ -997,10 +1003,12 @@ def OptionDailyVolumeGraphCallPutView(request):
     daily_volumes = []
     optiontypes = ['Calls', 'Puts']
 
-    max_date = Option.objects.all().aggregate(Max('date'))
-    calls = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
+    qs = Option.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    calls = queryset.filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(calls['volume__sum'])
-    puts = Option.objects.all().filter(date=max_date['date__max']).filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    puts = queryset.filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(puts['volume__sum'])
 
     daily_call_put_volumes=[]
