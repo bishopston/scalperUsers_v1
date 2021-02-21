@@ -11,7 +11,7 @@ import calendar
 import json
 from decimal import Decimal
 
-from .models import Option, Optionsymbol, Optionseries, Future, Futuresymbol
+from .models import Option, Optionsymbol, Optionseries, Optionvolume, Future, Futuresymbol
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
 
@@ -914,7 +914,7 @@ def OptionDailyStatsView(request):
     }
 
     return render(request, 'option_pricing/optiondailystats.html', context)
-
+"""
 def OptionDailyGraphCallView(request):
     daily_volumes = []
     asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
@@ -1009,6 +1009,110 @@ def OptionDailyVolumeGraphCallPutView(request):
     calls = queryset.filter(optionsymbol__optiontype='c').aggregate(Sum('volume'))
     daily_volumes.append(calls['volume__sum'])
     puts = queryset.filter(optionsymbol__optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(puts['volume__sum'])
+
+    daily_call_put_volumes=[]
+    for i in range(len(daily_volumes)):
+        daily_call_put_volumes.append({optiontypes[i]:daily_volumes[i]})
+
+    return JsonResponse(daily_call_put_volumes, safe=False)
+"""
+
+
+def OptionDailyGraphCallView(request):
+    daily_volumes = []
+    asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
+
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    qs_ftse_call = queryset.filter(asset='FTSE').filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ftse_call['volume__sum'])
+    qs_alpha_call = queryset.filter(asset='ALPHA').filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_alpha_call['volume__sum'])
+    qs_ote_call = queryset.filter(asset='HTO').filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ote_call['volume__sum'])
+    qs_ete_call = queryset.filter(asset='ETE').filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ete_call['volume__sum'])
+    qs_opap_call = queryset.filter(asset='OPAP').filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_opap_call['volume__sum'])
+    qs_deh_call = queryset.filter(asset='PPC').filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_deh_call['volume__sum'])
+    qs_peiraios_call = queryset.filter(asset='TPEIR').filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(qs_peiraios_call['volume__sum'])
+
+    daily_call_volumes=[]
+    for i in range(len(daily_volumes)):
+        daily_call_volumes.append({asset_names[i]:daily_volumes[i]})
+
+    return JsonResponse(daily_call_volumes, safe=False)
+
+def OptionDailyGraphPutView(request):
+    daily_volumes = []
+    asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
+
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    qs_ftse_put = queryset.filter(asset='FTSE').filter(optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ftse_put['volume__sum'])
+    qs_alpha_put = queryset.filter(asset='ALPHA').filter(optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_alpha_put['volume__sum'])
+    qs_ote_put = queryset.filter(asset='HTO').filter(optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ote_put['volume__sum'])
+    qs_ete_put = queryset.filter(asset='ETE').filter(optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ete_put['volume__sum'])
+    qs_opap_put = queryset.filter(asset='OPAP').filter(optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_opap_put['volume__sum'])
+    qs_deh_put = queryset.filter(asset='PPC').filter(optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_deh_put['volume__sum'])
+    qs_peiraios_put = queryset.filter(asset='TPEIR').filter(optiontype='p').aggregate(Sum('volume'))
+    daily_volumes.append(qs_peiraios_put['volume__sum'])
+
+    daily_put_volumes=[]
+    for i in range(len(daily_volumes)):
+        daily_put_volumes.append({asset_names[i]:daily_volumes[i]})
+
+    return JsonResponse(daily_put_volumes, safe=False)
+
+def OptionDailyVolumeGraphAllView(request):
+    daily_volumes = []
+    asset_names = ['FTSE', 'ALPHA', 'OTE', 'ETE', 'OPAP', 'DEH', 'PEIRAIOS']
+
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    qs_ftse = queryset.filter(asset='FTSE').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ftse['volume__sum'])
+    qs_alpha = queryset.filter(asset='ALPHA').aggregate(Sum('volume'))
+    daily_volumes.append(qs_alpha['volume__sum'])
+    qs_ote = queryset.filter(asset='HTO').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ote['volume__sum'])
+    qs_ete = queryset.filter(asset='ETE').aggregate(Sum('volume'))
+    daily_volumes.append(qs_ete['volume__sum'])
+    qs_opap = queryset.filter(asset='OPAP').aggregate(Sum('volume'))
+    daily_volumes.append(qs_opap['volume__sum'])
+    qs_deh = queryset.filter(asset='PPC').aggregate(Sum('volume'))
+    daily_volumes.append(qs_deh['volume__sum'])
+    qs_peiraios = queryset.filter(asset='TPEIR').aggregate(Sum('volume'))
+    daily_volumes.append(qs_peiraios['volume__sum'])
+
+    daily_call_volumes=[]
+    for i in range(len(daily_volumes)):
+        daily_call_volumes.append({asset_names[i]:daily_volumes[i]})
+
+    return JsonResponse(daily_call_volumes, safe=False)
+
+def OptionDailyVolumeGraphCallPutView(request):
+    daily_volumes = []
+    optiontypes = ['Calls', 'Puts']
+
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    calls = queryset.filter(optiontype='c').aggregate(Sum('volume'))
+    daily_volumes.append(calls['volume__sum'])
+    puts = queryset.filter(optiontype='p').aggregate(Sum('volume'))
     daily_volumes.append(puts['volume__sum'])
 
     daily_call_put_volumes=[]

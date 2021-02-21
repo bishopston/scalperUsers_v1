@@ -97,6 +97,42 @@ class Option(models.Model):
     gamma = models.DecimalField(max_digits=8, decimal_places=3)
     vega = models.DecimalField(max_digits=8, decimal_places=3)
 
+class DailyVolumeCallManager(models.Manager):     
+	def get_queryset(self):         
+		return super(DailyVolumeCallSumManager, self).get_queryset().filter(optiontype='c')
+		
+class DailyVolumePutManager(models.Manager):     
+	def get_queryset(self):         
+		return super(DailyVolumePutSumManager, self).get_queryset().filter(optiontype='p')
+
+class Optionvolume(models.Model):
+
+    ASSETS = [
+    ('FTSE', 'FTSE'),
+    ('ALPHA', 'ALPHA'),
+    ('HTO', 'OTE'),
+    ('ETE', 'ETE'),
+    ('OPAP', 'OPAP'),
+    ('PPC', 'DEH'),
+    ('TPEIR', 'PEIRAIOS'),
+    ]
+
+    OPTION_TYPE = [
+        ('c', 'Call'),
+        ('p', 'Put'),
+    ]
+    date = models.DateTimeField()
+    asset = models.CharField(max_length=5,
+        choices=ASSETS,)
+    optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
+    expmonthdate = models.DateField()
+    volume = models.IntegerField()
+    trades = models.IntegerField()
+    open_interest = models.IntegerField()
+
+    objects = models.Manager()  # The default manager. 
+    dailyVolumeCall = DailyVolumeCallManager()
+    dailyVolumePut = DailyVolumePutManager()
 
 class Futuresymbol(models.Model):
 

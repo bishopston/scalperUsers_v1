@@ -1,9 +1,9 @@
 {%  extends "../base/base.html" %}
 {% block content %}
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>-->
 
 <div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
   <div class="row">
@@ -16,9 +16,17 @@
           <div class="my-3 tab-content justify-content-center">
             <div role="tabpanel" class="tab-pane active" id="chart">
                 <div class="container bg-white text-dark" style="position: relative;">
+                    <div class="row ml-1 mb-3">
+                        <h4>Daily Option Statistics {{max_date}}</h4>
+                    </div>
                     <div id="carouselOptionIndicators" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
                           <div class="carousel-item active bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Volume per Option Type</p>
+                                </div>
+                            </div>
                             <div class="row">
                               <div class="col-md-12">
                                   <canvas id="dailyVolumeChart" width="400" height="150"></canvas>
@@ -28,6 +36,11 @@
                             </div>
                           </div>
                           <div class="carousel-item bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Volume per Underlying</p>
+                                </div>
+                            </div>
                             <div class="row">
                               <div class="col-md-12">
                                   <canvas id="dailyVolumeAllChart" width="400" height="150"></canvas>
@@ -37,6 +50,11 @@
                             </div>
                           </div>
                           <div class="carousel-item bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Call-Put Volume Distribution</p>
+                                </div>
+                            </div>
                             <div class="row">
                               <div class="col-md-12">
                                   <canvas id="dailyVolumeCallPutChart" width="400" height="150"></canvas>
@@ -61,7 +79,6 @@
       </div>
   </div>
 </div>
-
 
 
 <script> 
