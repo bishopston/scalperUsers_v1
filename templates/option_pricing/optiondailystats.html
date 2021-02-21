@@ -63,6 +63,20 @@
                               </div>
                             </div>
                           </div>
+                          <div class="carousel-item bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Volume per Expiration Series</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyVolumeExpSeriesChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <a class="carousel-control-prev" href="#carouselOptionIndicators" role="button" data-slide="prev">
                           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -88,6 +102,8 @@
   var dataURLput = `/options/dailyvolumeputgraph/`
   var dataURLvolumeall = `/options/dailyvolumeallgraph/`
   var dataURLvolumecallput = `/options/dailyvolumecallputgraph/`
+  var dataURLvolumeexpcall = `/options/dailyvolumeexpcallgraph/`
+  var dataURLvolumeexpput = `/options/dailyvolumeexpputgraph/`
 
   var state ={	
   'itemscall':[],
@@ -98,6 +114,10 @@
   'valuesvolumeall':[],
   'itemsvolumecallput':[],
   'valuesvolumecallput':[],
+  'itemsvolumeexpcall':[],
+  'valuesvolumeexpcall':[],
+  'itemsvolumeexpput':[],
+  'valuesvolumeexpput':[],
   }
 
   $.ajax({
@@ -177,6 +197,48 @@
             console.log(state.itemsvolumecallput)
             console.log(state.valuesvolumecallput)
             setvolumeCallPutChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  $.ajax({
+        method: "GET",
+        url: dataURLvolumeexpcall,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+            state.itemsvolumeexpcall.push(key)
+            state.valuesvolumeexpcall.push(value)
+            }
+            console.log(state.itemsvolumeexpcall)
+            console.log(state.valuesvolumeexpcall)
+            setvolumeExpChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  $.ajax({
+        method: "GET",
+        url: dataURLvolumeexpput,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+            state.itemsvolumeexpput.push(key)
+            state.valuesvolumeexpput.push(value)
+            }
+            console.log(state.itemsvolumeexpput)
+            console.log(state.valuesvolumeexpput)
+            //setvolumeExpChart()
         },
         error: function(error_data){
             console.log("error")
@@ -313,6 +375,68 @@
         ]
     },
 
+    })
+  }
+
+  function setvolumeExpChart(){
+  //Chart.defaults.global.defaultFontStyle = 'Bold'
+  var ctx = document.getElementById("dailyVolumeExpSeriesChart").getContext('2d');
+  
+  var dailyVolumeExpSeriesChart = new Chart(ctx, {
+  responsive: true,
+  type: 'bar',
+  data: {
+      labels: state.itemsvolumeexpcall,
+      datasets: [{
+          label: "Calls",
+          data: state.valuesvolumeexpcall,
+          borderWidth: 1,
+          borderColor: 'rgba(63, 243, 27, 0.5)',
+          backgroundColor: 'rgba(63, 243, 27, 0.5)',
+          order: 1
+      },{
+          label: "Puts",
+          data: state.valuesvolumeexpput,
+          borderWidth: 1,
+          borderColor: 'rgba(243, 45, 27, 0.5)',
+          backgroundColor: 'rgba(243, 45, 27, 0.5)',
+          order: 2
+      },
+      ]
+  },
+  options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },{
+                id: 'B',
+                position: 'right',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true,
+                    display: false
+                },
+                gridLines: {
+                display:false
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    sampleSize: 7
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
     })
   }
 

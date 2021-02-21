@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import Max, Min, Avg, Sum
+from django.db.models import Max, Min, Avg, Sum, F
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.generic import View
@@ -1026,19 +1026,19 @@ def OptionDailyGraphCallView(request):
     qs = Optionvolume.objects.all()
     max_date = qs.aggregate(Max('date'))
     queryset = qs.filter(date=max_date['date__max'])
-    qs_ftse_call = queryset.filter(asset='FTSE').filter(optiontype='c').aggregate(Sum('volume'))
+    qs_ftse_call = queryset.filter(asset='FTSE').filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ftse_call['volume__sum'])
-    qs_alpha_call = queryset.filter(asset='ALPHA').filter(optiontype='c').aggregate(Sum('volume'))
+    qs_alpha_call = queryset.filter(asset='ALPHA').filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_alpha_call['volume__sum'])
-    qs_ote_call = queryset.filter(asset='HTO').filter(optiontype='c').aggregate(Sum('volume'))
+    qs_ote_call = queryset.filter(asset='HTO').filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ote_call['volume__sum'])
-    qs_ete_call = queryset.filter(asset='ETE').filter(optiontype='c').aggregate(Sum('volume'))
+    qs_ete_call = queryset.filter(asset='ETE').filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ete_call['volume__sum'])
-    qs_opap_call = queryset.filter(asset='OPAP').filter(optiontype='c').aggregate(Sum('volume'))
+    qs_opap_call = queryset.filter(asset='OPAP').filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_opap_call['volume__sum'])
-    qs_deh_call = queryset.filter(asset='PPC').filter(optiontype='c').aggregate(Sum('volume'))
+    qs_deh_call = queryset.filter(asset='PPC').filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_deh_call['volume__sum'])
-    qs_peiraios_call = queryset.filter(asset='TPEIR').filter(optiontype='c').aggregate(Sum('volume'))
+    qs_peiraios_call = queryset.filter(asset='TPEIR').filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_peiraios_call['volume__sum'])
 
     daily_call_volumes=[]
@@ -1054,19 +1054,19 @@ def OptionDailyGraphPutView(request):
     qs = Optionvolume.objects.all()
     max_date = qs.aggregate(Max('date'))
     queryset = qs.filter(date=max_date['date__max'])
-    qs_ftse_put = queryset.filter(asset='FTSE').filter(optiontype='p').aggregate(Sum('volume'))
+    qs_ftse_put = queryset.filter(asset='FTSE').filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ftse_put['volume__sum'])
-    qs_alpha_put = queryset.filter(asset='ALPHA').filter(optiontype='p').aggregate(Sum('volume'))
+    qs_alpha_put = queryset.filter(asset='ALPHA').filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_alpha_put['volume__sum'])
-    qs_ote_put = queryset.filter(asset='HTO').filter(optiontype='p').aggregate(Sum('volume'))
+    qs_ote_put = queryset.filter(asset='HTO').filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ote_put['volume__sum'])
-    qs_ete_put = queryset.filter(asset='ETE').filter(optiontype='p').aggregate(Sum('volume'))
+    qs_ete_put = queryset.filter(asset='ETE').filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ete_put['volume__sum'])
-    qs_opap_put = queryset.filter(asset='OPAP').filter(optiontype='p').aggregate(Sum('volume'))
+    qs_opap_put = queryset.filter(asset='OPAP').filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_opap_put['volume__sum'])
-    qs_deh_put = queryset.filter(asset='PPC').filter(optiontype='p').aggregate(Sum('volume'))
+    qs_deh_put = queryset.filter(asset='PPC').filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_deh_put['volume__sum'])
-    qs_peiraios_put = queryset.filter(asset='TPEIR').filter(optiontype='p').aggregate(Sum('volume'))
+    qs_peiraios_put = queryset.filter(asset='TPEIR').filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_peiraios_put['volume__sum'])
 
     daily_put_volumes=[]
@@ -1082,19 +1082,19 @@ def OptionDailyVolumeGraphAllView(request):
     qs = Optionvolume.objects.all()
     max_date = qs.aggregate(Max('date'))
     queryset = qs.filter(date=max_date['date__max'])
-    qs_ftse = queryset.filter(asset='FTSE').aggregate(Sum('volume'))
+    qs_ftse = queryset.filter(asset='FTSE').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ftse['volume__sum'])
-    qs_alpha = queryset.filter(asset='ALPHA').aggregate(Sum('volume'))
+    qs_alpha = queryset.filter(asset='ALPHA').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_alpha['volume__sum'])
-    qs_ote = queryset.filter(asset='HTO').aggregate(Sum('volume'))
+    qs_ote = queryset.filter(asset='HTO').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ote['volume__sum'])
-    qs_ete = queryset.filter(asset='ETE').aggregate(Sum('volume'))
+    qs_ete = queryset.filter(asset='ETE').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_ete['volume__sum'])
-    qs_opap = queryset.filter(asset='OPAP').aggregate(Sum('volume'))
+    qs_opap = queryset.filter(asset='OPAP').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_opap['volume__sum'])
-    qs_deh = queryset.filter(asset='PPC').aggregate(Sum('volume'))
+    qs_deh = queryset.filter(asset='PPC').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_deh['volume__sum'])
-    qs_peiraios = queryset.filter(asset='TPEIR').aggregate(Sum('volume'))
+    qs_peiraios = queryset.filter(asset='TPEIR').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(qs_peiraios['volume__sum'])
 
     daily_call_volumes=[]
@@ -1110,9 +1110,9 @@ def OptionDailyVolumeGraphCallPutView(request):
     qs = Optionvolume.objects.all()
     max_date = qs.aggregate(Max('date'))
     queryset = qs.filter(date=max_date['date__max'])
-    calls = queryset.filter(optiontype='c').aggregate(Sum('volume'))
+    calls = queryset.filter(optiontype='c').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(calls['volume__sum'])
-    puts = queryset.filter(optiontype='p').aggregate(Sum('volume'))
+    puts = queryset.filter(optiontype='p').filter(expmonthdate__gte=F('date')).aggregate(Sum('volume'))
     daily_volumes.append(puts['volume__sum'])
 
     daily_call_put_volumes=[]
@@ -1120,3 +1120,81 @@ def OptionDailyVolumeGraphCallPutView(request):
         daily_call_put_volumes.append({optiontypes[i]:daily_volumes[i]})
 
     return JsonResponse(daily_call_put_volumes, safe=False)
+
+def OptionDailyVolumeGraphExpCallView(request):
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(optiontype='c').filter(expmonthdate__gte=F('date')).filter(date=max_date['date__max'])
+
+    #fill in exp series
+    exp = queryset.values('expmonthdate').order_by('expmonthdate').distinct()
+    exp_series = []
+    for i in range(len(exp)):
+        exp_series.append(exp[i]['expmonthdate'])
+
+    exp_series_list=[]
+    for i in range(len(exp_series)):
+        exp_series_list.append(exp_series[i].strftime("%B")+" "+exp_series[i].strftime("%Y"))
+
+    #fill in volume sums
+    exp_series_ = []
+    for i in range(len(exp)):
+        exp_series_.append(json.dumps(exp_series[i].strftime("%#Y-%#m-%d")))
+        
+    for item in range(len(exp_series_)):
+        exp_series_[item]=exp_series_[item].replace('"', '')
+        
+    calls=[]  
+    for i in range(len(exp_series_)):
+        q = queryset.filter(expmonthdate=exp_series_[i]).aggregate(Sum('volume'))
+        calls.append(q)
+    
+    calls_volume=[]
+    for i in range(len(calls)):
+        calls_volume.append(calls[i]['volume__sum'])
+
+    #json dict
+    daily_exp_series_volumes=[]
+    for i in range(len(exp_series_list)):
+        daily_exp_series_volumes.append({exp_series_list[i]:calls_volume[i]})
+
+    return JsonResponse(daily_exp_series_volumes, safe=False)
+
+def OptionDailyVolumeGraphExpPutView(request):
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(optiontype='p').filter(expmonthdate__gte=F('date')).filter(date=max_date['date__max'])
+
+    #fill in exp series
+    exp = queryset.values('expmonthdate').order_by('expmonthdate').distinct()
+    exp_series = []
+    for i in range(len(exp)):
+        exp_series.append(exp[i]['expmonthdate'])
+
+    exp_series_list=[]
+    for i in range(len(exp_series)):
+        exp_series_list.append(exp_series[i].strftime("%B")+" "+exp_series[i].strftime("%Y"))
+
+    #fill in volume sums
+    exp_series_ = []
+    for i in range(len(exp)):
+        exp_series_.append(json.dumps(exp_series[i].strftime("%#Y-%#m-%d")))
+        
+    for item in range(len(exp_series_)):
+        exp_series_[item]=exp_series_[item].replace('"', '')
+        
+    calls=[]  
+    for i in range(len(exp_series_)):
+        q = queryset.filter(expmonthdate=exp_series_[i]).aggregate(Sum('volume'))
+        calls.append(q)
+    
+    calls_volume=[]
+    for i in range(len(calls)):
+        calls_volume.append(calls[i]['volume__sum'])
+
+    #json dict
+    daily_exp_series_volumes=[]
+    for i in range(len(exp_series_list)):
+        daily_exp_series_volumes.append({exp_series_list[i]:calls_volume[i]})
+
+    return JsonResponse(daily_exp_series_volumes, safe=False)
