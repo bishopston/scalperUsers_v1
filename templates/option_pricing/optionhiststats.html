@@ -1,0 +1,136 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<style>
+
+    header nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    header nav .tabs {
+        list-style-type: none;
+
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    header nav .tabs .tab {
+        display: block;
+    }
+
+    header nav .tabs .tab a[data-switcher] {
+        display: block;
+        padding: 15px 30px;
+        text-decoration: none;
+        color: #FFF;
+        background-color: #0275d8;
+        cursor: pointer;
+    }
+
+    header nav .tabs .tab:hover a[data-switcher] {
+        background-color: #F7A800;
+    }
+
+    header nav .tabs .tab.is-active a[data-switcher] {
+        background-color: #F7A800;
+        font-weight: 700;
+    }
+
+    .pages {
+        border-radius: 8px;
+        background-color: #FFF;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .pages .page {
+        display: none;
+    }
+
+    .pages .page.is-active {
+        display: block;
+    }
+</style>
+
+<div class="container light-blue text-dark mb-3 d-flex flex-wrap overflow-auto">
+    <div class="container mb-3">
+        <div class="row ml-1 mb-3">
+            <h4>Historical Options Statistics</h4>
+        </div>
+        <div class="row d-flex justify-content-center mb-2">
+            <header>
+                <nav>
+                    <ul class="tabs">
+                        <li class="tab is-active">
+                            <a data-switcher data-tab="1">All</a>
+                        </li>
+                        <li class="tab">
+                            <a data-switcher data-tab="2">Alpha</a>
+                        </li>
+                        <li class="tab">
+                            <a data-switcher data-tab="3">Deh</a>
+                        </li>
+                        <li class="tab">
+                            <a data-switcher data-tab="4">Ete</a>
+                        </li>
+                    </ul>
+                </nav>
+            </header>
+        </div>
+    </div>
+    <div class="container mb-3">
+        <div class="row mb-2">
+            <div class="pages">
+                <div class="page is-active" data-page="1">
+                    <h2>Page 1</h2>
+                    <p>Welcome to the home page</p>
+                </div>
+                <div class="page" data-page="2">
+                    <h2>Page 2</h2>
+                    <p>Welcome to the about page</p>
+                </div>
+                <div class="page" data-page="3">
+                    <h2>Page 3</h2>
+                    <p>Welcome to the services page</p>
+                </div>
+                <div class="page" data-page="4">
+                    <h2>Page 4</h2>
+                    <p>Welcome to the contact page</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    
+    window.onload = () => {
+        const tab_switchers = document.querySelectorAll('[data-switcher]');
+
+        for (let i = 0; i < tab_switchers.length; i++) {
+            const tab_switcher = tab_switchers[i];
+            const page_id = tab_switcher.dataset.tab;
+
+            tab_switcher.addEventListener('click', () => {
+                document.querySelector('.tabs .tab.is-active').classList.remove('is-active');
+                tab_switcher.parentNode.classList.add('is-active');
+
+                SwitchPage(page_id);
+            });
+        }
+    }
+
+    function SwitchPage (page_id) {
+        console.log(page_id);
+
+        const current_page = document.querySelector('.pages .page.is-active');
+        current_page.classList.remove('is-active');
+
+        const next_page = document.querySelector(`.pages .page[data-page="${page_id}"]`);
+        next_page.classList.add('is-active');
+    }
+
+</script>
+
+{% endblock %}

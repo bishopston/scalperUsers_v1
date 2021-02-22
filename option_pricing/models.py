@@ -121,7 +121,7 @@ class Optionvolume(models.Model):
         ('c', 'Call'),
         ('p', 'Put'),
     ]
-    date = models.DateTimeField()
+    date = models.DateField()
     asset = models.CharField(max_length=5,
         choices=ASSETS,)
     optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)

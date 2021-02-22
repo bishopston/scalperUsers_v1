@@ -1183,18 +1183,185 @@ def OptionDailyVolumeGraphExpPutView(request):
     for item in range(len(exp_series_)):
         exp_series_[item]=exp_series_[item].replace('"', '')
         
-    calls=[]  
+    puts=[]  
     for i in range(len(exp_series_)):
         q = queryset.filter(expmonthdate=exp_series_[i]).aggregate(Sum('volume'))
-        calls.append(q)
+        puts.append(q)
     
+    puts_volume=[]
+    for i in range(len(puts)):
+        puts_volume.append(puts[i]['volume__sum'])
+
+    #json dict
+    daily_exp_series_volumes=[]
+    for i in range(len(exp_series_list)):
+        daily_exp_series_volumes.append({exp_series_list[i]:puts_volume[i]})
+
+    return JsonResponse(daily_exp_series_volumes, safe=False)
+
+def unique(list1):
+ 
+    # intilize a null list
+    unique_list = []
+     
+    # traverse for all elements
+    for x in list1:
+        # check if exists in unique_list or not
+        if x not in unique_list:
+            unique_list.append(x)
+    return(unique_list)
+
+def OptionHistoricalStatsView(request):
+    
+    q = Optionvolume.objects.all()
+    max_date = q.aggregate(Max('date'))
+    queryset = q.filter(date=max_date['date__max'])
+
+    assets=[]
+    for i in range(len(queryset)):
+        assets.append(queryset[i].get_asset_display())
+
+    assets_=[]
+    assets_ = sorted(unique(assets_))
+
+    context = {
+        'assets_': assets_,
+    }
+
+    return render(request, 'option_pricing/optionhiststats.html', context)
+
+def OptionHistVolumeGraphCallAllView(request):
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    calls=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        calls.append(q)
+
     calls_volume=[]
     for i in range(len(calls)):
         calls_volume.append(calls[i]['volume__sum'])
 
     #json dict
-    daily_exp_series_volumes=[]
-    for i in range(len(exp_series_list)):
-        daily_exp_series_volumes.append({exp_series_list[i]:calls_volume[i]})
+    hist_call_volumes=[]
+    for i in range(len(dates_volume_)):
+        hist_call_volumes.append({dates_volume_[i]:calls_volume[i]})
 
-    return JsonResponse(daily_exp_series_volumes, safe=False)
+    return JsonResponse(hist_call_volumes, safe=False)
+
+def OptionHistVolumeGraphPutAllView(request):
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    puts=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        puts.append(q)
+
+    puts_volume=[]
+    for i in range(len(puts)):
+        puts_volume.append(puts[i]['volume__sum'])
+
+    #json dict
+    hist_put_volumes=[]
+    for i in range(len(dates_volume_)):
+        hist_put_volumes.append({dates_volume_[i]:puts_volume[i]})
+
+    return JsonResponse(hist_put_volumes, safe=False)
+
+def OptionHistVolumeGraphCallAlphaView(request):
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(asset='ALPHA').filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    calls=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        calls.append(q)
+
+    calls_volume=[]
+    for i in range(len(calls)):
+        calls_volume.append(calls[i]['volume__sum'])
+
+    #json dict
+    hist_call_volumes=[]
+    for i in range(len(dates_volume_)):
+        hist_call_volumes.append({dates_volume_[i]:calls_volume[i]})
+
+    return JsonResponse(hist_call_volumes, safe=False)
+
+def OptionHistVolumeGraphPutAllView(request):
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(asset='ALPHA').filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    puts=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        puts.append(q)
+
+    puts_volume=[]
+    for i in range(len(puts)):
+        puts_volume.append(puts[i]['volume__sum'])
+
+    #json dict
+    hist_put_volumes=[]
+    for i in range(len(dates_volume_)):
+        hist_put_volumes.append({dates_volume_[i]:puts_volume[i]})
+
+    return JsonResponse(hist_put_volumes, safe=False)

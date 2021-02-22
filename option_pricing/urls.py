@@ -19,6 +19,8 @@ urlpatterns = [
     path('options/dailyvolumeexpcallgraph/', views.OptionDailyVolumeGraphExpCallView, name='dailyvolumeexpcall'),
     path('options/dailyvolumeexpputgraph/', views.OptionDailyVolumeGraphExpPutView, name='dailyvolumeexpput'),
     #path('options/descendingOI/', views.OptionDescendingOI, name='option_descendingOI'),
+    #urls for option historical stats
+    path('options/historicalstats/', views.OptionHistoricalStatsView, name='optionhiststats'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),
