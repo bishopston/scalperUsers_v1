@@ -1332,7 +1332,7 @@ def OptionHistVolumeGraphCallAlphaView(request):
 
     return JsonResponse(hist_call_volumes, safe=False)
 
-def OptionHistVolumeGraphPutAllView(request):
+def OptionHistVolumeGraphPutAlphaView(request):
 
     qs = Optionvolume.objects.all()
     queryset = qs.filter(asset='ALPHA').filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
