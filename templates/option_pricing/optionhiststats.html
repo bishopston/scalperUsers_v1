@@ -1,6 +1,7 @@
 {%  extends "../base/base.html" %}
 {% block content %}
 
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <style>
 
@@ -79,11 +80,36 @@
                 </nav>
             </header>
         </div>
-        <div class="row d-flex justify-content-center">
+        <div class="row d-flex justify-content-start">
             <div class="pages">
                 <div class="page is-active" data-page="1">
-                    <h2>Page 1</h2>
-                    <p>Welcome to the home page</p>
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="my-3 tab-content justify-content-center">
+                        <div role="tabpanel" class="tab-pane active" id="chart">
+                            <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row mx-3">
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_1M()"><small>1M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_3M()"><small>3M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_6M()"><small>6M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_ALL()"><small>ALL</small></button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="histVolAllChart"></canvas>
+                                    </div>
+                                    <div class="btn-group-vertical mt-3 mx-2">
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="page" data-page="2">
                     <h2>Page 2</h2>
@@ -101,6 +127,143 @@
         </div>
     </div>
 </div>
+
+
+
+<script> 
+
+    var histVolAllChart;
+
+    var dataURL = `/options/histvolallcallstats/`
+
+    var state ={	
+		'items':[],
+		'values':[],
+        'items23':[],
+		'values23':[],
+        'items68':[],
+		'values68':[],  
+        'items135':[],
+		'values135':[], 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataURL,
+        success: function(response){
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var value = Object.values(response[i])[0]
+            
+                    state.items23.push(key)
+                    state.values23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var value = Object.values(response[i])[0]
+            
+                    state.items23.push(key)
+                    state.values23.push(value)}
+            }
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				state.items.push(key)
+                state.values.push(value)}
+
+            state.items23 = state.items.slice(-23)
+            state.values23 = state.values.slice(-23) 
+
+            state.items68 = state.items.slice(-68)
+            state.values68 = state.values.slice(-68)   
+
+            state.items135 = state.items.slice(-135)
+            state.values135 = state.values.slice(-135)   
+
+            console.log(state.items68)
+            console.log(state.values68)
+            
+            setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setChart(){
+    var ctx = document.getElementById("histVolAllChart").getContext('2d');
+    
+    histVolAllChart = new Chart(ctx, {
+    responsive: true,
+    type: 'bar',
+    data: {
+        labels: state.items68,
+        datasets: [{
+            label: 'Implied Volatility ATM',
+            data: state.values68,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: true,
+            order: 1
+        },
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+    }
+    })
+}
+
+    function updatehistVolAllChart_1M(){
+        histVolAllChart.data.labels = state.items23;
+        histVolAllChart.data.datasets[0].data = state.values23;
+        histVolAllChart.update();
+    };
+
+    function updatehistVolAllChart_3M(){
+        histVolAllChart.data.labels = state.items68;
+        histVolAllChart.data.datasets[0].data = state.values68;
+        histVolAllChart.update();
+    };
+
+    function updatehistVolAllChart_6M(){
+        histVolAllChart.data.labels = state.items135;
+        histVolAllChart.data.datasets[0].data = state.values135;
+        histVolAllChart.update();
+    };
+
+    function updatehistVolAllChart_ALL(){
+        histVolAllChart.data.labels = state.items;
+        histVolAllChart.data.datasets[0].data = state.values;
+        histVolAllChart.update();
+    };
+
+    
+
+</script>
 
 <script>
     
