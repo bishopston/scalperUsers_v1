@@ -58,7 +58,7 @@
 <div class="container light-blue text-dark d-flex flex-wrap overflow-auto">
     <div class="container">
         <div class="row ml-1">
-            <h4>Historical Options Statistics</h4>
+            <h4>Trending Options Statistics</h4>
         </div>
         <div class="row d-flex justify-content-center mb-0">
             <header>
@@ -86,7 +86,7 @@
                     <div class="col-md-12">
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
-                                <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
+                                <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Daily Volumes</a>
                             </li>
                         </ul>
                     </div>
@@ -101,7 +101,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <canvas id="histVolAllChart"></canvas>
+                                        <canvas id="histVolAllChart" width="400" height="150"></canvas>
                                     </div>
                                     <div class="btn-group-vertical mt-3 mx-2">
     
@@ -134,59 +134,65 @@
 
     var histVolAllChart;
 
-    var dataURL = `/options/histvolallcallstats/`
+    var datacallURL = `/options/histvolallcallstats/`
+    var dataputURL = `/options/histvolallputstats/`
 
     var state ={	
-		'items':[],
-		'values':[],
-        'items23':[],
-		'values23':[],
-        'items68':[],
-		'values68':[],  
-        'items135':[],
-		'values135':[], 
+		'itemscall':[],
+		'valuescall':[],
+        'itemsput':[],
+        'valuesput':[],
+        'itemscall23':[],
+		'valuescall23':[],
+        'itemsput23':[],
+		'valuesput23':[],
+        'itemscall68':[],
+		'valuescall68':[],
+        'itemsput68':[],
+		'valuesput68':[],    
+        'itemscall135':[],
+		'valuescall135':[], 
+        'itemsput135':[],
+		'valuesput135':[], 
 	}
 
     $.ajax({
         method: "GET",
-        url: dataURL,
+        url: datacallURL,
         success: function(response){
             if (response.length > 22) {
                 for (let i = response.length - 23; i < response.length; i++){
                     var key = Object.keys(response[i])[0]
                     var value = Object.values(response[i])[0]
             
-                    state.items23.push(key)
-                    state.values23.push(value)}
+                    state.itemscall23.push(key)
+                    state.valuescall23.push(value)}
             } else {
                 for (let i = response.length - response.length; i < response.length; i++){
                     var key = Object.keys(response[i])[0]
                     var value = Object.values(response[i])[0]
             
-                    state.items23.push(key)
-                    state.values23.push(value)}
+                    state.itemscall23.push(key)
+                    state.valuescall23.push(value)}
             }
 
             for (var i in response){
                 var key = Object.keys(response[i])[0]
 				var value = Object.values(response[i])[0]
            
-				state.items.push(key)
-                state.values.push(value)}
+				state.itemscall.push(key)
+                state.valuescall.push(value)}
 
-            state.items23 = state.items.slice(-23)
-            state.values23 = state.values.slice(-23) 
+            state.itemscall68 = state.itemscall.slice(-68)
+            state.valuescall68 = state.valuescall.slice(-68)   
 
-            state.items68 = state.items.slice(-68)
-            state.values68 = state.values.slice(-68)   
+            state.itemscall135 = state.itemscall.slice(-135)
+            state.valuescall135 = state.valuescall.slice(-135)   
 
-            state.items135 = state.items.slice(-135)
-            state.values135 = state.values.slice(-135)   
-
-            console.log(state.items68)
-            console.log(state.values68)
+            console.log(state.itemscall23)
+            console.log(state.valuescall23)
             
-            setChart()
+            setHistVolAllStatsGraph()
         },
         error: function(error_data){
             console.log("error")
@@ -194,22 +200,72 @@
         }
     })
 
-    function setChart(){
+    $.ajax({
+        method: "GET",
+        url: dataputURL,
+        success: function(response){
+            if (response.length > 22) {
+                for (let i = response.length - 23; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var value = Object.values(response[i])[0]
+            
+                    state.itemsput23.push(key)
+                    state.valuesput23.push(value)}
+            } else {
+                for (let i = response.length - response.length; i < response.length; i++){
+                    var key = Object.keys(response[i])[0]
+                    var value = Object.values(response[i])[0]
+            
+                    state.itemsput23.push(key)
+                    state.valuesput23.push(value)}
+            }
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				state.itemsput.push(key)
+                state.valuesput.push(value)}
+
+            state.itemsput68 = state.itemsput.slice(-68)
+            state.valuesput68 = state.valuesput.slice(-68)   
+
+            state.itemsput135 = state.itemsput.slice(-135)
+            state.valuesput135 = state.valuesput.slice(-135)   
+
+            console.log(state.itemsput23)
+            console.log(state.valuesput23)
+            
+            //setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setHistVolAllStatsGraph(){
     var ctx = document.getElementById("histVolAllChart").getContext('2d');
     
     histVolAllChart = new Chart(ctx, {
     responsive: true,
     type: 'bar',
     data: {
-        labels: state.items68,
+        labels: state.itemscall23,
         datasets: [{
-            label: 'Implied Volatility ATM',
-            data: state.values68,
-            yAxisID: 'A',
+            label: 'Calls',
+            data: state.valuescall23,
             borderWidth: 1,
-            borderColor: 'rgba(66,139,202)',
-            fill: true,
+            borderColor: 'rgba(63, 243, 27, 0.5)',
+            backgroundColor: 'rgba(63, 243, 27, 0.5)',
             order: 1
+        },{
+          label: "Puts",
+          data: state.valuesput23,
+          borderWidth: 1,
+          borderColor: 'rgba(243, 45, 27, 0.5)',
+          backgroundColor: 'rgba(243, 45, 27, 0.5)',
+          order: 2
         },
         ]
     },
@@ -222,7 +278,18 @@
                 ticks: {
                     beginAtZero:true
                 }
-            },
+            },{
+                id: 'B',
+                position: 'right',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true,
+                    display: false
+                },
+                gridLines: {
+                display:false
+                }
+            }
             ],
             xAxes: [{
                 ticks: {
@@ -235,33 +302,35 @@
         },
     }
     })
-}
+    }
 
     function updatehistVolAllChart_1M(){
-        histVolAllChart.data.labels = state.items23;
-        histVolAllChart.data.datasets[0].data = state.values23;
+        histVolAllChart.data.labels = state.itemscall23;
+        histVolAllChart.data.datasets[0].data = state.valuescall23;
+        histVolAllChart.data.datasets[1].data = state.valuesput23;
         histVolAllChart.update();
     };
 
     function updatehistVolAllChart_3M(){
-        histVolAllChart.data.labels = state.items68;
-        histVolAllChart.data.datasets[0].data = state.values68;
+        histVolAllChart.data.labels = state.itemscall68;
+        histVolAllChart.data.datasets[0].data = state.valuescall68;
+        histVolAllChart.data.datasets[1].data = state.valuesput68;
         histVolAllChart.update();
     };
 
     function updatehistVolAllChart_6M(){
-        histVolAllChart.data.labels = state.items135;
-        histVolAllChart.data.datasets[0].data = state.values135;
+        histVolAllChart.data.labels = state.itemscall135;
+        histVolAllChart.data.datasets[0].data = state.valuescall135;
+        histVolAllChart.data.datasets[1].data = state.valuesput135;
         histVolAllChart.update();
     };
 
     function updatehistVolAllChart_ALL(){
-        histVolAllChart.data.labels = state.items;
-        histVolAllChart.data.datasets[0].data = state.values;
+        histVolAllChart.data.labels = state.itemscall;
+        histVolAllChart.data.datasets[0].data = state.valuescall;
+        histVolAllChart.data.datasets[1].data = state.valuesput;
         histVolAllChart.update();
     };
-
-    
 
 </script>
 
@@ -274,11 +343,69 @@
             const tab_switcher = tab_switchers[i];
             const page_id = tab_switcher.dataset.tab;
 
+            const datacallURL = `/options/histvolcallstats/${page_id}/`
+
+            var state ={	
+                'items':[],
+                'values':[],   
+                'items23':[],
+                'values23':[],
+                'items68':[],
+                'values68':[],  
+                'items135':[],
+                'values135':[], 
+            }
+
             tab_switcher.addEventListener('click', () => {
                 document.querySelector('.tabs .tab.is-active').classList.remove('is-active');
                 tab_switcher.parentNode.classList.add('is-active');
 
                 SwitchPage(page_id);
+
+                $.ajax({
+                    method: "GET",
+                    url: datacallURL,
+                    success: function(response){
+                        if (response.length > 22) {
+                            for (let i = response.length - 23; i < response.length; i++){
+                                var key = Object.keys(response[i])[0]
+                                var value = Object.values(response[i])[0]
+                        
+                                state.items23.push(key)
+                                state.values23.push(value)}
+                        } else {
+                            for (let i = response.length - response.length; i < response.length; i++){
+                                var key = Object.keys(response[i])[0]
+                                var value = Object.values(response[i])[0]
+                        
+                                state.items23.push(key)
+                                state.values23.push(value)}
+                            }
+
+                        for (var i in response){
+                            var key = Object.keys(response[i])[0]
+                            var value = Object.values(response[i])[0]
+                    
+                            state.items.push(key)
+                            state.values.push(value)}
+
+                        state.items68 = state.items.slice(-68)
+                        state.values68 = state.values.slice(-68)   
+
+                        state.items135 = state.items.slice(-135)
+                        state.values135 = state.values.slice(-135)   
+
+                        console.log(state.items23)
+                        console.log(state.values23)
+                        
+                        //setChart()
+                    },
+                    error: function(error_data){
+                        console.log("error")
+                        console.log(error_data)
+                    }
+                })
+
             });
         }
     }

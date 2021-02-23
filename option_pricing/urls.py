@@ -21,7 +21,9 @@ urlpatterns = [
     #path('options/descendingOI/', views.OptionDescendingOI, name='option_descendingOI'),
     #urls for option historical stats
     path('options/historicalstats/', views.OptionHistoricalStatsView, name='optionhiststats'),
-    path('options/histvolallcallstats/', views.OptionHistVolumeGraphCallAllView, name='optionhistvolallstats'),
+    path('options/histvolallcallstats/', views.OptionHistVolumeGraphCallAllView, name='optionhistvolallcallstats'),
+    path('options/histvolallputstats/', views.OptionHistVolumeGraphPutAllView, name='optionhistvolallputstats'),
+    path('options/histvolcallstats/<int:assetid>/', views.OptionHistVolumeGraphCallAssetView, name='optionhistvolassetcallstats'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),

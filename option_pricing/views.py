@@ -1298,10 +1298,24 @@ def OptionHistVolumeGraphPutAllView(request):
 
     return JsonResponse(hist_put_volumes, safe=False)
 
-def OptionHistVolumeGraphCallAlphaView(request):
+def assetidToAsset(assetid): 
+    switcher = { 
+        2: "ALPHA", 
+        3: "ETE", 
+        4: "FTSE", 
+        5: "HTO", 
+        6: "OPAP",
+        7: "PPC", 
+        8: "TPEIR", 
+    } 
+    return switcher.get(assetid)
+
+def OptionHistVolumeGraphCallAssetView(request, assetid):
+
+    asset_name = assetidToAsset(assetid)
 
     qs = Optionvolume.objects.all()
-    queryset = qs.filter(asset='ALPHA').filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_volume=[]
