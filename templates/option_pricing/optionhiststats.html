@@ -57,10 +57,10 @@
 
 <div class="container light-blue text-dark d-flex flex-wrap overflow-auto">
     <div class="container">
-        <div class="row ml-1">
+        <div class="row ml-1 mb-1">
             <h4>Trending Options Statistics</h4>
         </div>
-        <div class="row d-flex justify-content-center mb-0">
+        <div class="row d-flex justify-content-start mb-0 ml-1">
             <header>
                 <nav>
                     <ul class="tabs">
@@ -68,13 +68,25 @@
                             <a data-switcher data-tab="1">All</a>
                         </li>
                         <li class="tab">
-                            <a data-switcher data-tab="2">Alpha</a>
+                            <a data-switcher data-tab="2">ALPHA</a>
                         </li>
                         <li class="tab">
-                            <a data-switcher data-tab="3">Deh</a>
+                            <a data-switcher data-tab="3">ETE</a>
                         </li>
                         <li class="tab">
-                            <a data-switcher data-tab="4">Ete</a>
+                            <a data-switcher data-tab="4">FTSE</a>
+                        </li>
+                        <li class="tab">
+                            <a data-switcher data-tab="5">OTE</a>
+                        </li>
+                        <li class="tab">
+                            <a data-switcher data-tab="6">OPAP</a>
+                        </li>
+                        <li class="tab">
+                            <a data-switcher data-tab="7">DEH</a>
+                        </li>
+                        <li class="tab">
+                            <a data-switcher data-tab="8">PEIRAIOS</a>
                         </li>
                     </ul>
                 </nav>
@@ -84,20 +96,20 @@
             <div class="pages">
                 <div class="page is-active" data-page="1">
                     <div class="col-md-12">
-                        <ul class="nav nav-tabs">
+                        <ul class="nav nav-pills">
                             <li class="nav-item">
-                                <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Daily Volumes</a>
+                                <a href="#dailyvol" class="nav-link active" role="tab" data-toggle="tab">Daily Volumes</a>
                             </li>
                         </ul>
                     </div>
                     <div class="my-3 tab-content justify-content-center">
-                        <div role="tabpanel" class="tab-pane active" id="chart">
+                        <div role="tabpanel" class="tab-pane active" id="dailyvol">
                             <div class="container bg-white text-dark" style="position: relative;">
                                 <div class="row mx-3">
                                     <button class="btn btn-link" onclick="updatehistVolAllChart_1M()"><small>1M</small></button>
                                     <button class="btn btn-link" onclick="updatehistVolAllChart_3M()"><small>3M</small></button>
                                     <button class="btn btn-link" onclick="updatehistVolAllChart_6M()"><small>6M</small></button>
-                                    <button class="btn btn-link" onclick="updatehistVolAllChart_ALL()"><small>ALL</small></button>
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_ALL()"><small>1Y</small></button>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -112,15 +124,69 @@
                     </div>
                 </div>
                 <div class="page" data-page="2">
-                    <h2>Page 2</h2>
-                    <p>Welcome to the about page</p>
+                    <div class="col-md-12">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a href="#dailyassetvol2" class="nav-link active" role="tab" data-toggle="tab">Daily Volumes</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="my-3 tab-content justify-content-center">
+                        <div role="tabpanel" class="tab-pane active" id="dailyassetvol2">
+                            <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="histVolAssetChart" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="btn-group-vertical mt-3 mx-2">
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="page" data-page="3">
-                    <h2>Page 3</h2>
-                    <p>Welcome to the services page</p>
+                    <div class="col-md-12">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a href="#dailyassetvol3" class="nav-link active" role="tab" data-toggle="tab">Daily Volumes</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="my-3 tab-content justify-content-center">
+                        <div role="tabpanel" class="tab-pane active" id="dailyassetvol3">
+                            <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="histVolAssetChart" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="btn-group-vertical mt-3 mx-2">
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="page" data-page="4">
                     <h2>Page 4</h2>
+                    <p>Welcome to the contact page</p>
+                </div>
+                <div class="page" data-page="5">
+                    <h2>Page 5</h2>
+                    <p>Welcome to the contact page</p>
+                </div>
+                <div class="page" data-page="6">
+                    <h2>Page 6</h2>
+                    <p>Welcome to the contact page</p>
+                </div>
+                <div class="page" data-page="7">
+                    <h2>Page 7</h2>
+                    <p>Welcome to the contact page</p>
+                </div>
+                <div class="page" data-page="8">
+                    <h2>Page 8</h2>
                     <p>Welcome to the contact page</p>
                 </div>
             </div>
@@ -255,43 +321,26 @@
         datasets: [{
             label: 'Calls',
             data: state.valuescall23,
-            borderWidth: 1,
             borderColor: 'rgba(63, 243, 27, 0.5)',
             backgroundColor: 'rgba(63, 243, 27, 0.5)',
-            order: 1
+
         },{
           label: "Puts",
           data: state.valuesput23,
-          borderWidth: 1,
           borderColor: 'rgba(243, 45, 27, 0.5)',
           backgroundColor: 'rgba(243, 45, 27, 0.5)',
-          order: 2
+
         },
         ]
     },
     options: {
         scales: {
             yAxes: [{
-                id: 'A',
-                position: 'left',
-                type: 'linear',
-                ticks: {
-                    beginAtZero:true
-                }
-            },{
-                id: 'B',
-                position: 'right',
-                type: 'linear',
-                ticks: {
-                    beginAtZero:true,
-                    display: false
-                },
-                gridLines: {
-                display:false
-                }
+                stacked: true,
             }
             ],
             xAxes: [{
+                stacked: true,
                 ticks: {
                     autoSkip: true,
                     maxTicksLimit: 20,
@@ -335,6 +384,8 @@
 </script>
 
 <script>
+
+    var histVolAssetChart;
     
     window.onload = () => {
         const tab_switchers = document.querySelectorAll('[data-switcher]');
@@ -344,16 +395,25 @@
             const page_id = tab_switcher.dataset.tab;
 
             const datacallURL = `/options/histvolcallstats/${page_id}/`
+            const dataputURL = `/options/histvolputstats/${page_id}/`
 
             var state ={	
-                'items':[],
-                'values':[],   
-                'items23':[],
-                'values23':[],
-                'items68':[],
-                'values68':[],  
-                'items135':[],
-                'values135':[], 
+                'itemsassetcall':[],
+                'valuesassetcall':[],   
+                'itemsassetput':[],
+                'valuesassetput':[],
+                'itemsassetcall23':[],
+                'valuesassetcall23':[],
+                'itemsassetput23':[],
+                'valuesassetput23':[],
+                'itemsassetcall68':[],
+                'valuesassetcall68':[], 
+                'itemsassetput68':[],
+                'valuesassetput68':[], 
+                'itemsassetcall135':[],
+                'valuesassetcall135':[], 
+                'itemsassetput135':[],
+                'valuesassetput135':[], 
             }
 
             tab_switcher.addEventListener('click', () => {
@@ -371,32 +431,76 @@
                                 var key = Object.keys(response[i])[0]
                                 var value = Object.values(response[i])[0]
                         
-                                state.items23.push(key)
-                                state.values23.push(value)}
+                                state.itemsassetcall23.push(key)
+                                state.valuesassetcall23.push(value)}
                         } else {
                             for (let i = response.length - response.length; i < response.length; i++){
                                 var key = Object.keys(response[i])[0]
                                 var value = Object.values(response[i])[0]
                         
-                                state.items23.push(key)
-                                state.values23.push(value)}
+                                state.itemsassetcall23.push(key)
+                                state.valuesassetcall23.push(value)}
                             }
 
                         for (var i in response){
                             var key = Object.keys(response[i])[0]
                             var value = Object.values(response[i])[0]
                     
-                            state.items.push(key)
-                            state.values.push(value)}
+                            state.itemsassetcall.push(key)
+                            state.valuesassetcall.push(value)}
 
-                        state.items68 = state.items.slice(-68)
-                        state.values68 = state.values.slice(-68)   
+                        state.itemsassetcall68 = state.itemsassetcall.slice(-68)
+                        state.valuesassetcall68 = state.valuesassetcall.slice(-68)   
 
-                        state.items135 = state.items.slice(-135)
-                        state.values135 = state.values.slice(-135)   
+                        state.itemsassetcall135 = state.itemsassetcall.slice(-135)
+                        state.valuesassetcall135 = state.valuesassetcall.slice(-135)   
 
-                        console.log(state.items23)
-                        console.log(state.values23)
+                        console.log(state.itemsassetcall23)
+                        console.log(state.valuesassetcall23)
+                        
+                        setHistVolAssetStatsGraph()
+                    },
+                    error: function(error_data){
+                        console.log("error")
+                        console.log(error_data)
+                    }
+                })
+
+                $.ajax({
+                    method: "GET",
+                    url: dataputURL,
+                    success: function(response){
+                        if (response.length > 22) {
+                            for (let i = response.length - 23; i < response.length; i++){
+                                var key = Object.keys(response[i])[0]
+                                var value = Object.values(response[i])[0]
+                        
+                                state.itemsassetput23.push(key)
+                                state.valuesassetput23.push(value)}
+                        } else {
+                            for (let i = response.length - response.length; i < response.length; i++){
+                                var key = Object.keys(response[i])[0]
+                                var value = Object.values(response[i])[0]
+                        
+                                state.itemsassetput23.push(key)
+                                state.valuesassetput23.push(value)}
+                            }
+
+                        for (var i in response){
+                            var key = Object.keys(response[i])[0]
+                            var value = Object.values(response[i])[0]
+                    
+                            state.itemsassetput.push(key)
+                            state.valuesassetput.push(value)}
+
+                        state.itemsassetput68 = state.itemsassetput.slice(-68)
+                        state.valuesassetput68 = state.valuesassetput.slice(-68)   
+
+                        state.itemsassetput135 = state.itemsassetput.slice(-135)
+                        state.valuesassetput135 = state.valuesassetput.slice(-135)   
+
+                        console.log(state.itemsassetput23)
+                        console.log(state.valuesassetput23)
                         
                         //setChart()
                     },
@@ -405,6 +509,49 @@
                         console.log(error_data)
                     }
                 })
+
+                function setHistVolAssetStatsGraph(){
+                var ctx = document.getElementById("histVolAssetChart").getContext('2d');
+                
+                histVolAssetChart = new Chart(ctx, {
+                responsive: true,
+                type: 'bar',
+                data: {
+                    labels: state.itemsassetcall23,
+                    datasets: [{
+                        label: 'Calls',
+                        data: state.valuesassetcall23,
+                        borderColor: 'rgba(63, 243, 27, 0.5)',
+                        backgroundColor: 'rgba(63, 243, 27, 0.5)',
+
+                    },{
+                    label: "Puts",
+                    data: state.valuesassetput23,
+                    borderColor: 'rgba(243, 45, 27, 0.5)',
+                    backgroundColor: 'rgba(243, 45, 27, 0.5)',
+
+                    },
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            stacked: true,
+                        }
+                        ],
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 20,
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }]
+                    },
+                }
+                })
+                }
 
             });
         }
