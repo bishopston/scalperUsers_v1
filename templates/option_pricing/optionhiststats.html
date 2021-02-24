@@ -136,7 +136,7 @@
                             <div class="container bg-white text-dark" style="position: relative;">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <canvas id="histVolAssetChart" width="400" height="150"></canvas>
+                                        <canvas id="histVolAssetChart2" width="400" height="150"></canvas>
                                     </div>
                                     <div class="btn-group-vertical mt-3 mx-2">
     
@@ -159,7 +159,7 @@
                             <div class="container bg-white text-dark" style="position: relative;">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <canvas id="histVolAssetChart" width="400" height="150"></canvas>
+                                        <canvas id="histVolAssetChart3" width="400" height="150"></canvas>
                                     </div>
                                     <div class="btn-group-vertical mt-3 mx-2">
     
@@ -170,8 +170,27 @@
                     </div>
                 </div>
                 <div class="page" data-page="4">
-                    <h2>Page 4</h2>
-                    <p>Welcome to the contact page</p>
+                    <div class="col-md-12">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a href="#dailyassetvol4" class="nav-link active" role="tab" data-toggle="tab">Daily Volumes</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="my-3 tab-content justify-content-center">
+                        <div role="tabpanel" class="tab-pane active" id="dailyassetvol4">
+                            <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="histVolAssetChart4" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="btn-group-vertical mt-3 mx-2">
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="page" data-page="5">
                     <h2>Page 5</h2>
@@ -508,10 +527,10 @@
                         console.log("error")
                         console.log(error_data)
                     }
-                })
-
+                })                
+                
                 function setHistVolAssetStatsGraph(){
-                var ctx = document.getElementById("histVolAssetChart").getContext('2d');
+                var ctx = document.getElementById("histVolAssetChart".concat(page_id)).getContext('2d');
                 
                 histVolAssetChart = new Chart(ctx, {
                 responsive: true,
@@ -552,7 +571,6 @@
                 }
                 })
                 }
-
             });
         }
     }
