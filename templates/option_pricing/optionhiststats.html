@@ -1,7 +1,7 @@
 {%  extends "../base/base.html" %}
 {% block content %}
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <style>
 
@@ -134,6 +134,12 @@
                     <div class="my-3 tab-content justify-content-center">
                         <div role="tabpanel" class="tab-pane active" id="dailyassetvol2">
                             <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row mx-3">
+                                    <button class="btn btn-link" id="dailyassetvol2-1M"><small>1M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol2-3M"><small>3M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol2-6M"><small>6M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol2-1Y"><small>1Y</small></button>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <canvas id="histVolAssetChart2" width="400" height="150"></canvas>
@@ -157,6 +163,12 @@
                     <div class="my-3 tab-content justify-content-center">
                         <div role="tabpanel" class="tab-pane active" id="dailyassetvol3">
                             <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row mx-3">
+                                    <button class="btn btn-link" id="dailyassetvol3-1M"><small>1M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol3-3M"><small>3M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol3-6M"><small>6M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol3-1Y"><small>1Y</small></button>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <canvas id="histVolAssetChart3" width="400" height="150"></canvas>
@@ -180,6 +192,12 @@
                     <div class="my-3 tab-content justify-content-center">
                         <div role="tabpanel" class="tab-pane active" id="dailyassetvol4">
                             <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row mx-3">
+                                    <button class="btn btn-link" id="dailyassetvol4-1M"><small>1M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol4-3M"><small>3M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol4-6M"><small>6M</small></button>
+                                    <button class="btn btn-link" id="dailyassetvol4-1Y"><small>1Y</small></button>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <canvas id="histVolAssetChart4" width="400" height="150"></canvas>
@@ -213,7 +231,255 @@
     </div>
 </div>
 
+<script>
 
+    var histVolAssetChart;
+   
+    window.onload = () => {
+
+        const tab_switchers = document.querySelectorAll('[data-switcher]');
+
+        for (let i = 0; i < tab_switchers.length; i++) {
+            const tab_switcher = tab_switchers[i];
+            const page_id = tab_switcher.dataset.tab;
+
+            const datacallURL = `/options/histvolcallstats/${page_id}/`
+            const dataputURL = `/options/histvolputstats/${page_id}/`
+
+            var state ={	
+                'itemsassetcall':[],
+                'valuesassetcall':[],   
+                'itemsassetput':[],
+                'valuesassetput':[],
+                'itemsassetcall23':[],
+                'valuesassetcall23':[],
+                'itemsassetput23':[],
+                'valuesassetput23':[],
+                'itemsassetcall68':[],
+                'valuesassetcall68':[], 
+                'itemsassetput68':[],
+                'valuesassetput68':[], 
+                'itemsassetcall135':[],
+                'valuesassetcall135':[], 
+                'itemsassetput135':[],
+                'valuesassetput135':[], 
+            }
+
+
+
+            tab_switcher.addEventListener('click', () => {
+                document.querySelector('.tabs .tab.is-active').classList.remove('is-active');
+                tab_switcher.parentNode.classList.add('is-active');
+
+                SwitchPage(page_id);
+
+                $.ajax({
+                    method: "GET",
+                    url: datacallURL,
+                    success: function(response){
+                        for (var i in response){
+                            var key = Object.keys(response[i])[0]
+                            var value = Object.values(response[i])[0]
+                    
+                            state.itemsassetcall.push(key)
+                            state.valuesassetcall.push(value)}
+
+                        state.itemsassetcall23 = state.itemsassetcall.slice(-23)
+                        state.valuesassetcall23 = state.valuesassetcall.slice(-23)  
+
+                        state.itemsassetcall68 = state.itemsassetcall.slice(-68)
+                        state.valuesassetcall68 = state.valuesassetcall.slice(-68)   
+
+                        state.itemsassetcall135 = state.itemsassetcall.slice(-135)
+                        state.valuesassetcall135 = state.valuesassetcall.slice(-135)   
+
+                        console.log(state.itemsassetcall23)
+                        console.log(state.valuesassetcall23)
+                        
+                        setHistVolAssetStatsGraph()
+                    },
+                    error: function(error_data){
+                        console.log("error")
+                        console.log(error_data)
+                    }
+                })
+
+                $.ajax({
+                    method: "GET",
+                    url: dataputURL,
+                    success: function(response){
+                        for (var i in response){
+                            var key = Object.keys(response[i])[0]
+                            var value = Object.values(response[i])[0]
+                    
+                            state.itemsassetput.push(key)
+                            state.valuesassetput.push(value)}
+
+                        state.itemsassetput23 = state.itemsassetput.slice(-23)
+                        state.valuesassetput23 = state.valuesassetput.slice(-23) 
+
+                        state.itemsassetput68 = state.itemsassetput.slice(-68)
+                        state.valuesassetput68 = state.valuesassetput.slice(-68)   
+
+                        state.itemsassetput135 = state.itemsassetput.slice(-135)
+                        state.valuesassetput135 = state.valuesassetput.slice(-135)   
+
+                        console.log(state.itemsassetput23)
+                        console.log(state.valuesassetput23)
+                        
+                        setHistVolAssetStatsGraph()
+                    },
+                    error: function(error_data){
+                        console.log("error")
+                        console.log(error_data)
+                    }
+                }) 
+
+                document.getElementById('dailyassetvol2-1M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall23;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall23;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput23;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol2-3M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall68;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall68;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput68;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol2-6M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall135;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall135;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput135;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol2-1Y').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol3-1M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall23;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall23;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput23;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol3-3M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall68;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall68;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput68;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol3-6M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall135;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall135;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput135;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol3-1Y').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol4-1M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall23;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall23;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput23;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol4-3M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall68;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall68;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput68;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol4-6M').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall135;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall135;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput135;
+                    histVolAssetChart.update();
+                }
+
+                document.getElementById('dailyassetvol4-1Y').onclick = function() {
+                    histVolAssetChart.data.labels = state.itemsassetcall;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall;
+                    histVolAssetChart.data.datasets[1].data = state.valuesassetput;
+                    histVolAssetChart.update();
+                }
+                               
+                function setHistVolAssetStatsGraph(){
+                    if (histVolAssetChart) {
+                        histVolAssetChart.destroy();
+                    }
+                    var ctx = document.getElementById("histVolAssetChart".concat(page_id)).getContext('2d');
+                    
+                    histVolAssetChart = new Chart(ctx, {
+                    responsive: true,
+                    type: 'bar',
+                    data: {
+                        labels: state.itemsassetcall23,
+                        datasets: [{
+                            label: 'Calls',
+                            data: state.valuesassetcall23,
+                            borderColor: 'rgba(63, 243, 27, 0.5)',
+                            backgroundColor: 'rgba(63, 243, 27, 0.5)',
+
+                        },{
+                        label: "Puts",
+                        data: state.valuesassetput23,
+                        borderColor: 'rgba(243, 45, 27, 0.5)',
+                        backgroundColor: 'rgba(243, 45, 27, 0.5)',
+
+                        },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                stacked: true,
+                            }
+                            ],
+                            xAxes: [{
+                                stacked: true,
+                                ticks: {
+                                    autoSkip: true,
+                                    maxTicksLimit: 20,
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            }]
+                        },
+                    }
+                    })
+                }
+
+            });
+        }
+    }
+
+    function SwitchPage (page_id) {
+        console.log(page_id);
+
+        const current_page = document.querySelector('.pages .page.is-active');
+        current_page.classList.remove('is-active');
+
+        const next_page = document.querySelector(`.pages .page[data-page="${page_id}"]`);
+        next_page.classList.add('is-active');
+    }
+
+</script>
 
 <script> 
 
@@ -381,166 +647,5 @@
 
 </script>
 
-<script>
-
-    var histVolAssetChart;
-     
-    window.onload = () => {
-        const tab_switchers = document.querySelectorAll('[data-switcher]');
-
-        for (let i = 0; i < tab_switchers.length; i++) {
-            const tab_switcher = tab_switchers[i];
-            const page_id = tab_switcher.dataset.tab;
-
-            const datacallURL = `/options/histvolcallstats/${page_id}/`
-            const dataputURL = `/options/histvolputstats/${page_id}/`
-
-            var state ={	
-                'itemsassetcall':[],
-                'valuesassetcall':[],   
-                'itemsassetput':[],
-                'valuesassetput':[],
-                'itemsassetcall23':[],
-                'valuesassetcall23':[],
-                'itemsassetput23':[],
-                'valuesassetput23':[],
-                'itemsassetcall68':[],
-                'valuesassetcall68':[], 
-                'itemsassetput68':[],
-                'valuesassetput68':[], 
-                'itemsassetcall135':[],
-                'valuesassetcall135':[], 
-                'itemsassetput135':[],
-                'valuesassetput135':[], 
-            }
-
-            tab_switcher.addEventListener('click', () => {
-                document.querySelector('.tabs .tab.is-active').classList.remove('is-active');
-                tab_switcher.parentNode.classList.add('is-active');
-
-                SwitchPage(page_id);
-
-                $.ajax({
-                    method: "GET",
-                    url: datacallURL,
-                    success: function(response){
-                        for (var i in response){
-                            var key = Object.keys(response[i])[0]
-                            var value = Object.values(response[i])[0]
-                    
-                            state.itemsassetcall.push(key)
-                            state.valuesassetcall.push(value)}
-
-                        state.itemsassetcall23 = state.itemsassetcall.slice(-23)
-                        state.valuesassetcall23 = state.valuesassetcall.slice(-23)  
-
-                        state.itemsassetcall68 = state.itemsassetcall.slice(-68)
-                        state.valuesassetcall68 = state.valuesassetcall.slice(-68)   
-
-                        state.itemsassetcall135 = state.itemsassetcall.slice(-135)
-                        state.valuesassetcall135 = state.valuesassetcall.slice(-135)   
-
-                        console.log(state.itemsassetcall23)
-                        console.log(state.valuesassetcall23)
-                        
-                        setHistVolAssetStatsGraph()
-                    },
-                    error: function(error_data){
-                        console.log("error")
-                        console.log(error_data)
-                    }
-                })
-
-                $.ajax({
-                    method: "GET",
-                    url: dataputURL,
-                    success: function(response){
-                        for (var i in response){
-                            var key = Object.keys(response[i])[0]
-                            var value = Object.values(response[i])[0]
-                    
-                            state.itemsassetput.push(key)
-                            state.valuesassetput.push(value)}
-
-                        state.itemsassetput23 = state.itemsassetput.slice(-23)
-                        state.valuesassetput23 = state.valuesassetput.slice(-23) 
-
-                        state.itemsassetput68 = state.itemsassetput.slice(-68)
-                        state.valuesassetput68 = state.valuesassetput.slice(-68)   
-
-                        state.itemsassetput135 = state.itemsassetput.slice(-135)
-                        state.valuesassetput135 = state.valuesassetput.slice(-135)   
-
-                        console.log(state.itemsassetput23)
-                        console.log(state.valuesassetput23)
-                        
-                        setHistVolAssetStatsGraph()
-                    },
-                    error: function(error_data){
-                        console.log("error")
-                        console.log(error_data)
-                    }
-                })                
-                
-                function setHistVolAssetStatsGraph(){
-                    if (histVolAssetChart) {
-                        histVolAssetChart.destroy();
-                    }
-                    var ctx = document.getElementById("histVolAssetChart".concat(page_id)).getContext('2d');
-                    
-                    histVolAssetChart = new Chart(ctx, {
-                    responsive: true,
-                    type: 'bar',
-                    data: {
-                        labels: state.itemsassetcall23,
-                        datasets: [{
-                            label: 'Calls',
-                            data: state.valuesassetcall23,
-                            borderColor: 'rgba(63, 243, 27, 0.5)',
-                            backgroundColor: 'rgba(63, 243, 27, 0.5)',
-
-                        },{
-                        label: "Puts",
-                        data: state.valuesassetput23,
-                        borderColor: 'rgba(243, 45, 27, 0.5)',
-                        backgroundColor: 'rgba(243, 45, 27, 0.5)',
-
-                        },
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                stacked: true,
-                            }
-                            ],
-                            xAxes: [{
-                                stacked: true,
-                                ticks: {
-                                    autoSkip: true,
-                                    maxTicksLimit: 20,
-                                    maxRotation: 45,
-                                    minRotation: 45
-                                }
-                            }]
-                        },
-                    }
-                    })
-                }
-            });
-        }
-    }
-
-    function SwitchPage (page_id) {
-        console.log(page_id);
-
-        const current_page = document.querySelector('.pages .page.is-active');
-        current_page.classList.remove('is-active');
-
-        const next_page = document.querySelector(`.pages .page[data-page="${page_id}"]`);
-        next_page.classList.add('is-active');
-    }
-
-</script>
 
 {% endblock %}
