@@ -219,8 +219,8 @@
 
     var histVolAllChart;
 
-    var datacallURL = `/options/histvolallcallstats/`
-    var dataputURL = `/options/histvolallputstats/`
+    var datacallURL = `{% url 'option_pricing:optionhistvolallcallstats'%}`
+    var dataputURL = `{% url 'option_pricing:optionhistvolallputstats'%}`
 
     var state ={	
 		'itemscall':[],
@@ -245,21 +245,6 @@
         method: "GET",
         url: datacallURL,
         success: function(response){
-            if (response.length > 22) {
-                for (let i = response.length - 23; i < response.length; i++){
-                    var key = Object.keys(response[i])[0]
-                    var value = Object.values(response[i])[0]
-            
-                    state.itemscall23.push(key)
-                    state.valuescall23.push(value)}
-            } else {
-                for (let i = response.length - response.length; i < response.length; i++){
-                    var key = Object.keys(response[i])[0]
-                    var value = Object.values(response[i])[0]
-            
-                    state.itemscall23.push(key)
-                    state.valuescall23.push(value)}
-            }
 
             for (var i in response){
                 var key = Object.keys(response[i])[0]
@@ -267,6 +252,9 @@
            
 				state.itemscall.push(key)
                 state.valuescall.push(value)}
+
+            state.itemscall23 = state.itemscall.slice(-23)
+            state.valuescall23 = state.valuescall.slice(-23)
 
             state.itemscall68 = state.itemscall.slice(-68)
             state.valuescall68 = state.valuescall.slice(-68)   
@@ -289,21 +277,6 @@
         method: "GET",
         url: dataputURL,
         success: function(response){
-            if (response.length > 22) {
-                for (let i = response.length - 23; i < response.length; i++){
-                    var key = Object.keys(response[i])[0]
-                    var value = Object.values(response[i])[0]
-            
-                    state.itemsput23.push(key)
-                    state.valuesput23.push(value)}
-            } else {
-                for (let i = response.length - response.length; i < response.length; i++){
-                    var key = Object.keys(response[i])[0]
-                    var value = Object.values(response[i])[0]
-            
-                    state.itemsput23.push(key)
-                    state.valuesput23.push(value)}
-            }
 
             for (var i in response){
                 var key = Object.keys(response[i])[0]
@@ -311,6 +284,9 @@
            
 				state.itemsput.push(key)
                 state.valuesput.push(value)}
+
+            state.itemsput23 = state.itemsput.slice(-23)
+            state.valuesput23 = state.valuesput.slice(-23) 
 
             state.itemsput68 = state.itemsput.slice(-68)
             state.valuesput68 = state.valuesput.slice(-68)   
@@ -321,7 +297,7 @@
             console.log(state.itemsput23)
             console.log(state.valuesput23)
             
-            //setChart()
+            setHistVolAllStatsGraph()
         },
         error: function(error_data){
             console.log("error")
@@ -330,46 +306,49 @@
     })
 
     function setHistVolAllStatsGraph(){
-    var ctx = document.getElementById("histVolAllChart").getContext('2d');
-    
-    histVolAllChart = new Chart(ctx, {
-    responsive: true,
-    type: 'bar',
-    data: {
-        labels: state.itemscall23,
-        datasets: [{
-            label: 'Calls',
-            data: state.valuescall23,
-            borderColor: 'rgba(63, 243, 27, 0.5)',
-            backgroundColor: 'rgba(63, 243, 27, 0.5)',
+        if (histVolAllChart) {
+            histVolAllChart.destroy();
+        }
+        var ctx = document.getElementById("histVolAllChart").getContext('2d');
+        
+        histVolAllChart = new Chart(ctx, {
+        responsive: true,
+        type: 'bar',
+        data: {
+            labels: state.itemscall23,
+            datasets: [{
+                label: 'Calls',
+                data: state.valuescall23,
+                borderColor: 'rgba(63, 243, 27, 0.5)',
+                backgroundColor: 'rgba(63, 243, 27, 0.5)',
 
-        },{
-          label: "Puts",
-          data: state.valuesput23,
-          borderColor: 'rgba(243, 45, 27, 0.5)',
-          backgroundColor: 'rgba(243, 45, 27, 0.5)',
+            },{
+            label: "Puts",
+            data: state.valuesput23,
+            borderColor: 'rgba(243, 45, 27, 0.5)',
+            backgroundColor: 'rgba(243, 45, 27, 0.5)',
 
+            },
+            ]
         },
-        ]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                stacked: true,
-            }
-            ],
-            xAxes: [{
-                stacked: true,
-                ticks: {
-                    autoSkip: true,
-                    maxTicksLimit: 20,
-                    maxRotation: 45,
-                    minRotation: 45
+        options: {
+            scales: {
+                yAxes: [{
+                    stacked: true,
                 }
-            }]
-        },
-    }
-    })
+                ],
+                xAxes: [{
+                    stacked: true,
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 20,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }]
+            },
+        }
+        })
     }
 
     function updatehistVolAllChart_1M(){
@@ -405,7 +384,7 @@
 <script>
 
     var histVolAssetChart;
-    
+     
     window.onload = () => {
         const tab_switchers = document.querySelectorAll('[data-switcher]');
 
@@ -445,28 +424,15 @@
                     method: "GET",
                     url: datacallURL,
                     success: function(response){
-                        if (response.length > 22) {
-                            for (let i = response.length - 23; i < response.length; i++){
-                                var key = Object.keys(response[i])[0]
-                                var value = Object.values(response[i])[0]
-                        
-                                state.itemsassetcall23.push(key)
-                                state.valuesassetcall23.push(value)}
-                        } else {
-                            for (let i = response.length - response.length; i < response.length; i++){
-                                var key = Object.keys(response[i])[0]
-                                var value = Object.values(response[i])[0]
-                        
-                                state.itemsassetcall23.push(key)
-                                state.valuesassetcall23.push(value)}
-                            }
-
                         for (var i in response){
                             var key = Object.keys(response[i])[0]
                             var value = Object.values(response[i])[0]
                     
                             state.itemsassetcall.push(key)
                             state.valuesassetcall.push(value)}
+
+                        state.itemsassetcall23 = state.itemsassetcall.slice(-23)
+                        state.valuesassetcall23 = state.valuesassetcall.slice(-23)  
 
                         state.itemsassetcall68 = state.itemsassetcall.slice(-68)
                         state.valuesassetcall68 = state.valuesassetcall.slice(-68)   
@@ -489,28 +455,15 @@
                     method: "GET",
                     url: dataputURL,
                     success: function(response){
-                        if (response.length > 22) {
-                            for (let i = response.length - 23; i < response.length; i++){
-                                var key = Object.keys(response[i])[0]
-                                var value = Object.values(response[i])[0]
-                        
-                                state.itemsassetput23.push(key)
-                                state.valuesassetput23.push(value)}
-                        } else {
-                            for (let i = response.length - response.length; i < response.length; i++){
-                                var key = Object.keys(response[i])[0]
-                                var value = Object.values(response[i])[0]
-                        
-                                state.itemsassetput23.push(key)
-                                state.valuesassetput23.push(value)}
-                            }
-
                         for (var i in response){
                             var key = Object.keys(response[i])[0]
                             var value = Object.values(response[i])[0]
                     
                             state.itemsassetput.push(key)
                             state.valuesassetput.push(value)}
+
+                        state.itemsassetput23 = state.itemsassetput.slice(-23)
+                        state.valuesassetput23 = state.valuesassetput.slice(-23) 
 
                         state.itemsassetput68 = state.itemsassetput.slice(-68)
                         state.valuesassetput68 = state.valuesassetput.slice(-68)   
@@ -521,7 +474,7 @@
                         console.log(state.itemsassetput23)
                         console.log(state.valuesassetput23)
                         
-                        //setChart()
+                        setHistVolAssetStatsGraph()
                     },
                     error: function(error_data){
                         console.log("error")
@@ -530,46 +483,49 @@
                 })                
                 
                 function setHistVolAssetStatsGraph(){
-                var ctx = document.getElementById("histVolAssetChart".concat(page_id)).getContext('2d');
-                
-                histVolAssetChart = new Chart(ctx, {
-                responsive: true,
-                type: 'bar',
-                data: {
-                    labels: state.itemsassetcall23,
-                    datasets: [{
-                        label: 'Calls',
-                        data: state.valuesassetcall23,
-                        borderColor: 'rgba(63, 243, 27, 0.5)',
-                        backgroundColor: 'rgba(63, 243, 27, 0.5)',
+                    if (histVolAssetChart) {
+                        histVolAssetChart.destroy();
+                    }
+                    var ctx = document.getElementById("histVolAssetChart".concat(page_id)).getContext('2d');
+                    
+                    histVolAssetChart = new Chart(ctx, {
+                    responsive: true,
+                    type: 'bar',
+                    data: {
+                        labels: state.itemsassetcall23,
+                        datasets: [{
+                            label: 'Calls',
+                            data: state.valuesassetcall23,
+                            borderColor: 'rgba(63, 243, 27, 0.5)',
+                            backgroundColor: 'rgba(63, 243, 27, 0.5)',
 
-                    },{
-                    label: "Puts",
-                    data: state.valuesassetput23,
-                    borderColor: 'rgba(243, 45, 27, 0.5)',
-                    backgroundColor: 'rgba(243, 45, 27, 0.5)',
+                        },{
+                        label: "Puts",
+                        data: state.valuesassetput23,
+                        borderColor: 'rgba(243, 45, 27, 0.5)',
+                        backgroundColor: 'rgba(243, 45, 27, 0.5)',
 
+                        },
+                        ]
                     },
-                    ]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            stacked: true,
-                        }
-                        ],
-                        xAxes: [{
-                            stacked: true,
-                            ticks: {
-                                autoSkip: true,
-                                maxTicksLimit: 20,
-                                maxRotation: 45,
-                                minRotation: 45
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                stacked: true,
                             }
-                        }]
-                    },
-                }
-                })
+                            ],
+                            xAxes: [{
+                                stacked: true,
+                                ticks: {
+                                    autoSkip: true,
+                                    maxTicksLimit: 20,
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            }]
+                        },
+                    }
+                    })
                 }
             });
         }
