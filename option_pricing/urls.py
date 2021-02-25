@@ -25,6 +25,10 @@ urlpatterns = [
     path('options/histvolallputstats/', views.OptionHistVolumeGraphPutAllView, name='optionhistvolallputstats'),
     path('options/histvolcallstats/<int:assetid>/', views.OptionHistVolumeGraphCallAssetView, name='optionhistvolassetcallstats'),
     path('options/histvolputstats/<int:assetid>/', views.OptionHistVolumeGraphPutAssetView, name='optionhistvolassetputstats'),
+    path('options/histopenintallcallstats/', views.OptionHistOpenIntGraphCallAllView, name='optionhistopenintallcallstats'),
+    path('options/histopenintallputstats/', views.OptionHistOpenIntGraphPutAllView, name='optionhistopenintallputstats'),
+    path('options/histopenintcallstats/<int:assetid>/', views.OptionHistOpenIntGraphCallAssetView, name='optionhistopenintassetcallstats'),
+    path('options/histopenintputstats/<int:assetid>/', views.OptionHistOpenIntGraphPutAssetView, name='optionhistopenintassetputstats'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),

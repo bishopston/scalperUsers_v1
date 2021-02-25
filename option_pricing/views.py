@@ -1381,3 +1381,143 @@ def OptionHistVolumeGraphPutAssetView(request, assetid):
         hist_put_volumes.append({dates_volume_[i]:puts_volume[i]})
 
     return JsonResponse(hist_put_volumes, safe=False)
+
+def OptionHistOpenIntGraphCallAllView(request):
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_open_interest=[]
+    for i in range(len(dates)): 
+        dates_open_interest.append(dates[i]['date']) 
+
+    dates_open_interest_asc = sorted(dates_open_interest) 
+
+    dates_open_interest_=[]
+    for i in range(len(dates_open_interest_asc)): 
+        dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_open_interest_)):                                  
+        dates_open_interest_[item]=dates_open_interest_[item].replace('"', '') 
+    #fill in volume sums
+    calls=[]
+    for i in range(len(dates_open_interest_)):
+        q = queryset.filter(date=dates_open_interest_[i]).aggregate(Sum('open_interest'))
+        calls.append(q)
+
+    calls_open_interest=[]
+    for i in range(len(calls)):
+        calls_open_interest.append(calls[i]['open_interest__sum'])
+
+    #json dict
+    hist_call_open_interests=[]
+    for i in range(len(dates_open_interest_)):
+        hist_call_open_interests.append({dates_open_interest_[i]:calls_open_interest[i]})
+
+    return JsonResponse(hist_call_open_interests, safe=False)
+
+def OptionHistOpenIntGraphPutAllView(request):
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_open_interest=[]
+    for i in range(len(dates)): 
+        dates_open_interest.append(dates[i]['date']) 
+
+    dates_open_interest_asc = sorted(dates_open_interest) 
+
+    dates_open_interest_=[]
+    for i in range(len(dates_open_interest_asc)): 
+        dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_open_interest_)):                                  
+        dates_open_interest_[item]=dates_open_interest_[item].replace('"', '') 
+    #fill in open_interest sums
+    puts=[]
+    for i in range(len(dates_open_interest_)):
+        q = queryset.filter(date=dates_open_interest_[i]).aggregate(Sum('open_interest'))
+        puts.append(q)
+
+    puts_open_interest=[]
+    for i in range(len(puts)):
+        puts_open_interest.append(puts[i]['open_interest__sum'])
+
+    #json dict
+    hist_put_open_interests=[]
+    for i in range(len(dates_open_interest_)):
+        hist_put_open_interests.append({dates_open_interest_[i]:puts_open_interest[i]})
+
+    return JsonResponse(hist_put_open_interests, safe=False)
+
+def OptionHistOpenIntGraphCallAssetView(request, assetid):
+
+    asset_name = assetidToAsset(assetid)
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_open_interest=[]
+    for i in range(len(dates)): 
+        dates_open_interest.append(dates[i]['date']) 
+
+    dates_open_interest_asc = sorted(dates_open_interest) 
+
+    dates_open_interest_=[]
+    for i in range(len(dates_open_interest_asc)): 
+        dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_open_interest_)):                                  
+        dates_open_interest_[item]=dates_open_interest_[item].replace('"', '') 
+    #fill in volume sums
+    calls=[]
+    for i in range(len(dates_open_interest_)):
+        q = queryset.filter(date=dates_open_interest_[i]).aggregate(Sum('open_interest'))
+        calls.append(q)
+
+    calls_open_interest=[]
+    for i in range(len(calls)):
+        calls_open_interest.append(calls[i]['open_interest__sum'])
+
+    #json dict
+    hist_call_open_interests=[]
+    for i in range(len(dates_open_interest_)):
+        hist_call_open_interests.append({dates_open_interest_[i]:calls_open_interest[i]})
+
+    return JsonResponse(hist_call_open_interests, safe=False)
+
+def OptionHistOpenIntGraphPutAssetView(request, assetid):
+
+    asset_name = assetidToAsset(assetid)
+
+    qs = Optionvolume.objects.all()
+    queryset = qs.filter(asset=asset_name).filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_open_interest=[]
+    for i in range(len(dates)): 
+        dates_open_interest.append(dates[i]['date']) 
+
+    dates_open_interest_asc = sorted(dates_open_interest) 
+
+    dates_open_interest_=[]
+    for i in range(len(dates_open_interest_asc)): 
+        dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_open_interest_)):                                  
+        dates_open_interest_[item]=dates_open_interest_[item].replace('"', '') 
+    #fill in volume sums
+    calls=[]
+    for i in range(len(dates_open_interest_)):
+        q = queryset.filter(date=dates_open_interest_[i]).aggregate(Sum('open_interest'))
+        calls.append(q)
+
+    calls_open_interest=[]
+    for i in range(len(calls)):
+        calls_open_interest.append(calls[i]['open_interest__sum'])
+
+    #json dict
+    hist_call_open_interests=[]
+    for i in range(len(dates_open_interest_)):
+        hist_call_open_interests.append({dates_open_interest_[i]:calls_open_interest[i]})
+
+    return JsonResponse(hist_call_open_interests, safe=False)
