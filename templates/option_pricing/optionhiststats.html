@@ -376,7 +376,7 @@
 <script>
 
 var histVolAssetChart;
-
+var histOpenIntAssetChart;
    
    window.onload = () => {
 
@@ -388,6 +388,8 @@ var histVolAssetChart;
 
            const datacallURL = `/options/histvolcallstats/${page_id}/`
            const dataputURL = `/options/histvolputstats/${page_id}/`
+           const datacallopenintURL = `/options/histopenintcallstats/${page_id}/`
+           const dataputopenintURL = `/options/histopenintputstats/${page_id}/`
 
            var state ={	
                'itemsassetvolcall':[],
@@ -412,13 +414,36 @@ var histVolAssetChart;
                'valuesassetvolput252':[],                 
            }
 
+           var stateopenint ={	
+               'itemsassetopenintcall':[],
+               'valuesassetopenintcall':[],   
+               'itemsassetopenintput':[],
+               'valuesassetopenintput':[],
+               'itemsassetopenintcall23':[],
+               'valuesassetopenintcall23':[],
+               'itemsassetopenintput23':[],
+               'valuesassetopenintput23':[],
+               'itemsassetopenintcall68':[],
+               'valuesassetopenintcall68':[], 
+               'itemsassetopenintput68':[],
+               'valuesassetopenintput68':[], 
+               'itemsassetopenintcall135':[],
+               'valuesassetopenintcall135':[], 
+               'itemsassetopenintput135':[],
+               'valuesassetopenintput135':[],
+               'itemsassetopenintcall252':[],
+               'valuesassetopenintcall252':[],                 
+               'itemsassetopenintput252':[],
+               'valuesassetopenintput252':[],                
+           }
+
            tab_switcher.addEventListener('click', () => {
                document.querySelector('.tabs .tab.is-active').classList.remove('is-active');
                tab_switcher.parentNode.classList.add('is-active');
 
                SwitchPage(page_id);
 
-               $.ajax({
+                $.ajax({
                    method: "GET",
                    url: datacallURL,
                    success: function(response){
@@ -452,7 +477,7 @@ var histVolAssetChart;
                    }
                })
 
-               $.ajax({
+                $.ajax({
                    method: "GET",
                    url: dataputURL,
                    success: function(response){
@@ -485,6 +510,74 @@ var histVolAssetChart;
                        console.log(error_data)
                    }
                }) 
+
+                $.ajax({
+                   method: "GET",
+                   url: datacallopenintURL,
+                   success: function(response){
+                       for (var i in response){
+                           var key = Object.keys(response[i])[0]
+                           var value = Object.values(response[i])[0]
+                   
+                           stateopenint.itemsassetopenintcall.push(key)
+                           stateopenint.valuesassetopenintcall.push(value)}
+
+                       stateopenint.itemsassetopenintcall23 = stateopenint.itemsassetopenintcall.slice(-23)
+                       stateopenint.valuesassetopenintcall23 = stateopenint.valuesassetopenintcall.slice(-23)  
+
+                       stateopenint.itemsassetopenintcall68 = stateopenint.itemsassetopenintcall.slice(-68)
+                       stateopenint.valuesassetopenintcall68 = stateopenint.valuesassetopenintcall.slice(-68)   
+
+                       stateopenint.itemsassetopenintcall135 = stateopenint.itemsassetopenintcall.slice(-135)
+                       stateopenint.valuesassetopenintcall135 = stateopenint.valuesassetopenintcall.slice(-135)   
+
+                       stateopenint.itemsassetopenintcall252 = stateopenint.itemsassetopenintcall.slice(-252)
+                       stateopenint.valuesassetopenintcall252 = stateopenint.valuesassetopenintcall.slice(-252) 
+
+                       console.log(stateopenint.itemsassetopenintcall23)
+                       console.log(stateopenint.valuesassetopenintcall23)
+                       
+                       setHistOpenIntAssetStatsGraph()
+                   },
+                   error: function(error_data){
+                       console.log("error")
+                       console.log(error_data)
+                   }
+                })
+
+                $.ajax({
+                   method: "GET",
+                   url: dataputopenintURL,
+                   success: function(response){
+                       for (var i in response){
+                           var key = Object.keys(response[i])[0]
+                           var value = Object.values(response[i])[0]
+                   
+                           stateopenint.itemsassetopenintput.push(key)
+                           stateopenint.valuesassetopenintput.push(value)}
+
+                       stateopenint.itemsassetopenintput23 = stateopenint.itemsassetopenintput.slice(-23)
+                       stateopenint.valuesassetopenintput23 = stateopenint.valuesassetopenintput.slice(-23) 
+
+                       stateopenint.itemsassetopenintput68 = stateopenint.itemsassetopenintput.slice(-68)
+                       stateopenint.valuesassetopenintput68 = stateopenint.valuesassetopenintput.slice(-68)   
+
+                       stateopenint.itemsassetopenintput135 = stateopenint.itemsassetopenintput.slice(-135)
+                       stateopenint.valuesassetopenintput135 = stateopenint.valuesassetopenintput.slice(-135)
+                       
+                       stateopenint.itemsassetopenintput252 = stateopenint.itemsassetopenintput.slice(-252)
+                       stateopenint.valuesassetopenintput252 = stateopenint.valuesassetopenintput.slice(-252) 
+
+                       console.log(stateopenint.itemsassetopenintput23)
+                       console.log(stateopenint.valuesassetopenintput23)
+                       
+                       setHistOpenIntAssetStatsGraph()
+                   },
+                   error: function(error_data){
+                       console.log("error")
+                       console.log(error_data)
+                   }
+                })  
 
                document.getElementById('dailyassetvol2-1M').onclick = function() {
                    histVolAssetChart.data.labels = state.itemsassetvolcall23;
@@ -681,6 +774,34 @@ var histVolAssetChart;
                    histVolAssetChart.data.datasets[1].data = state.valuesassetvolput252;
                    histVolAssetChart.update();
                }
+
+               document.getElementById('dailyassetopenint2-1M').onclick = function() {
+                   histOpenIntAssetChart.data.labels = stateopenint.itemsassetopenintcall23;
+                   histOpenIntAssetChart.data.datasets[0].data = stateopenint.valuesassetopenintcall23;
+                   histOpenIntAssetChart.data.datasets[1].data = stateopenint.valuesassetopenintput23;
+                   histOpenIntAssetChart.update();
+               }
+
+               document.getElementById('dailyassetopenint2-3M').onclick = function() {
+                   histOpenIntAssetChart.data.labels = stateopenint.itemsassetopenintcall68;
+                   histOpenIntAssetChart.data.datasets[0].data = stateopenint.valuesassetopenintcall68;
+                   histOpenIntAssetChart.data.datasets[1].data = stateopenint.valuesassetopenintput68;
+                   histOpenIntAssetChart.update();
+               }
+
+               document.getElementById('dailyassetopenint2-6M').onclick = function() {
+                   histOpenIntAssetChart.data.labels = stateopenint.itemsassetopenintcall135;
+                   histOpenIntAssetChart.data.datasets[0].data = stateopenint.valuesassetopenintcall135;
+                   histOpenIntAssetChart.data.datasets[1].data = stateopenint.valuesassetopenintput135;
+                   histOpenIntAssetChart.update();
+               }
+
+               document.getElementById('dailyassetopenint2-1Y').onclick = function() {
+                   histOpenIntAssetChart.data.labels = stateopenint.itemsassetopenintcall252;
+                   histOpenIntAssetChart.data.datasets[0].data = stateopenint.valuesassetopenintcall252;
+                   histOpenIntAssetChart.data.datasets[1].data = stateopenint.valuesassetopenintput252;
+                   histOpenIntAssetChart.update();
+               }
                               
                function setHistVolAssetStatsGraph(){
                    if (histVolAssetChart) {
@@ -702,6 +823,53 @@ var histVolAssetChart;
                        },{
                        label: "Puts",
                        data: state.valuesassetvolput23,
+                       borderColor: 'rgba(243, 45, 27, 0.5)',
+                       backgroundColor: 'rgba(243, 45, 27, 0.5)',
+
+                       },
+                       ]
+                   },
+                   options: {
+                       scales: {
+                           yAxes: [{
+                               stacked: true,
+                           }
+                           ],
+                           xAxes: [{
+                               stacked: true,
+                               ticks: {
+                                   autoSkip: true,
+                                   maxTicksLimit: 20,
+                                   maxRotation: 45,
+                                   minRotation: 45
+                               }
+                           }]
+                       },
+                   }
+                   })
+               }
+
+               function setHistOpenIntAssetStatsGraph(){
+                   
+                   if (histOpenIntAssetChart) {
+                       histOpenIntAssetChart.destroy();
+                   }
+                   var ctx = document.getElementById("histOpenIntAssetChart".concat(page_id)).getContext('2d');
+                   //console.log(ctx)
+                   histOpenIntAssetChart = new Chart(ctx, {
+                   responsive: true,
+                   type: 'bar',
+                   data: {
+                       labels: stateopenint.itemsassetopenintcall23,
+                       datasets: [{
+                           label: 'Calls',
+                           data: stateopenint.valuesassetopenintcall23,
+                           borderColor: 'rgba(63, 243, 27, 0.5)',
+                           backgroundColor: 'rgba(63, 243, 27, 0.5)',
+
+                       },{
+                       label: "Puts",
+                       data: stateopenint.valuesassetopenintput23,
                        borderColor: 'rgba(243, 45, 27, 0.5)',
                        backgroundColor: 'rgba(243, 45, 27, 0.5)',
 
