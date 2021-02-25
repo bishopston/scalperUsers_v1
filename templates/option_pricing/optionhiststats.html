@@ -247,24 +247,24 @@
             const dataputURL = `/options/histvolputstats/${page_id}/`
 
             var state ={	
-                'itemsassetcall':[],
-                'valuesassetcall':[],   
+                'itemsassetvolcall':[],
+                'valuesassetvolcall':[],   
                 'itemsassetput':[],
                 'valuesassetput':[],
-                'itemsassetcall23':[],
-                'valuesassetcall23':[],
+                'itemsassetvolcall23':[],
+                'valuesassetvolcall23':[],
                 'itemsassetput23':[],
                 'valuesassetput23':[],
-                'itemsassetcall68':[],
-                'valuesassetcall68':[], 
+                'itemsassetvolcall68':[],
+                'valuesassetvolcall68':[], 
                 'itemsassetput68':[],
                 'valuesassetput68':[], 
-                'itemsassetcall135':[],
-                'valuesassetcall135':[], 
+                'itemsassetvolcall135':[],
+                'valuesassetvolcall135':[], 
                 'itemsassetput135':[],
                 'valuesassetput135':[],
-                'itemsassetcall252':[],
-                'valuesassetcall252':[],                 
+                'itemsassetvolcall252':[],
+                'valuesassetvolcall252':[],                 
                 'itemsassetput252':[],
                 'valuesassetput252':[],                 
             }
@@ -283,23 +283,23 @@
                             var key = Object.keys(response[i])[0]
                             var value = Object.values(response[i])[0]
                     
-                            state.itemsassetcall.push(key)
-                            state.valuesassetcall.push(value)}
+                            state.itemsassetvolcall.push(key)
+                            state.valuesassetvolcall.push(value)}
 
-                        state.itemsassetcall23 = state.itemsassetcall.slice(-23)
-                        state.valuesassetcall23 = state.valuesassetcall.slice(-23)  
+                        state.itemsassetvolcall23 = state.itemsassetvolcall.slice(-23)
+                        state.valuesassetvolcall23 = state.valuesassetvolcall.slice(-23)  
 
-                        state.itemsassetcall68 = state.itemsassetcall.slice(-68)
-                        state.valuesassetcall68 = state.valuesassetcall.slice(-68)   
+                        state.itemsassetvolcall68 = state.itemsassetvolcall.slice(-68)
+                        state.valuesassetvolcall68 = state.valuesassetvolcall.slice(-68)   
 
-                        state.itemsassetcall135 = state.itemsassetcall.slice(-135)
-                        state.valuesassetcall135 = state.valuesassetcall.slice(-135)   
+                        state.itemsassetvolcall135 = state.itemsassetvolcall.slice(-135)
+                        state.valuesassetvolcall135 = state.valuesassetvolcall.slice(-135)   
 
-                        state.itemsassetcall252 = state.itemsassetcall.slice(-252)
-                        state.valuesassetcall252 = state.valuesassetcall.slice(-252) 
+                        state.itemsassetvolcall252 = state.itemsassetvolcall.slice(-252)
+                        state.valuesassetvolcall252 = state.valuesassetvolcall.slice(-252) 
 
-                        console.log(state.itemsassetcall23)
-                        console.log(state.valuesassetcall23)
+                        console.log(state.itemsassetvolcall23)
+                        console.log(state.valuesassetvolcall23)
                         
                         setHistVolAssetStatsGraph()
                     },
@@ -344,85 +344,85 @@
                 }) 
 
                 document.getElementById('dailyassetvol2-1M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall23;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall23;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall23;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall23;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput23;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol2-3M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall68;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall68;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall68;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall68;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput68;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol2-6M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall135;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall135;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall135;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall135;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput135;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol2-1Y').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall252;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall252;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall252;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall252;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput252;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol3-1M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall23;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall23;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall23;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall23;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput23;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol3-3M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall68;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall68;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall68;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall68;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput68;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol3-6M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall135;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall135;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall135;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall135;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput135;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol3-1Y').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall252;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall252;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall252;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall252;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput252;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol4-1M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall23;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall23;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall23;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall23;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput23;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol4-3M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall68;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall68;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall68;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall68;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput68;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol4-6M').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall135;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall135;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall135;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall135;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput135;
                     histVolAssetChart.update();
                 }
 
                 document.getElementById('dailyassetvol4-1Y').onclick = function() {
-                    histVolAssetChart.data.labels = state.itemsassetcall252;
-                    histVolAssetChart.data.datasets[0].data = state.valuesassetcall252;
+                    histVolAssetChart.data.labels = state.itemsassetvolcall252;
+                    histVolAssetChart.data.datasets[0].data = state.valuesassetvolcall252;
                     histVolAssetChart.data.datasets[1].data = state.valuesassetput252;
                     histVolAssetChart.update();
                 }
@@ -437,10 +437,10 @@
                     responsive: true,
                     type: 'bar',
                     data: {
-                        labels: state.itemsassetcall23,
+                        labels: state.itemsassetvolcall23,
                         datasets: [{
                             label: 'Calls',
-                            data: state.valuesassetcall23,
+                            data: state.valuesassetvolcall23,
                             borderColor: 'rgba(63, 243, 27, 0.5)',
                             backgroundColor: 'rgba(63, 243, 27, 0.5)',
 
