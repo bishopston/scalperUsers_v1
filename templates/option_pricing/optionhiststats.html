@@ -145,6 +145,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div role="tabpanel" class="tab-pane" id="monthlycallput">
+                            <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row mx-3">
+                                    <button class="btn btn-link" onclick="updatemonthlyCallPutChart_6M()"><small>1M</small></button>
+                                    <button class="btn btn-link" onclick="updatemonthlyCallPutChart_1Y()"><small>3M</small></button>
+                                    <button class="btn btn-link" onclick="updatemonthlyCallPutChart_18M()"><small>6M</small></button>
+                                    <button class="btn btn-link" onclick="updatemonthlyCallPutChart_ALL()"><small>1Y</small></button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="monthlyCallPutChart" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="btn-group-vertical mt-3 mx-2">
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="page" data-page="2">
@@ -1549,5 +1567,104 @@ var histOpenIntAssetChart;
     
 </script>
 
+<script> 
+
+    var monthlyCallPutChart;
+
+    var datacallputURL = `{% url 'option_pricing:callputmonthlyallratio'%}`
+
+    var statecallput ={	
+		'itemscallput':[],
+		'valuescallput':[],
+        'itemscallput6':[],
+		'valuescallput6':[],
+        'itemscallput12':[],
+		'valuescallput12':[],
+        'itemscallput18':[],
+		'valuescallput18':[],
+	}
+
+    $.ajax({
+        method: "GET",
+        url: datacallputURL,
+        success: function(response){
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var key_stripped = key.replace('"', '')
+                var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				statecallput.itemscallput.push(key_stripped_stripped)
+                statecallput.valuescallput.push(value)}
+
+            statecallput.itemscallput6 = statecallput.itemscallput.slice(-6)
+            statecallput.valuescallput6 = statecallput.valuescallput.slice(-6)
+
+            statecallput.itemscallput12 = statecallput.itemscallput.slice(-12)
+            statecallput.valuescallput12 = statecallput.valuescallput.slice(-12)   
+
+            statecallput.itemscallput18 = statecallput.itemscallput.slice(-18)
+            statecallput.valuescallput18 = statecallput.valuescallput.slice(-18)   
+
+            console.log(statecallput.itemscallput)
+            console.log(statecallput.valuescallput)
+            
+            setMonthlyCallPutRatioGraph()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setMonthlyCallPutRatioGraph(){
+        if (monthlyCallPutChart) {
+            monthlyCallPutChart.destroy();
+        }
+        var ctx = document.getElementById("monthlyCallPutChart").getContext('2d');
+        
+        monthlyCallPutChart = new Chart(ctx, {
+        responsive: true,
+        type: 'bar',
+        data: {
+            labels: statecallput.itemscallput6,
+            datasets: [{
+                label: 'Monthly Call/Put Ratio',
+                data: statecallput.valuescallput6,
+                borderColor: 'rgba(211, 166, 206, 0.5)',
+                backgroundColor: 'rgba(211, 166, 206, 0.5)',
+
+            },
+            ]
+        },
+        })
+    }
+
+    function updatemonthlyCallPutChart_6M(){
+        monthlyCallPutChart.data.labels = statecallput.itemscallput6;
+        monthlyCallPutChart.data.datasets[0].data = statecallput.valuescallput6;
+        monthlyCallPutChart.update();
+    };
+
+    function updatemonthlyCallPutChart_1Y(){
+        monthlyCallPutChart.data.labels = statecallput.itemscallput12;
+        monthlyCallPutChart.data.datasets[0].data = statecallput.valuescallput12;
+        monthlyCallPutChart.update();
+    };
+
+    function updatemonthlyCallPutChart_18M(){
+        monthlyCallPutChart.data.labels = statecallput.itemscallput18;
+        monthlyCallPutChart.data.datasets[0].data = statecallput.valuescallput18;
+        monthlyCallPutChart.update();
+    };
+
+    function updatemonthlyCallPutChart_ALL(){
+        monthlyCallPutChart.data.labels = statecallput.itemscallput;
+        monthlyCallPutChart.data.datasets[0].data = statecallput.valuescallput;
+        monthlyCallPutChart.update();
+    };
+
+</script>
 
 {% endblock %}

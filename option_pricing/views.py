@@ -11,7 +11,7 @@ import calendar
 import json
 from decimal import Decimal
 
-from .models import Option, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Future, Futuresymbol
+from .models import Option, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futuresymbol
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
 
@@ -1595,12 +1595,36 @@ def OptionHistOpenIntGraphPutAssetView(request, assetid):
     return JsonResponse(hist_call_open_interests, safe=False)
 
 def OptionCallPutMonthlyRatioAllView(request):
+    
+    ratio = Optioncallputmonthlyratio.objects.all()
+    dates = ratio.values('date').order_by('date')[:24]
+
+    dates_list=[]
+    for i in range(len(dates)):
+        dates_list.append(dates[i]['date'])
+
+    dates_list_asc = sorted(dates_list)
+
+    dates_list_=[]
+    for i in range(len(dates_list_asc)):
+        dates_list_.append(json.dumps(dates_list_asc[i].strftime("%B")+" "+dates_list_asc[i].strftime("%Y")))
+
+    for item in range(len(dates_list_)):
+        dates_list_[item]=dates_list_[item].replace('"', '')
+
+    callputratio=[]
+    for i in range(len(dates_list_asc)):
+        q = ratio.filter(date=dates_list_asc[i]).aggregate(Sum('callputratio')) 
+        callputratio.append(q)
+
+    callputratio_=[]
+    for i in range(len(callputratio)):
+        callputratio_.append(callputratio[i]['callputratio__sum'])
+
     callputratiodata = []
 
-    ratio = Optioncallputmonthlyratio.objects.all()[:24]
-
-    for i in ratio:
-        callputratiodata.append({json.dumps(i.date.strftime("%B")+" "+i.date.strftime("%Y")):i.callputratio})
+    for i in dates_list_:
+        callputratiodata.append({dates_list_[i]:json.dumps(callputratio_[i], cls=DecimalEncoder)})
         
     print(callputratiodata)
     return JsonResponse(callputratiodata, safe=False)
