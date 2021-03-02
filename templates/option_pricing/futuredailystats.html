@@ -1,0 +1,67 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>-->
+
+<div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
+  <div class="row">
+      <div class="col-md-12">
+          <ul class="nav nav-tabs">
+              <li class="nav-item">
+                  <a href="#chart" class="nav-link" role="tab" data-toggle="tab"></a>
+              </li>
+          </ul>
+          <div class="my-3 tab-content justify-content-center">
+            <div role="tabpanel" class="tab-pane active" id="chart">
+                <div class="container bg-white text-dark" style="position: relative;">
+                    <div class="row ml-1 mb-3">
+                        <h4>Daily Futures Statistics {{max_date}}</h4>
+                    </div>
+                    <div id="carouselFutureIndicators" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Volume per Option Type</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyVolumeChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
+                          <div class="carousel-item bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Volume per Underlying</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyVolumeAllChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselFutureIndicators" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselFutureIndicators" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+  </div>
+</div>

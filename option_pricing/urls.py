@@ -10,7 +10,7 @@ urlpatterns = [
     #test urls for greatest OI templates based on infinite scroll
     path('options/greatestOI/', views.OptionGreatestOI, name='option_greatestOI'),
     path('options/greatestOIfetch/', views.OptionGreatestOIFetch, name='option_greatestOI_fetch'),
-    #urls for option daily stats
+    #urls for options daily stats
     path('options/dailystats/', views.OptionDailyStatsView, name='optiondailystats'),
     path('options/dailyvolumecallgraph/', views.OptionDailyGraphCallView, name='dailyvolumecall'),
     path('options/dailyvolumeputgraph/', views.OptionDailyGraphPutView, name='dailyvolumeput'),
@@ -19,7 +19,7 @@ urlpatterns = [
     path('options/dailyvolumeexpcallgraph/', views.OptionDailyVolumeGraphExpCallView, name='dailyvolumeexpcall'),
     path('options/dailyvolumeexpputgraph/', views.OptionDailyVolumeGraphExpPutView, name='dailyvolumeexpput'),
     #path('options/descendingOI/', views.OptionDescendingOI, name='option_descendingOI'),
-    #urls for option historical stats
+    #urls for options historical stats
     path('options/historicalstats/', views.OptionHistoricalStatsView, name='optionhiststats'),
     path('options/histvolallcallstats/', views.OptionHistVolumeGraphCallAllView, name='optionhistvolallcallstats'),
     path('options/histvolallputstats/', views.OptionHistVolumeGraphPutAllView, name='optionhistvolallputstats'),
@@ -30,6 +30,8 @@ urlpatterns = [
     path('options/histopenintcallstats/<int:assetid>/', views.OptionHistOpenIntGraphCallAssetView, name='optionhistopenintassetcallstats'),
     path('options/histopenintputstats/<int:assetid>/', views.OptionHistOpenIntGraphPutAssetView, name='optionhistopenintassetputstats'),
     path('options/callputmonthlyallratio/', views.OptionCallPutMonthlyRatioAllView, name='callputmonthlyallratio'),
+    #urls for futures daily stats
+    path('futures/dailystats/', views.FutureDailyStatsView, name='futuredailystats'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),

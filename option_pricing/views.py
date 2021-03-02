@@ -907,7 +907,7 @@ def IVATMChartView(request, asset, optiontype, expmonth, expyear):
     return JsonResponse(list5, safe=False)
 
 def OptionDailyStatsView(request):
-    max_date = Option.objects.all().aggregate(Max('date'))
+    max_date = Optionvolume.objects.all().aggregate(Max('date'))
     
     context = {
         'max_date': max_date['date__max'].strftime("%#d-%#m-%Y"),
@@ -1593,7 +1593,7 @@ def OptionHistOpenIntGraphPutAssetView(request, assetid):
         hist_call_open_interests.append({dates_open_interest_[i]:calls_open_interest[i]})
 
     return JsonResponse(hist_call_open_interests, safe=False)
-
+"""
 def OptionCallPutMonthlyRatioAllView(request):
     
     ratio = Optioncallputmonthlyratio.objects.all()
@@ -1628,3 +1628,23 @@ def OptionCallPutMonthlyRatioAllView(request):
         
     print(callputratiodata)
     return JsonResponse(callputratiodata, safe=False)
+"""
+def OptionCallPutMonthlyRatioAllView(request):
+    callputratiodata = []
+
+    ratio = Optioncallputmonthlyratio.objects.all()
+
+    for i in ratio:
+        callputratiodata.append({json.dumps(i.date.strftime("%B")+" "+i.date.strftime("%Y")):json.dumps(i.callputratio, cls=DecimalEncoder)})
+
+    #print(optiondata)
+    return JsonResponse(callputratiodata, safe=False)
+
+def FutureDailyStatsView(request):
+    max_date = Future.objects.all().aggregate(Max('date'))
+    
+    context = {
+        'max_date': max_date['date__max'].strftime("%#d-%#m-%Y"),
+    }
+
+    return render(request, 'option_pricing/futuredailystats.html', context)
