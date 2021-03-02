@@ -134,6 +134,49 @@ class Optionvolume(models.Model):
     dailyVolumeCall = DailyVolumeCallManager()
     dailyVolumePut = DailyVolumePutManager()
 
+class Optionvolumeaggseries(models.Model):
+
+    ASSETS = [
+    ('FTSE', 'FTSE'),
+    ('ALPHA', 'ALPHA'),
+    ('HTO', 'OTE'),
+    ('ETE', 'ETE'),
+    ('OPAP', 'OPAP'),
+    ('PPC', 'DEH'),
+    ('TPEIR', 'PEIRAIOS'),
+    ]
+
+    OPTION_TYPE = [
+        ('c', 'Call'),
+        ('p', 'Put'),
+    ]
+    date = models.DateField()
+    asset = models.CharField(max_length=5,
+        choices=ASSETS,)
+    optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
+    volume = models.IntegerField()
+    trades = models.IntegerField()
+    open_interest = models.IntegerField()
+
+class Optionvolumeaggseriesasset(models.Model):
+
+    OPTION_TYPE = [
+        ('c', 'Call'),
+        ('p', 'Put'),
+    ]
+    date = models.DateField()
+    optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
+    volume = models.IntegerField()
+    trades = models.IntegerField()
+    open_interest = models.IntegerField()
+
+class Optioncallputmonthlyratio(models.Model):
+
+    date = models.DateField()
+    sum_vol_calls = models.IntegerField()
+    sum_vol_puts = models.IntegerField()
+    callputratio = models.DecimalField(max_digits=8, decimal_places=3)
+
 class Futuresymbol(models.Model):
 
     FUTUREASSETS = [

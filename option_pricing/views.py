@@ -11,7 +11,7 @@ import calendar
 import json
 from decimal import Decimal
 
-from .models import Option, Optionsymbol, Optionseries, Optionvolume, Future, Futuresymbol
+from .models import Option, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Future, Futuresymbol
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
 
@@ -1229,7 +1229,7 @@ def OptionHistoricalStatsView(request):
     }
 
     return render(request, 'option_pricing/optionhiststats.html', context)
-
+"""
 def OptionHistVolumeGraphCallAllView(request):
 
     qs = Optionvolume.objects.all()
@@ -1297,6 +1297,74 @@ def OptionHistVolumeGraphPutAllView(request):
         hist_put_volumes.append({dates_volume_[i]:puts_volume[i]})
 
     return JsonResponse(hist_put_volumes, safe=False)
+"""
+
+def OptionHistVolumeGraphCallAllView(request):
+
+    queryset = Optionvolumeaggseriesasset.objects.filter(optiontype='c')
+    dates = queryset.values('date').order_by('-date').distinct()[:252] 
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    calls=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        calls.append(q)
+
+    calls_volume=[]
+    for i in range(len(calls)):
+        calls_volume.append(calls[i]['volume__sum'])
+
+    #json dict
+    hist_call_volumes=[]
+    for i in range(len(dates_volume_)):
+        hist_call_volumes.append({dates_volume_[i]:calls_volume[i]})
+
+    return JsonResponse(hist_call_volumes, safe=False)
+
+
+def OptionHistVolumeGraphPutAllView(request):
+
+    queryset = Optionvolumeaggseriesasset.objects.filter(optiontype='p') 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    puts=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        puts.append(q)
+
+    puts_volume=[]
+    for i in range(len(puts)):
+        puts_volume.append(puts[i]['volume__sum'])
+
+    #json dict
+    hist_put_volumes=[]
+    for i in range(len(dates_volume_)):
+        hist_put_volumes.append({dates_volume_[i]:puts_volume[i]})
+
+    return JsonResponse(hist_put_volumes, safe=False)
 
 def assetidToAsset(assetid): 
     switcher = { 
@@ -1314,8 +1382,9 @@ def OptionHistVolumeGraphCallAssetView(request, assetid):
 
     asset_name = assetidToAsset(assetid)
 
-    qs = Optionvolume.objects.all()
-    queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    #qs = Optionvolume.objects.all()
+    queryset = Optionvolumeaggseries.objects.filter(asset=asset_name).filter(optiontype='c')
+    #queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_volume=[]
@@ -1350,8 +1419,9 @@ def OptionHistVolumeGraphPutAssetView(request, assetid):
 
     asset_name = assetidToAsset(assetid)
 
-    qs = Optionvolume.objects.all()
-    queryset = qs.filter(asset=asset_name).filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    #qs = Optionvolume.objects.all()
+    #queryset = qs.filter(asset=asset_name).filter(optiontype='p').filter(expmonthdate__gte=F('date'))
+    queryset = Optionvolumeaggseries.objects.filter(asset=asset_name).filter(optiontype='p') 
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_volume=[]
@@ -1384,8 +1454,8 @@ def OptionHistVolumeGraphPutAssetView(request, assetid):
 
 def OptionHistOpenIntGraphCallAllView(request):
 
-    qs = Optionvolume.objects.all()
-    queryset = qs.filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    #qs = Optionvolume.objects.all()
+    queryset = Optionvolumeaggseriesasset.objects.filter(optiontype='c')
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_open_interest=[]
@@ -1418,8 +1488,8 @@ def OptionHistOpenIntGraphCallAllView(request):
 
 def OptionHistOpenIntGraphPutAllView(request):
 
-    qs = Optionvolume.objects.all()
-    queryset = qs.filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    #qs = Optionvolume.objects.all()
+    queryset = Optionvolumeaggseriesasset.objects.filter(optiontype='p') 
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_open_interest=[]
@@ -1454,8 +1524,9 @@ def OptionHistOpenIntGraphCallAssetView(request, assetid):
 
     asset_name = assetidToAsset(assetid)
 
-    qs = Optionvolume.objects.all()
-    queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    #qs = Optionvolume.objects.all()
+    #queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    queryset = Optionvolumeaggseries.objects.filter(asset=asset_name).filter(optiontype='c')
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_open_interest=[]
@@ -1490,8 +1561,9 @@ def OptionHistOpenIntGraphPutAssetView(request, assetid):
 
     asset_name = assetidToAsset(assetid)
 
-    qs = Optionvolume.objects.all()
-    queryset = qs.filter(asset=asset_name).filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    #qs = Optionvolume.objects.all()
+    #queryset = qs.filter(asset=asset_name).filter(optiontype='p').filter(expmonthdate__gte=F('date')) 
+    queryset = Optionvolumeaggseries.objects.filter(asset=asset_name).filter(optiontype='p')
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_open_interest=[]
@@ -1521,3 +1593,14 @@ def OptionHistOpenIntGraphPutAssetView(request, assetid):
         hist_call_open_interests.append({dates_open_interest_[i]:calls_open_interest[i]})
 
     return JsonResponse(hist_call_open_interests, safe=False)
+
+def OptionCallPutMonthlyRatioAllView(request):
+    callputratiodata = []
+
+    ratio = Optioncallputmonthlyratio.objects.all()[:24]
+
+    for i in ratio:
+        callputratiodata.append({json.dumps(i.date.strftime("%B")+" "+i.date.strftime("%Y")):i.callputratio})
+        
+    print(callputratiodata)
+    return JsonResponse(callputratiodata, safe=False)

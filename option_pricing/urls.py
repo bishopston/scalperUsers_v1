@@ -29,6 +29,7 @@ urlpatterns = [
     path('options/histopenintallputstats/', views.OptionHistOpenIntGraphPutAllView, name='optionhistopenintallputstats'),
     path('options/histopenintcallstats/<int:assetid>/', views.OptionHistOpenIntGraphCallAssetView, name='optionhistopenintassetcallstats'),
     path('options/histopenintputstats/<int:assetid>/', views.OptionHistOpenIntGraphPutAssetView, name='optionhistopenintassetputstats'),
+    path('options/callputmonthlyallratio/', views.OptionCallPutMonthlyRatioAllView, name='callputmonthlyallratio'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),
