@@ -24,7 +24,7 @@
                           <div class="carousel-item active bg-light">
                             <div class="row ml-1">
                                 <div class="col-md-12 d-flex justify-content-start">
-                                    <p class="font-weight-bold">Volume per Option Type</p>
+                                    <p class="font-weight-bold">Volume per Asset</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -65,3 +65,75 @@
       </div>
   </div>
 </div>
+
+<script> 
+
+  var dataURLvolumeall = `{% url 'option_pricing:dailyvolumefutures'%}`
+
+  var statevolume ={	
+  'itemsvol':[],
+  'valuesvol':[],
+  }
+
+  $.ajax({
+        method: "GET",
+        url: dataURLvolumeall,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+                statevolume.itemsvol.push(key)
+                statevolume.valuesvol.push(value)
+            }
+            console.log(statevolume.itemsvol)
+            console.log(statevolume.valuesvol)
+            setVolChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  function setVolChart(){
+    //Chart.defaults.global.defaultFontStyle = 'Bold'
+    var ctx = document.getElementById("dailyVolumeChart").getContext('2d');
+    
+    var dailyVolumeChart = new Chart(ctx, {
+    responsive: true,
+    type: 'bar',
+    data: {
+        labels: statevolume.itemsvol,
+        datasets: [{
+            label: "Daily Volume",
+            data: statevolume.valuesvol,
+            borderWidth: 1,
+            borderColor: 'rgba(211, 166, 206, 0.5)',
+            backgroundColor: 'rgba(211, 166, 206, 0.5)',
+            order: 1
+        },
+        ]
+    },
+    options: {
+          scales: {
+              yAxes: [{
+                  id: 'A',
+                  position: 'left',
+                  type: 'linear',
+                  ticks: {
+                      beginAtZero:true
+                  }
+              },
+              ],
+          },
+          legend: {
+              display: true,
+          }
+      }
+      })
+  }
+
+</script>
+
+{% endblock %}

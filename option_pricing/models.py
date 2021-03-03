@@ -188,7 +188,7 @@ class Futuresymbol(models.Model):
     ('ELLAK', 'ELLAKTOR'),
     ('ELPE', 'ELPE'),
     ('ETE', 'ETE'),
-    ('EUROB', 'EUROB'),
+    ('EUROB', 'EUROBANK'),
     ('EXAE', 'EXAE'),
     ('EYDAP', 'EYDAP'),
     ('FOYRK', 'FOURLIS'),

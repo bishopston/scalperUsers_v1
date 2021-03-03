@@ -1648,3 +1648,43 @@ def FutureDailyStatsView(request):
     }
 
     return render(request, 'option_pricing/futuredailystats.html', context)
+
+def FutureDailyGraphVolumeView(request):
+    
+    qs = Future.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    assetids = queryset.values('futuresymbol').distinct()  
+    
+    assetids_=[]
+    for i in range(len(assetids)):
+        assetids_.append(assetids[i]['futuresymbol'])
+
+    assets=[]
+    for i in range(len(assetids_)):
+        assets.append(Futuresymbol.objects.filter(id=assetids_[i]))
+        
+    assets_fullname = []
+    for i in range(len(assets)):
+        assets_fullname.append(assets[i][0].get_asset_display())
+
+    assets_=[]
+    for i in range(len(assets)):
+        assets_.append(assets[i][0].asset)
+
+    asset_list = unique(assets_)
+    asset_list_fullname = unique(assets_fullname)
+
+    vols=[]
+    for i in range(len(asset_list)):
+	    vols.append(queryset.filter(futuresymbol__asset=asset_list[i]).filter(futuresymbol__expmonthdate__gte=F('date')).aggregate(Sum('volume')))
+
+    vol_sums=[]
+    for i in range(len(vols)):
+        vol_sums.append(vols[i]['volume__sum'])
+
+    daily_sum_volumes=[]
+    for i in range(len(asset_list_fullname)):
+        daily_sum_volumes.append({asset_list_fullname[i]:vol_sums[i]})
+
+    return JsonResponse(daily_sum_volumes, safe=False)
