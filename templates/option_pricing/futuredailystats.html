@@ -24,7 +24,7 @@
                           <div class="carousel-item active bg-light">
                             <div class="row ml-1">
                                 <div class="col-md-12 d-flex justify-content-start">
-                                    <p class="font-weight-bold">Volume per Asset</p>
+                                    <p class="font-weight-bold">Volume per Underlying</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -38,12 +38,12 @@
                           <div class="carousel-item bg-light">
                             <div class="row ml-1">
                                 <div class="col-md-12 d-flex justify-content-start">
-                                    <p class="font-weight-bold">Volume per Underlying</p>
+                                    <p class="font-weight-bold">Volume per Expiration Month</p>
                                 </div>
                             </div>
                             <div class="row">
                               <div class="col-md-12">
-                                  <canvas id="dailyVolumeAllChart" width="400" height="150"></canvas>
+                                  <canvas id="seriesVolumeAllChart" width="400" height="150"></canvas>
                               </div>
                               <div class="btn-group-vertical mt-3 mx-2">    
                               </div>
@@ -69,10 +69,13 @@
 <script> 
 
   var dataURLvolumeall = `{% url 'option_pricing:dailyvolumefutures'%}`
+  var dataURLvolumeseriesall = `{% url 'option_pricing:seriesvolumefuturesall'%}`
 
   var statevolume ={	
   'itemsvol':[],
   'valuesvol':[],
+  'itemsseriesvolall':[],
+  'valuesseriesvolall':[],
   }
 
   $.ajax({
@@ -96,6 +99,30 @@
         }
   })
 
+  $.ajax({
+        method: "GET",
+        url: dataURLvolumeseriesall,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+                var value = Object.values(response[i])[0]
+              
+                statevolume.itemsseriesvolall.push(key_stripped_stripped)
+                statevolume.valuesseriesvolall.push(value)
+            }
+            console.log(statevolume.itemsseriesvolall)
+            console.log(statevolume.valuesseriesvolall)
+            setVolSeriesAllChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+
   function setVolChart(){
     //Chart.defaults.global.defaultFontStyle = 'Bold'
     var ctx = document.getElementById("dailyVolumeChart").getContext('2d');
@@ -108,6 +135,44 @@
         datasets: [{
             label: "Daily Volume",
             data: statevolume.valuesvol,
+            borderWidth: 1,
+            borderColor: 'rgba(211, 166, 206, 0.5)',
+            backgroundColor: 'rgba(211, 166, 206, 0.5)',
+            order: 1
+        },
+        ]
+    },
+    options: {
+          scales: {
+              yAxes: [{
+                  id: 'A',
+                  position: 'left',
+                  type: 'linear',
+                  ticks: {
+                      beginAtZero:true
+                  }
+              },
+              ],
+          },
+          legend: {
+              display: true,
+          }
+      }
+      })
+  }
+
+  function setVolSeriesAllChart(){
+    //Chart.defaults.global.defaultFontStyle = 'Bold'
+    var ctx = document.getElementById("seriesVolumeAllChart").getContext('2d');
+    
+    var seriesVolumeAllChart = new Chart(ctx, {
+    responsive: true,
+    type: 'bar',
+    data: {
+        labels: statevolume.itemsseriesvolall,
+        datasets: [{
+            label: "Daily Volume",
+            data: statevolume.valuesseriesvolall,
             borderWidth: 1,
             borderColor: 'rgba(211, 166, 206, 0.5)',
             backgroundColor: 'rgba(211, 166, 206, 0.5)',

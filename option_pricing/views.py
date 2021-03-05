@@ -1136,7 +1136,6 @@ def OptionDailyVolumeGraphExpCallView(request):
     for i in range(len(exp_series)):
         exp_series_list.append(exp_series[i].strftime("%B")+" "+exp_series[i].strftime("%Y"))
 
-    #fill in volume sums
     exp_series_ = []
     for i in range(len(exp)):
         exp_series_.append(json.dumps(exp_series[i].strftime("%#Y-%#m-%d")))
@@ -1144,6 +1143,7 @@ def OptionDailyVolumeGraphExpCallView(request):
     for item in range(len(exp_series_)):
         exp_series_[item]=exp_series_[item].replace('"', '')
         
+    #fill in volume sums
     calls=[]  
     for i in range(len(exp_series_)):
         q = queryset.filter(expmonthdate=exp_series_[i]).aggregate(Sum('volume'))
@@ -1175,14 +1175,14 @@ def OptionDailyVolumeGraphExpPutView(request):
     for i in range(len(exp_series)):
         exp_series_list.append(exp_series[i].strftime("%B")+" "+exp_series[i].strftime("%Y"))
 
-    #fill in volume sums
     exp_series_ = []
     for i in range(len(exp)):
         exp_series_.append(json.dumps(exp_series[i].strftime("%#Y-%#m-%d")))
         
     for item in range(len(exp_series_)):
         exp_series_[item]=exp_series_[item].replace('"', '')
-        
+    
+    #fill in volume sums
     puts=[]  
     for i in range(len(exp_series_)):
         q = queryset.filter(expmonthdate=exp_series_[i]).aggregate(Sum('volume'))
@@ -1688,3 +1688,41 @@ def FutureDailyGraphVolumeView(request):
         daily_sum_volumes.append({asset_list_fullname[i]:vol_sums[i]})
 
     return JsonResponse(daily_sum_volumes, safe=False)
+
+def FutureDailyVolumeGraphExpAllView(request):
+    qs = Future.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max']).exclude(futuresymbol__asset='FTSE')
+    assetids = queryset.values('futuresymbol').distinct()  
+    #fill in series months
+    assetids_=[]
+    for i in range(len(assetids)):
+        assetids_.append(assetids[i]['futuresymbol'])
+
+    symbols=[]
+    for i in range(len(assetids_)):
+        symbols.append(Futuresymbol.objects.filter(id=assetids_[i]))
+        
+    expseries = []
+    for i in range(len(symbols)):
+        expseries.append(symbols[i][0].expmonthdate)
+
+    expseries_list = unique(expseries) 
+
+    expseries_ = []
+    for i in range(len(expseries_list)):
+        expseries_.append(json.dumps(expseries_list[i].strftime("%B")+" "+expseries_list[i].strftime("%Y"))) 
+    #fill in volume sums
+    vols=[]
+    for i in range(len(expseries_list)):
+        vols.append(queryset.filter(futuresymbol__expmonthdate=expseries_list[i]).aggregate(Sum('volume')))
+
+    vol_sums=[]
+    for i in range(len(vols)):
+        vol_sums.append(vols[i]['volume__sum'])
+    #json dict
+    series_sum_volumes=[]
+    for i in range(len(expseries_)):
+        series_sum_volumes.append({expseries_[i]:vol_sums[i]})
+
+    return JsonResponse(series_sum_volumes, safe=False)

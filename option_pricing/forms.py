@@ -3,7 +3,7 @@ from . models import Option
 
 import datetime
 
-EXP_YEAR_CHOICES = [('', 'Choose...'), ('2019', '2019'), ('2020', '2020'), ('2021', '2021'),]
+EXP_YEAR_CHOICES = [('', 'Choose...'), ('2019', '2019'), ('2020', '2020'), ('2021', '2021'), ('2022', '2022'),]
 EXP_MONTH_CHOICES = [
     ('', 'Choose...'),
     ('1', 'JAN'),

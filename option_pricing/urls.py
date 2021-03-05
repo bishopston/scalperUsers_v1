@@ -33,6 +33,7 @@ urlpatterns = [
     #urls for futures daily stats
     path('futures/dailystats/', views.FutureDailyStatsView, name='futuredailystats'),
     path('futures/dailyvolumefuturesgraph/', views.FutureDailyGraphVolumeView, name='dailyvolumefutures'),
+    path('futures/seriesvolumefuturesgraph/', views.FutureDailyVolumeGraphExpAllView, name='seriesvolumefuturesall'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),
