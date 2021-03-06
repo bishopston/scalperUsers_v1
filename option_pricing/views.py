@@ -1199,6 +1199,84 @@ def OptionDailyVolumeGraphExpPutView(request):
 
     return JsonResponse(daily_exp_series_volumes, safe=False)
 
+def OptionDailyOpenIntGraphCallView(request):
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(optiontype='c').filter(expmonthdate__gte=F('date')).filter(date=max_date['date__max'])
+
+    #fill in exp series
+    exp = queryset.values('expmonthdate').order_by('expmonthdate').distinct()
+    exp_series = []
+    for i in range(len(exp)):
+        exp_series.append(exp[i]['expmonthdate'])
+
+    exp_series_list=[]
+    for i in range(len(exp_series)):
+        exp_series_list.append(exp_series[i].strftime("%B")+" "+exp_series[i].strftime("%Y"))
+
+    exp_series_ = []
+    for i in range(len(exp)):
+        exp_series_.append(json.dumps(exp_series[i].strftime("%#Y-%#m-%d")))
+        
+    for item in range(len(exp_series_)):
+        exp_series_[item]=exp_series_[item].replace('"', '')
+        
+    #fill in open_int sums
+    calls=[]  
+    for i in range(len(exp_series_)):
+        q = queryset.filter(expmonthdate=exp_series_[i]).aggregate(Sum('open_interest'))
+        calls.append(q)
+    
+    calls_open_int=[]
+    for i in range(len(calls)):
+        calls_open_int.append(calls[i]['open_interest__sum'])
+
+    #json dict
+    daily_exp_series_open_ints=[]
+    for i in range(len(exp_series_list)):
+        daily_exp_series_open_ints.append({exp_series_list[i]:calls_open_int[i]})
+
+    return JsonResponse(daily_exp_series_open_ints, safe=False)
+
+def OptionDailyOpenIntGraphPutView(request):
+    qs = Optionvolume.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(optiontype='p').filter(expmonthdate__gte=F('date')).filter(date=max_date['date__max'])
+
+    #fill in exp series
+    exp = queryset.values('expmonthdate').order_by('expmonthdate').distinct()
+    exp_series = []
+    for i in range(len(exp)):
+        exp_series.append(exp[i]['expmonthdate'])
+
+    exp_series_list=[]
+    for i in range(len(exp_series)):
+        exp_series_list.append(exp_series[i].strftime("%B")+" "+exp_series[i].strftime("%Y"))
+
+    exp_series_ = []
+    for i in range(len(exp)):
+        exp_series_.append(json.dumps(exp_series[i].strftime("%#Y-%#m-%d")))
+        
+    for item in range(len(exp_series_)):
+        exp_series_[item]=exp_series_[item].replace('"', '')
+    
+    #fill in open_int sums
+    puts=[]  
+    for i in range(len(exp_series_)):
+        q = queryset.filter(expmonthdate=exp_series_[i]).aggregate(Sum('open_interest'))
+        puts.append(q)
+    
+    puts_open_int=[]
+    for i in range(len(puts)):
+        puts_open_int.append(puts[i]['open_interest__sum'])
+
+    #json dict
+    daily_exp_series_open_ints=[]
+    for i in range(len(exp_series_list)):
+        daily_exp_series_open_ints.append({exp_series_list[i]:puts_open_int[i]})
+
+    return JsonResponse(daily_exp_series_open_ints, safe=False)
+
 def unique(list1):
  
     # intilize a null list
@@ -1707,7 +1785,7 @@ def FutureDailyVolumeGraphExpAllView(request):
     for i in range(len(symbols)):
         expseries.append(symbols[i][0].expmonthdate)
 
-    expseries_list = unique(expseries) 
+    expseries_list = sorted(unique(expseries)) 
 
     expseries_ = []
     for i in range(len(expseries_list)):
@@ -1726,3 +1804,100 @@ def FutureDailyVolumeGraphExpAllView(request):
         series_sum_volumes.append({expseries_[i]:vol_sums[i]})
 
     return JsonResponse(series_sum_volumes, safe=False)
+
+def FutureDailyVolumeGraphExpFtseView(request):
+    qs = Future.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max']).filter(futuresymbol__asset='FTSE')
+    assetids = queryset.values('futuresymbol').distinct()  
+    #fill in series months
+    assetids_=[]
+    for i in range(len(assetids)):
+        assetids_.append(assetids[i]['futuresymbol'])
+
+    symbols=[]
+    for i in range(len(assetids_)):
+        symbols.append(Futuresymbol.objects.filter(id=assetids_[i]))
+        
+    expseries = []
+    for i in range(len(symbols)):
+        expseries.append(symbols[i][0].expmonthdate)
+
+    expseries_list = sorted(unique(expseries))
+
+    expseries_ = []
+    for i in range(len(expseries_list)):
+        expseries_.append(json.dumps(expseries_list[i].strftime("%B")+" "+expseries_list[i].strftime("%Y"))) 
+    #fill in volume sums
+    vols=[]
+    for i in range(len(expseries_list)):
+        vols.append(queryset.filter(futuresymbol__expmonthdate=expseries_list[i]).aggregate(Sum('volume')))
+
+    vol_sums=[]
+    for i in range(len(vols)):
+        vol_sums.append(vols[i]['volume__sum'])
+    #json dict
+    series_sum_volumes=[]
+    for i in range(len(expseries_)):
+        series_sum_volumes.append({expseries_[i]:vol_sums[i]})
+
+    return JsonResponse(series_sum_volumes, safe=False)
+
+def FutureDailyGraphOpenIntView(request):
+    
+    qs = Future.objects.all()
+    max_date = qs.aggregate(Max('date'))
+    queryset = qs.filter(date=max_date['date__max'])
+    assetids = queryset.values('futuresymbol').distinct()  
+    
+    assetids_=[]
+    for i in range(len(assetids)):
+        assetids_.append(assetids[i]['futuresymbol'])
+
+    assets=[]
+    for i in range(len(assetids_)):
+        assets.append(Futuresymbol.objects.filter(id=assetids_[i]))
+        
+    assets_fullname = []
+    for i in range(len(assets)):
+        assets_fullname.append(assets[i][0].get_asset_display())
+
+    assets_=[]
+    for i in range(len(assets)):
+        assets_.append(assets[i][0].asset)
+
+    asset_list = unique(assets_)
+    asset_list_fullname = unique(assets_fullname)
+
+    openints=[]
+    for i in range(len(asset_list)):
+	    openints.append(queryset.filter(futuresymbol__asset=asset_list[i]).filter(futuresymbol__expmonthdate__gte=F('date')).aggregate(Sum('open_interest')))
+
+    openint_sums=[]
+    for i in range(len(openints)):
+        openint_sums.append(openints[i]['open_interest__sum'])
+
+    daily_sum_openints=[]
+    for i in range(len(asset_list_fullname)):
+        daily_sum_openints.append({asset_list_fullname[i]:openint_sums[i]})
+
+    return JsonResponse(daily_sum_openints, safe=False)
+
+def FutureHistoricalStatsView(request):
+    
+    q = Future.objects.all()
+    max_date = q.aggregate(Max('date'))
+    queryset = q.filter(date=max_date['date__max'])
+
+    assets=[]
+    for i in range(len(queryset)):
+        assets.append(queryset[i].get_asset_display())
+
+    assets_=[]
+    assets_ = sorted(unique(assets_))
+
+    context = {
+        'assets_': assets_,
+    }
+
+    return render(request, 'option_pricing/futurehiststats.html', context)

@@ -18,6 +18,8 @@ urlpatterns = [
     path('options/dailyvolumecallputgraph/', views.OptionDailyVolumeGraphCallPutView, name='dailyvolumecallput'),
     path('options/dailyvolumeexpcallgraph/', views.OptionDailyVolumeGraphExpCallView, name='dailyvolumeexpcall'),
     path('options/dailyvolumeexpputgraph/', views.OptionDailyVolumeGraphExpPutView, name='dailyvolumeexpput'),
+    path('options/dailyopenintcallgraph/', views.OptionDailyOpenIntGraphCallView, name='dailyopenintcall'),
+    path('options/dailyopenintputgraph/', views.OptionDailyOpenIntGraphPutView, name='dailyopenintput'),
     #path('options/descendingOI/', views.OptionDescendingOI, name='option_descendingOI'),
     #urls for options historical stats
     path('options/historicalstats/', views.OptionHistoricalStatsView, name='optionhiststats'),
@@ -34,6 +36,10 @@ urlpatterns = [
     path('futures/dailystats/', views.FutureDailyStatsView, name='futuredailystats'),
     path('futures/dailyvolumefuturesgraph/', views.FutureDailyGraphVolumeView, name='dailyvolumefutures'),
     path('futures/seriesvolumefuturesgraph/', views.FutureDailyVolumeGraphExpAllView, name='seriesvolumefuturesall'),
+    path('futures/seriesvolumefuturesftsegraph/', views.FutureDailyVolumeGraphExpFtseView, name='seriesvolumefuturesftse'),
+    path('futures/dailyopenintfuturesgraph/', views.FutureDailyGraphOpenIntView, name='dailyopenintfutures'),
+    #urls for options historical stats
+    path('futures/historicalstats/', views.FutureHistoricalStatsView, name='futurehiststats'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),

@@ -77,6 +77,20 @@
                               </div>
                             </div>
                           </div>
+                          <div class="carousel-item bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Open Interest per Expiration Series</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyOpenIntExpSeriesChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <a class="carousel-control-prev" href="#carouselOptionIndicators" role="button" data-slide="prev">
                           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -104,6 +118,8 @@
   var dataURLvolumecallput = `/options/dailyvolumecallputgraph/`
   var dataURLvolumeexpcall = `/options/dailyvolumeexpcallgraph/`
   var dataURLvolumeexpput = `/options/dailyvolumeexpputgraph/`
+  var dataURLopenintexpcall = `/options/dailyopenintcallgraph/`
+  var dataURLopenintexpput = `/options/dailyopenintputgraph/`
 
   var state ={	
   'itemscall':[],
@@ -118,6 +134,10 @@
   'valuesvolumeexpcall':[],
   'itemsvolumeexpput':[],
   'valuesvolumeexpput':[],
+  'itemsopenintexpcall':[],
+  'valuesopenintexpcall':[],
+  'itemsopenintexpput':[],
+  'valuesopenintexpput':[],
   }
 
   $.ajax({
@@ -239,6 +259,48 @@
             console.log(state.itemsvolumeexpput)
             console.log(state.valuesvolumeexpput)
             //setvolumeExpChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  $.ajax({
+        method: "GET",
+        url: dataURLopenintexpcall,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+            state.itemsopenintexpcall.push(key)
+            state.valuesopenintexpcall.push(value)
+            }
+            console.log(state.itemsopenintexpcall)
+            console.log(state.valuesopenintexpcall)
+            setopenintExpChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  $.ajax({
+        method: "GET",
+        url: dataURLopenintexpput,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+            state.itemsopenintexpput.push(key)
+            state.valuesopenintexpput.push(value)
+            }
+            console.log(state.itemsopenintexpput)
+            console.log(state.valuesopenintexpput)
+            //setopenintExpChart()
         },
         error: function(error_data){
             console.log("error")
@@ -397,6 +459,68 @@
       },{
           label: "Puts",
           data: state.valuesvolumeexpput,
+          borderWidth: 1,
+          borderColor: 'rgba(243, 45, 27, 0.5)',
+          backgroundColor: 'rgba(243, 45, 27, 0.5)',
+          order: 2
+      },
+      ]
+  },
+  options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },{
+                id: 'B',
+                position: 'right',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true,
+                    display: false
+                },
+                gridLines: {
+                display:false
+                }
+            },
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    sampleSize: 7
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+  }
+
+  function setopenintExpChart(){
+  //Chart.defaults.global.defaultFontStyle = 'Bold'
+  var ctx = document.getElementById("dailyOpenIntExpSeriesChart").getContext('2d');
+  
+  var dailyOpenIntExpSeriesChart = new Chart(ctx, {
+  responsive: true,
+  type: 'bar',
+  data: {
+      labels: state.itemsopenintexpcall,
+      datasets: [{
+          label: "Calls",
+          data: state.valuesopenintexpcall,
+          borderWidth: 1,
+          borderColor: 'rgba(63, 243, 27, 0.5)',
+          backgroundColor: 'rgba(63, 243, 27, 0.5)',
+          order: 1
+      },{
+          label: "Puts",
+          data: state.valuesopenintexpput,
           borderWidth: 1,
           borderColor: 'rgba(243, 45, 27, 0.5)',
           backgroundColor: 'rgba(243, 45, 27, 0.5)',

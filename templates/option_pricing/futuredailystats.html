@@ -49,6 +49,34 @@
                               </div>
                             </div>
                           </div>
+                          <div class="carousel-item bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Volume per Expiration Month - FTSE</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="seriesVolumeFtseChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
+                          <div class="carousel-item bg-light">
+                            <div class="row ml-1">
+                                <div class="col-md-12 d-flex justify-content-start">
+                                    <p class="font-weight-bold">Open Interest per Underlying</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                  <canvas id="dailyOpenIntChart" width="400" height="150"></canvas>
+                              </div>
+                              <div class="btn-group-vertical mt-3 mx-2">    
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <a class="carousel-control-prev" href="#carouselFutureIndicators" role="button" data-slide="prev">
                           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -68,14 +96,22 @@
 
 <script> 
 
+    var max_date = "{{max_date}}"
+
   var dataURLvolumeall = `{% url 'option_pricing:dailyvolumefutures'%}`
   var dataURLvolumeseriesall = `{% url 'option_pricing:seriesvolumefuturesall'%}`
+  var dataURLvolumeseriesftse = `{% url 'option_pricing:seriesvolumefuturesftse'%}`
+  var dataURLopenintall = `{% url 'option_pricing:dailyopenintfutures'%}`
 
   var statevolume ={	
   'itemsvol':[],
   'valuesvol':[],
   'itemsseriesvolall':[],
   'valuesseriesvolall':[],
+  'itemsseriesvolftse':[],
+  'valuesseriesvolftse':[],
+  'itemsopenint':[],
+  'valuesopenint':[],
   }
 
   $.ajax({
@@ -122,6 +158,49 @@
         }
   })
 
+  $.ajax({
+        method: "GET",
+        url: dataURLvolumeseriesftse,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var key_stripped = key.replace('"', '')
+				var key_stripped_stripped = key_stripped.replace('"', '')
+                var value = Object.values(response[i])[0]
+              
+                statevolume.itemsseriesvolftse.push(key_stripped_stripped)
+                statevolume.valuesseriesvolftse.push(value)
+            }
+            console.log(statevolume.itemsseriesvolftse)
+            console.log(statevolume.valuesseriesvolftse)
+            setVolSeriesFtseChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  $.ajax({
+        method: "GET",
+        url: dataURLopenintall,
+        success: function(response){
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+                statevolume.itemsopenint.push(key)
+                statevolume.valuesopenint.push(value)
+            }
+            console.log(statevolume.itemsopenint)
+            console.log(statevolume.valuesopenint)
+            setOpenIntChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
 
   function setVolChart(){
     //Chart.defaults.global.defaultFontStyle = 'Bold'
@@ -133,7 +212,7 @@
     data: {
         labels: statevolume.itemsvol,
         datasets: [{
-            label: "Daily Volume",
+            label: "Daily Volume " + max_date,
             data: statevolume.valuesvol,
             borderWidth: 1,
             borderColor: 'rgba(211, 166, 206, 0.5)',
@@ -167,12 +246,88 @@
     
     var seriesVolumeAllChart = new Chart(ctx, {
     responsive: true,
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
         labels: statevolume.itemsseriesvolall,
         datasets: [{
-            label: "Daily Volume",
+            label: "Daily Volume " + max_date,
             data: statevolume.valuesseriesvolall,
+            borderWidth: 1,
+            borderColor: 'rgba(211, 166, 206, 0.5)',
+            backgroundColor: 'rgba(211, 166, 206, 0.5)',
+            order: 1
+        },
+        ]
+    },
+    options: {
+          scales: {
+              xAxes: [{
+                  id: 'A',
+                  position: 'left',
+                  type: 'linear',
+                  ticks: {
+                      beginAtZero:true
+                  }
+              },
+              ],
+          },
+          legend: {
+              display: true,
+          }
+      }
+      })
+  }
+
+  function setVolSeriesFtseChart(){
+    //Chart.defaults.global.defaultFontStyle = 'Bold'
+    var ctx = document.getElementById("seriesVolumeFtseChart").getContext('2d');
+    
+    var seriesVolumeFtseChart = new Chart(ctx, {
+    responsive: true,
+    type: 'bar',
+    data: {
+        labels: statevolume.itemsseriesvolftse,
+        datasets: [{
+            label: "Daily Volume " + max_date,
+            data: statevolume.valuesseriesvolftse,
+            borderWidth: 1,
+            borderColor: 'rgba(211, 166, 206, 0.5)',
+            backgroundColor: 'rgba(211, 166, 206, 0.5)',
+            order: 1
+        },
+        ]
+    },
+    options: {
+          scales: {
+              yAxes: [{
+                  id: 'A',
+                  position: 'left',
+                  type: 'linear',
+                  ticks: {
+                      beginAtZero:true
+                  }
+              },
+              ],
+          },
+          legend: {
+              display: true,
+          }
+      }
+      })
+  }
+
+  function setOpenIntChart(){
+    //Chart.defaults.global.defaultFontStyle = 'Bold'
+    var ctx = document.getElementById("dailyOpenIntChart").getContext('2d');
+    
+    var dailyOpenIntChart = new Chart(ctx, {
+    responsive: true,
+    type: 'bar',
+    data: {
+        labels: statevolume.itemsopenint,
+        datasets: [{
+            label: "Daily Open Interest " + max_date,
+            data: statevolume.valuesopenint,
             borderWidth: 1,
             borderColor: 'rgba(211, 166, 206, 0.5)',
             backgroundColor: 'rgba(211, 166, 206, 0.5)',
