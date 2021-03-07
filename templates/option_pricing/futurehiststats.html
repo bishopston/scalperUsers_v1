@@ -1,8 +1,292 @@
 {%  extends "../base/base.html" %}
 {% block content %}
 
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
+<div class="container light-blue text-dark d-flex flex-wrap overflow-auto">
+    <div class="container">
+        <div class="row ml-1 p-1">
+            <h5>Trending Futures Statistics</h5>
+        </div>
+        <div class="data">
+            <div class="row d-flex justify-content-start">
+                <div class="pages">
+                    <div class="col-md-12">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a href="#histvol" class="nav-link active" role="tab" data-toggle="tab">Total Daily Volume</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#histopenint" class="nav-link" role="tab" data-toggle="tab">Total Daily Open Interest</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="my-3 tab-content justify-content-center">
+                        <div role="tabpanel" class="tab-pane active" id="histvol">
+                            <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row mx-3">
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_1M()"><small>1M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_3M()"><small>3M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_6M()"><small>6M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistVolAllChart_ALL()"><small>1Y</small></button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="histVolAllChart" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="btn-group-vertical mt-3 mx-2">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="histopenint">
+                            <div class="container bg-white text-dark" style="position: relative;">
+                                <div class="row mx-3">
+                                    <button class="btn btn-link" onclick="updatehistOpenIntAllChart_1M()"><small>1M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistOpenIntAllChart_3M()"><small>3M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistOpenIntAllChart_6M()"><small>6M</small></button>
+                                    <button class="btn btn-link" onclick="updatehistOpenIntAllChart_ALL()"><small>1Y</small></button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="histOIAllChart" width="400" height="150"></canvas>
+                                    </div>
+                                    <div class="btn-group-vertical mt-3 mx-2">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script> 
+
+    var histVolAllChart;
+
+    var datavolallURL = `{% url 'option_pricing:futurehistvolallstats'%}`
+
+    var statevol ={	
+		'itemsvolall':[],
+		'valuesvolall':[],
+        'itemsvolall23':[],
+		'valuesvolall23':[],
+        'itemsvolall68':[],
+		'valuesvolall68':[],
+        'itemsvolall135':[],
+		'valuesvolall135':[],
+	}
+
+    $.ajax({
+        method: "GET",
+        url: datavolallURL,
+        success: function(response){
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				statevol.itemsvolall.push(key)
+                statevol.valuesvolall.push(value)}
+
+            statevol.itemsvolall23 = statevol.itemsvolall.slice(-23)
+            statevol.valuesvolall23 = statevol.valuesvolall.slice(-23)
+
+            statevol.itemsvolall68 = statevol.itemsvolall.slice(-68)
+            statevol.valuesvolall68 = statevol.valuesvolall.slice(-68)   
+
+            statevol.itemsvolall135 = statevol.itemsvolall.slice(-135)
+            statevol.valuesvolall135 = statevol.valuesvolall.slice(-135)   
+
+            console.log(statevol.itemsvolall23)
+            console.log(statevol.valuesvolall23)
+            
+            setHistVolAllStatsGraph()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setHistVolAllStatsGraph(){
+        if (histVolAllChart) {
+            histVolAllChart.destroy();
+        }
+        var ctx = document.getElementById("histVolAllChart").getContext('2d');
+        
+        histVolAllChart = new Chart(ctx, {
+        responsive: true,
+        type: 'bar',
+        data: {
+            labels: statevol.itemsvolall23,
+            datasets: [{
+                label: 'Total Daily Volume',
+                data: statevol.valuesvolall23,
+                borderColor: 'rgba(211, 166, 206, 0.5)',
+                backgroundColor: 'rgba(211, 166, 206, 0.5)',
+            },
+            ]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 20,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }]
+            },
+        }
+        })
+    }
+
+    function updatehistVolAllChart_1M(){
+        histVolAllChart.data.labels = statevol.itemsvolall23;
+        histVolAllChart.data.datasets[0].data = statevol.valuesvolall23;
+        histVolAllChart.update();
+    };
+
+    function updatehistVolAllChart_3M(){
+        histVolAllChart.data.labels = statevol.itemsvolall68;
+        histVolAllChart.data.datasets[0].data = statevol.valuesvolall68;
+        histVolAllChart.update();
+    };
+
+    function updatehistVolAllChart_6M(){
+        histVolAllChart.data.labels = statevol.itemsvolall135;
+        histVolAllChart.data.datasets[0].data = statevol.valuesvolall135;
+        histVolAllChart.update();
+    };
+
+    function updatehistVolAllChart_ALL(){
+        histVolAllChart.data.labels = statevol.itemsvolall;
+        histVolAllChart.data.datasets[0].data = statevol.valuesvolall;
+        histVolAllChart.update();
+    };
+
+</script>
+
+<script>
+    
+    var histOIAllChart;
+
+    var dataopenintallURL = `{% url 'option_pricing:futurehistopenintallstats'%}`
+
+    var stateopenint ={	
+		'itemsopenintall':[],
+		'valuesopenintall':[],
+        'itemsopenintall23':[],
+		'valuesopenintall23':[],
+        'itemsopenintall68':[],
+		'valuesopenintall68':[], 
+        'itemsopenintall135':[],
+		'valuesopenintall135':[], 
+        'itemsopenintall252':[],
+        'valuesopenintall252':[],                   
+	}
+
+    $.ajax({
+        method: "GET",
+        url: dataopenintallURL,
+        success: function(response){
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				stateopenint.itemsopenintall.push(key)
+                stateopenint.valuesopenintall.push(value)}
+
+            stateopenint.itemsopenintall23 = stateopenint.itemsopenintall.slice(-23)
+            stateopenint.valuesopenintall23 = stateopenint.valuesopenintall.slice(-23)
+
+            stateopenint.itemsopenintall68 = stateopenint.itemsopenintall.slice(-68)
+            stateopenint.valuesopenintall68 = stateopenint.valuesopenintall.slice(-68)   
+
+            stateopenint.itemsopenintall135 = stateopenint.itemsopenintall.slice(-135)
+            stateopenint.valuesopenintall135 = stateopenint.valuesopenintall.slice(-135)   
+
+            stateopenint.itemsopenintall252 = stateopenint.itemsopenintall.slice(-252)
+            stateopenint.valuesopenintall252 = stateopenint.valuesopenintall.slice(-252)   
+
+            console.log(stateopenint.itemsopenintall23)
+            console.log(stateopenint.valuesopenintall23)
+            
+            setHistOpenIntAllStatsGraph()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setHistOpenIntAllStatsGraph(){
+        if (histOIAllChart) {
+            histOIAllChart.destroy();
+        }
+        var ctx = document.getElementById("histOIAllChart").getContext('2d');
+ 
+        //console.log(ctx)
+        histOIAllChart = new Chart(ctx, {
+        responsive: true,
+        type: 'bar',
+        data: {
+            labels: stateopenint.itemsopenintall23,
+            datasets: [{
+                label: 'Total Daily Open Interest',
+                data: stateopenint.valuesopenintall23,
+                borderColor: 'rgba(211, 166, 206, 0.5)',
+                backgroundColor: 'rgba(211, 166, 206, 0.5)',
+
+            },
+            ]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 20,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }]
+            },
+        }
+        })
+    }
+    function updatehistOpenIntAllChart_1M(){
+        histOIAllChart.data.labels = stateopenint.itemsopenintall23;
+        histOIAllChart.data.datasets[0].data = stateopenint.valuesopenintall23;
+        histOIAllChart.update();
+    };
+
+    function updatehistOpenIntAllChart_3M(){
+        histOIAllChart.data.labels = stateopenint.itemsopenintall68;
+        histOIAllChart.data.datasets[0].data = stateopenint.valuesopenintall68;
+        histOIAllChart.update();
+    };
+
+    function updatehistOpenIntAllChart_6M(){
+        histOIAllChart.data.labels = stateopenint.itemsopenintall135;
+        histOIAllChart.data.datasets[0].data = stateopenint.valuesopenintall135;
+        histOIAllChart.update();
+    };
+
+    function updatehistOpenIntAllChart_ALL(){
+        histOIAllChart.data.labels = stateopenint.itemsopenintall;
+        histOIAllChart.data.datasets[0].data = stateopenint.valuesopenintall;
+        histOIAllChart.update();
+    };
+    
+</script>
 
 {% endblock %}

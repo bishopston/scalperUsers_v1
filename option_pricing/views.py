@@ -1391,6 +1391,11 @@ def OptionHistVolumeGraphCallAllView(request):
     dates_volume_=[]
     for i in range(len(dates_volume_asc)): 
         dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    _dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        _dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_volume_)):                                  
+        _dates_volume_[item]=_dates_volume_[item].replace('"', '')
     for item in range(len(dates_volume_)):                                  
         dates_volume_[item]=dates_volume_[item].replace('"', '') 
     #fill in volume sums
@@ -1405,8 +1410,8 @@ def OptionHistVolumeGraphCallAllView(request):
 
     #json dict
     hist_call_volumes=[]
-    for i in range(len(dates_volume_)):
-        hist_call_volumes.append({dates_volume_[i]:calls_volume[i]})
+    for i in range(len(_dates_volume_)):
+        hist_call_volumes.append({_dates_volume_[i]:calls_volume[i]})
 
     return JsonResponse(hist_call_volumes, safe=False)
 
@@ -1476,6 +1481,13 @@ def OptionHistVolumeGraphCallAssetView(request, assetid):
         dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
     for item in range(len(dates_volume_)):                                  
         dates_volume_[item]=dates_volume_[item].replace('"', '') 
+
+    _dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        _dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_volume_)):                                  
+        _dates_volume_[item]=_dates_volume_[item].replace('"', '')
+
     #fill in volume sums
     calls=[]
     for i in range(len(dates_volume_)):
@@ -1488,8 +1500,8 @@ def OptionHistVolumeGraphCallAssetView(request, assetid):
 
     #json dict
     hist_call_volumes=[]
-    for i in range(len(dates_volume_)):
-        hist_call_volumes.append({dates_volume_[i]:calls_volume[i]})
+    for i in range(len(_dates_volume_)):
+        hist_call_volumes.append({_dates_volume_[i]:calls_volume[i]})
 
     return JsonResponse(hist_call_volumes, safe=False)
 
@@ -1547,6 +1559,13 @@ def OptionHistOpenIntGraphCallAllView(request):
         dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#Y-%#m-%d")))
     for item in range(len(dates_open_interest_)):                                  
         dates_open_interest_[item]=dates_open_interest_[item].replace('"', '') 
+
+    _dates_open_interest_=[]
+    for i in range(len(dates_open_interest_asc)): 
+        _dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_open_interest_)):                                  
+        _dates_open_interest_[item]=_dates_open_interest_[item].replace('"', '')
+
     #fill in volume sums
     calls=[]
     for i in range(len(dates_open_interest_)):
@@ -1559,8 +1578,8 @@ def OptionHistOpenIntGraphCallAllView(request):
 
     #json dict
     hist_call_open_interests=[]
-    for i in range(len(dates_open_interest_)):
-        hist_call_open_interests.append({dates_open_interest_[i]:calls_open_interest[i]})
+    for i in range(len(_dates_open_interest_)):
+        hist_call_open_interests.append({_dates_open_interest_[i]:calls_open_interest[i]})
 
     return JsonResponse(hist_call_open_interests, safe=False)
 
@@ -1618,6 +1637,13 @@ def OptionHistOpenIntGraphCallAssetView(request, assetid):
         dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#Y-%#m-%d")))
     for item in range(len(dates_open_interest_)):                                  
         dates_open_interest_[item]=dates_open_interest_[item].replace('"', '') 
+
+    _dates_open_interest_=[]
+    for i in range(len(dates_open_interest_asc)): 
+        _dates_open_interest_.append(json.dumps(dates_open_interest_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_open_interest_)):                                  
+        _dates_open_interest_[item]=_dates_open_interest_[item].replace('"', '') 
+
     #fill in volume sums
     calls=[]
     for i in range(len(dates_open_interest_)):
@@ -1630,8 +1656,8 @@ def OptionHistOpenIntGraphCallAssetView(request, assetid):
 
     #json dict
     hist_call_open_interests=[]
-    for i in range(len(dates_open_interest_)):
-        hist_call_open_interests.append({dates_open_interest_[i]:calls_open_interest[i]})
+    for i in range(len(_dates_open_interest_)):
+        hist_call_open_interests.append({_dates_open_interest_[i]:calls_open_interest[i]})
 
     return JsonResponse(hist_call_open_interests, safe=False)
 
@@ -1891,7 +1917,7 @@ def FutureHistoricalStatsView(request):
 
     assets=[]
     for i in range(len(queryset)):
-        assets.append(queryset[i].get_asset_display())
+        assets.append(queryset[i].futuresymbol.get_asset_display())
 
     assets_=[]
     assets_ = sorted(unique(assets_))
@@ -1901,3 +1927,121 @@ def FutureHistoricalStatsView(request):
     }
 
     return render(request, 'option_pricing/futurehiststats.html', context)
+
+def FutureHistVolumeGraphAllView(request):
+
+    queryset = Future.objects.all()
+    dates = queryset.values('date').order_by('-date').distinct()[:252] 
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    _dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        _dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_volume_)):                                  
+        _dates_volume_[item]=_dates_volume_[item].replace('"', '')
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    futures=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        futures.append(q)
+
+    futures_volume=[]
+    for i in range(len(futures)):
+        futures_volume.append(futures[i]['volume__sum'])
+
+    #json dict
+    hist_call_volumes=[]
+    for i in range(len(_dates_volume_)):
+        hist_call_volumes.append({_dates_volume_[i]:futures_volume[i]})
+
+    return JsonResponse(hist_call_volumes, safe=False)
+
+def FutureHistOpenIntGraphAllView(request):
+
+    queryset = Future.objects.all()
+    dates = queryset.values('date').order_by('-date').distinct()[:252] 
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    _dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        _dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_volume_)):                                  
+        _dates_volume_[item]=_dates_volume_[item].replace('"', '')
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+    #fill in volume sums
+    futures=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('open_interest'))
+        futures.append(q)
+
+    futures_volume=[]
+    for i in range(len(futures)):
+        futures_volume.append(futures[i]['open_interest__sum'])
+
+    #json dict
+    hist_call_volumes=[]
+    for i in range(len(_dates_volume_)):
+        hist_call_volumes.append({_dates_volume_[i]:futures_volume[i]})
+
+    return JsonResponse(hist_call_volumes, safe=False)
+
+def FutureHistVolumeGraphAssetView(request, asset):
+
+    #qs = Optionvolume.objects.all()
+    queryset = Future.objects.filter(asset=asset)
+    #queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+
+    _dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        _dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_volume_)):                                  
+        _dates_volume_[item]=_dates_volume_[item].replace('"', '')
+
+    #fill in volume sums
+    volumes=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('volume'))
+        volumes.append(q)
+
+    calls_volume=[]
+    for i in range(len(volumes)):
+        calls_volume.append(volumes[i]['volume__sum'])
+
+    #json dict
+    hist_call_volumes=[]
+    for i in range(len(_dates_volume_)):
+        hist_call_volumes.append({_dates_volume_[i]:calls_volume[i]})
+
+    return JsonResponse(hist_call_volumes, safe=False)

@@ -38,8 +38,11 @@ urlpatterns = [
     path('futures/seriesvolumefuturesgraph/', views.FutureDailyVolumeGraphExpAllView, name='seriesvolumefuturesall'),
     path('futures/seriesvolumefuturesftsegraph/', views.FutureDailyVolumeGraphExpFtseView, name='seriesvolumefuturesftse'),
     path('futures/dailyopenintfuturesgraph/', views.FutureDailyGraphOpenIntView, name='dailyopenintfutures'),
-    #urls for options historical stats
+    #urls for futures historical stats
     path('futures/historicalstats/', views.FutureHistoricalStatsView, name='futurehiststats'),
+    path('futures/histvolallfuturestats/', views.FutureHistVolumeGraphAllView, name='futurehistvolallstats'),
+    path('futures/histopenintallfuturestats/', views.FutureHistOpenIntGraphAllView, name='futurehistopenintallstats'),
+    path('futures/histvolassetstats/<str:asset>/', views.FutureHistVolumeGraphAssetView, name='futurehistvolassetstats'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),
