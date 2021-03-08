@@ -1920,11 +1920,13 @@ def FutureHistoricalStatsView(request):
         assets.append(queryset[i].futuresymbol.get_asset_display())
 
     assets_=[]
-    assets_ = sorted(unique(assets_))
+    assets_ = sorted(unique(assets))
 
     context = {
         'assets_': assets_,
     }
+
+    print(assets_)
 
     return render(request, 'option_pricing/futurehiststats.html', context)
 
@@ -2007,7 +2009,7 @@ def FutureHistOpenIntGraphAllView(request):
 def FutureHistVolumeGraphAssetView(request, asset):
 
     #qs = Optionvolume.objects.all()
-    queryset = Future.objects.filter(asset=asset)
+    queryset = Future.objects.filter(futuresymbol__asset=asset)
     #queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates

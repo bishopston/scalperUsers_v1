@@ -35,6 +35,22 @@
                         <option value="ADMIE">ADMIE</option>
                         <option value="ALPHA">ALPHA</option>
                     </select>
+                    <select id="asset" onchange="location = this.value;"> 
+                        <option value="" disabled selected>Select your option</option>
+                        {% for i in assets_ %}
+                            <option value="{% url 'option_pricing:option_descendingOI' %}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Dropdown button
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          {% for i in assets_ %}
+                              <a class="dropdown-item" href="{% url 'option_pricing:option_descendingOI' %}">{{ i }}</a>
+                          {% endfor %}
+                        </div>
+                      </div>
                 </div>
             </div>
         </div>
