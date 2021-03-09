@@ -240,6 +240,13 @@ class Future(models.Model):
     open_interest = models.IntegerField()
     stock = models.DecimalField(max_digits=8, decimal_places=2)
 
+class Futurevolumeaggasset(models.Model):
+
+    date = models.DateField()
+    asset = models.CharField(max_length=5,)
+    volume = models.IntegerField()
+    open_interest = models.IntegerField()
+
 class Stocksymbol(models.Model):
 
     ASSETS = [

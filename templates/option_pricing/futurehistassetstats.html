@@ -27,11 +27,52 @@
 <div class="container light-blue text-dark d-flex flex-wrap overflow-auto">
     <div class="container">
         <div class="row ml-1 mb-1 p-1 d-flex justify-content-between">
-            <h5>Trending Futures Statistics</h5>
+            <h5>Trending Futures Statistics - 
+                {% if underlying == 'BELA' %}
+                    JUMBO
+                {% elif underlying == 'CENER' %}
+                    CENERGY
+                {% elif underlying == 'EEE' %}
+                    COCA-COLA
+                {% elif underlying == 'ELLAK' %}
+                    ELLAKTOR
+                {% elif underlying == 'EUROB' %}
+                    EUROBANK
+                {% elif underlying == 'FOYRK' %}
+                    FOURLIS
+                {% elif underlying == 'GEKTE' %}
+                    GEKTERNA
+                {% elif underlying == 'HTO' %}
+                    OTE
+                {% elif underlying == 'INLOT' %}
+                    INTRALOT
+                {% elif underlying == 'INTRK' %}
+                    INTRACOM
+                {% elif underlying == 'MOH' %}
+                    MOTOR OIL
+                {% elif underlying == 'PPA' %}
+                    OLP
+                {% elif underlying == 'PPC' %}
+                    DEH
+                {% elif underlying == 'TATT' %}
+                    ATTICA BANK
+                {% elif underlying == 'TENER' %}
+                    TERNA ENERGY
+                {% elif underlying == 'TITC' %}
+                    TITAN
+                {% elif underlying == 'TPEIR' %}
+                    PEIRAIOS
+                {% elif underlying == 'VIO' %}
+                    VIOHALCO
+                {% else %}
+                    {{underlying}}  
+                {% endif %}
+            </h5>
             <div class="wrapper mr-2">               
                 <div class="menu">
                     <select id="asset" onchange="location = this.value;"> 
                         <option value="" disabled selected>Select Underlying</option>
+                        <option value="{% url 'option_pricing:futurehiststats' %}">ALL</option>
                         {% for i in assets_ %}
                             <option value="{% url 'option_pricing:futurehistasset' i %}">
                                 {% if i == 'BELA' %}
@@ -97,10 +138,10 @@
                             <div role="tabpanel" class="tab-pane active" id="histvol">
                                 <div class="container bg-white text-dark" style="position: relative;">
                                     <div class="row mx-3">
-                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_1M()"><smasset>1M</smasset></button>
-                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_3M()"><smasset>3M</smasset></button>
-                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_6M()"><smasset>6M</smasset></button>
-                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_ALL()"><smasset>1Y</smasset></button>
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_ALL()"><small>1Y</small></button>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -112,22 +153,20 @@
                                     </div>
                                 </div>
                             </div>			
-                            <div class="my-3 tab-content justify-content-center">
-                                <div role="tabpanel" class="tab-pane" id="histopenint">
-                                    <div class="container bg-white text-dark" style="position: relative;">
-                                        <div class="row mx-3">
-                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_1M()"><smasset>1M</smasset></button>
-                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_3M()"><smasset>3M</smasset></button>
-                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_6M()"><smasset>6M</smasset></button>
-                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_ALL()"><smasset>1Y</smasset></button>
+                            <div role="tabpanel" class="tab-pane" id="histopenint">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_ALL()"><small>1Y</small></button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <canvas id="histOIAssetChart" width="400" height="150"></canvas>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <canvas id="histOIAssetChart" width="400" height="150"></canvas>
-                                            </div>
-                                            <div class="btn-group-vertical mt-3 mx-2">
+                                        <div class="btn-group-vertical mt-3 mx-2">
 
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -247,7 +286,7 @@
         data: {
             labels: statevol.itemsvolasset23,
             datasets: [{
-                label: 'Total Daily Volume',
+                label: 'Daily Volume',
                 data: statevol.valuesvolasset23,
                 borderColor: 'rgba(211, 166, 206, 0.5)',
                 backgroundColor: 'rgba(211, 166, 206, 0.5)',
@@ -282,7 +321,7 @@
         data: {
             labels: stateopenint.itemsopenintasset23,
             datasets: [{
-                label: 'Total Daily Open Interest',
+                label: 'Daily Open Interest',
                 data: stateopenint.valuesopenintasset23,
                 borderColor: 'rgba(211, 166, 206, 0.5)',
                 backgroundColor: 'rgba(211, 166, 206, 0.5)',

@@ -32,6 +32,7 @@
                 <div class="menu">
                     <select id="asset" onchange="location = this.value;"> 
                         <option value="" disabled selected>Select Underlying</option>
+                        <option value="{% url 'option_pricing:futurehiststats' %}">ALL</option>
                         {% for i in assets_ %}
                             <option value="{% url 'option_pricing:futurehistasset' i %}">
                                 {% if i == 'BELA' %}

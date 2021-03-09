@@ -11,7 +11,7 @@ import calendar
 import json
 from decimal import Decimal
 
-from .models import Option, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futuresymbol
+from .models import Option, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futuresymbol, Futurevolumeaggasset
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
 
@@ -1930,7 +1930,7 @@ def FutureHistoricalStatsView(request):
 
 def FutureHistVolumeGraphAllView(request):
 
-    queryset = Future.objects.all()
+    queryset = Futurevolumeaggasset.objects.all()
     dates = queryset.values('date').order_by('-date').distinct()[:252] 
     #fill in historical dates
     dates_volume=[]
@@ -1968,7 +1968,7 @@ def FutureHistVolumeGraphAllView(request):
 
 def FutureHistOpenIntGraphAllView(request):
 
-    queryset = Future.objects.all()
+    queryset = Futurevolumeaggasset.objects.all()
     dates = queryset.values('date').order_by('-date').distinct()[:252] 
     #fill in historical dates
     dates_volume=[]
@@ -2030,9 +2030,8 @@ def FutureHistAssetView(request, asset):
 
 def FutureHistVolumeGraphAssetView(request, asset):
 
-    #qs = Optionvolume.objects.all()
-    queryset = Future.objects.filter(futuresymbol__asset=asset)
-    #queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    #queryset = Future.objects.filter(futuresymbol__asset=asset)
+    queryset = Futurevolumeaggasset.objects.filter(asset=asset)
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_volume=[]
@@ -2072,9 +2071,8 @@ def FutureHistVolumeGraphAssetView(request, asset):
 
 def FutureHistOpenIntGraphAssetView(request, asset):
 
-    #qs = Optionvolume.objects.all()
-    queryset = Future.objects.filter(futuresymbol__asset=asset)
-    #queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    #queryset = Future.objects.filter(futuresymbol__asset=asset)
+    queryset = Futurevolumeaggasset.objects.filter(asset=asset)
     dates = queryset.values('date').order_by('-date').distinct()[:252]  
     #fill in historical dates
     dates_volume=[]
