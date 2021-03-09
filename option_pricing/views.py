@@ -1915,18 +1915,16 @@ def FutureHistoricalStatsView(request):
     max_date = q.aggregate(Max('date'))
     queryset = q.filter(date=max_date['date__max'])
 
-    assets=[]
+    _assets=[]
     for i in range(len(queryset)):
-        assets.append(queryset[i].futuresymbol.get_asset_display())
+        _assets.append(queryset[i].futuresymbol.asset)
 
     assets_=[]
-    assets_ = sorted(unique(assets))
+    assets_ = sorted(unique(_assets))
 
     context = {
         'assets_': assets_,
     }
-
-    print(assets_)
 
     return render(request, 'option_pricing/futurehiststats.html', context)
 
@@ -2006,6 +2004,30 @@ def FutureHistOpenIntGraphAllView(request):
 
     return JsonResponse(hist_call_volumes, safe=False)
 
+def FutureHistAssetView(request, asset):
+    underlying = asset
+
+    q = Future.objects.all()
+    max_date = q.aggregate(Max('date'))
+    queryset = q.filter(date=max_date['date__max'])
+
+    #assets=[]
+    _assets=[]
+    for i in range(len(queryset)):
+        #assets.append(queryset[i].futuresymbol.get_asset_display())
+        _assets.append(queryset[i].futuresymbol.asset)
+
+    assets_=[]
+    assets_ = sorted(unique(_assets))
+
+    context = {
+        'assets_': assets_,
+        #'_assets': _assets,
+        'underlying': underlying,
+    }
+
+    return render(request, 'option_pricing/futurehistassetstats.html', context)
+
 def FutureHistVolumeGraphAssetView(request, asset):
 
     #qs = Optionvolume.objects.all()
@@ -2040,6 +2062,48 @@ def FutureHistVolumeGraphAssetView(request, asset):
     calls_volume=[]
     for i in range(len(volumes)):
         calls_volume.append(volumes[i]['volume__sum'])
+
+    #json dict
+    hist_call_volumes=[]
+    for i in range(len(_dates_volume_)):
+        hist_call_volumes.append({_dates_volume_[i]:calls_volume[i]})
+
+    return JsonResponse(hist_call_volumes, safe=False)
+
+def FutureHistOpenIntGraphAssetView(request, asset):
+
+    #qs = Optionvolume.objects.all()
+    queryset = Future.objects.filter(futuresymbol__asset=asset)
+    #queryset = qs.filter(asset=asset_name).filter(optiontype='c').filter(expmonthdate__gte=F('date')) 
+    dates = queryset.values('date').order_by('-date').distinct()[:252]  
+    #fill in historical dates
+    dates_volume=[]
+    for i in range(len(dates)): 
+        dates_volume.append(dates[i]['date']) 
+
+    dates_volume_asc = sorted(dates_volume) 
+
+    dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#Y-%#m-%d")))
+    for item in range(len(dates_volume_)):                                  
+        dates_volume_[item]=dates_volume_[item].replace('"', '') 
+
+    _dates_volume_=[]
+    for i in range(len(dates_volume_asc)): 
+        _dates_volume_.append(json.dumps(dates_volume_asc[i].strftime("%#d-%#m-%Y")))
+    for item in range(len(_dates_volume_)):                                  
+        _dates_volume_[item]=_dates_volume_[item].replace('"', '')
+
+    #fill in volume sums
+    volumes=[]
+    for i in range(len(dates_volume_)):
+        q = queryset.filter(date=dates_volume_[i]).aggregate(Sum('open_interest'))
+        volumes.append(q)
+
+    calls_volume=[]
+    for i in range(len(volumes)):
+        calls_volume.append(volumes[i]['open_interest__sum'])
 
     #json dict
     hist_call_volumes=[]

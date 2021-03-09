@@ -1,0 +1,358 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+<style>
+    .menu{
+        width: 100%;
+    }
+
+    #asset{
+        width: 100%;
+        padding-left: 15px;
+        padding-right: 60px;
+        font-size: 16px;
+
+        font-family: 'Poppins', sans-serif;
+        border: none;
+        border-radius: 8px;
+        border: 2px solid #3f51b5;
+        box-shadow: 0 15px 15px #efefef;
+        
+        background: #e8eaf6;
+    }
+</style>
+
+<div class="container light-blue text-dark d-flex flex-wrap overflow-auto">
+    <div class="container">
+        <div class="row ml-1 mb-1 p-1 d-flex justify-content-between">
+            <h5>Trending Futures Statistics</h5>
+            <div class="wrapper mr-2">               
+                <div class="menu">
+                    <select id="asset" onchange="location = this.value;"> 
+                        <option value="" disabled selected>Select Underlying</option>
+                        {% for i in assets_ %}
+                            <option value="{% url 'option_pricing:futurehistasset' i %}">
+                                {% if i == 'BELA' %}
+                                    JUMBO
+                                {% elif i == 'CENER' %}
+                                    CENERGY
+                                {% elif i == 'EEE' %}
+                                    COCA-COLA
+                                {% elif i == 'ELLAK' %}
+                                    ELLAKTOR
+                                {% elif i == 'EUROB' %}
+                                    EUROBANK
+                                {% elif i == 'FOYRK' %}
+                                    FOURLIS
+                                {% elif i == 'GEKTE' %}
+                                    GEKTERNA
+                                {% elif i == 'HTO' %}
+                                    OTE
+                                {% elif i == 'INLOT' %}
+                                    INTRALOT
+                                {% elif i == 'INTRK' %}
+                                    INTRACOM
+                                {% elif i == 'MOH' %}
+                                    MOTOR OIL
+                                {% elif i == 'PPA' %}
+                                    OLP
+                                {% elif i == 'PPC' %}
+                                    DEH
+                                {% elif i == 'TATT' %}
+                                    ATTICA BANK
+                                {% elif i == 'TENER' %}
+                                    TERNA ENERGY
+                                {% elif i == 'TITC' %}
+                                    TITAN
+                                {% elif i == 'TPEIR' %}
+                                    PEIRAIOS
+                                {% elif i == 'VIO' %}
+                                    VIOHALCO
+                                {% else %}
+                                    {{i}}                                   
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div id="all" class="data">
+                <div class="row d-flex justify-content-start">
+                    <div class="pages">
+                        <div class="col-md-12">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item">
+                                    <a href="#histvol" class="nav-link active" role="tab" data-toggle="tab">Daily Volume</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#histopenint" class="nav-link" role="tab" data-toggle="tab">Daily Open Interest</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="my-3 tab-content justify-content-center">
+                            <div role="tabpanel" class="tab-pane active" id="histvol">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_1M()"><smasset>1M</smasset></button>
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_3M()"><smasset>3M</smasset></button>
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_6M()"><smasset>6M</smasset></button>
+                                        <button class="btn btn-link" onclick="updatehistVolAssetChart_ALL()"><smasset>1Y</smasset></button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <canvas id="histVolAssetChart" width="400" height="150"></canvas>
+                                        </div>
+                                        <div class="btn-group-vertical mt-3 mx-2">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>			
+                            <div class="my-3 tab-content justify-content-center">
+                                <div role="tabpanel" class="tab-pane" id="histopenint">
+                                    <div class="container bg-white text-dark" style="position: relative;">
+                                        <div class="row mx-3">
+                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_1M()"><smasset>1M</smasset></button>
+                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_3M()"><smasset>3M</smasset></button>
+                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_6M()"><smasset>6M</smasset></button>
+                                            <button class="btn btn-link" onclick="updatehistOpenIntAssetChart_ALL()"><smasset>1Y</smasset></button>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <canvas id="histOIAssetChart" width="400" height="150"></canvas>
+                                            </div>
+                                            <div class="btn-group-vertical mt-3 mx-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script> 
+
+    var histVolAssetChart;
+    var histOIAssetChart;
+	var underlying = "{{underlying}}"
+
+    var datavolassetURL = `/futures/histvolassetstats/${underlying}/`
+    var dataopenintassetURL = `/futures/histopenintassetstats/${underlying}/`
+
+    var statevol ={	
+		'itemsvolasset':[],
+		'valuesvolasset':[],
+        'itemsvolasset23':[],
+		'valuesvolasset23':[],
+        'itemsvolasset68':[],
+		'valuesvolasset68':[],
+        'itemsvolasset135':[],
+		'valuesvolasset135':[],
+	}
+
+    var stateopenint ={	
+		'itemsopenintasset':[],
+		'valuesopenintasset':[],
+        'itemsopenintasset23':[],
+		'valuesopenintasset23':[],
+        'itemsopenintasset68':[],
+		'valuesopenintasset68':[], 
+        'itemsopenintasset135':[],
+		'valuesopenintasset135':[],                 
+	}
+
+    $.ajax({
+        method: "GET",
+        url: datavolassetURL,
+        success: function(response){
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				statevol.itemsvolasset.push(key)
+                statevol.valuesvolasset.push(value)}
+
+            statevol.itemsvolasset23 = statevol.itemsvolasset.slice(-23)
+            statevol.valuesvolasset23 = statevol.valuesvolasset.slice(-23)
+
+            statevol.itemsvolasset68 = statevol.itemsvolasset.slice(-68)
+            statevol.valuesvolasset68 = statevol.valuesvolasset.slice(-68)   
+
+            statevol.itemsvolasset135 = statevol.itemsvolasset.slice(-135)
+            statevol.valuesvolasset135 = statevol.valuesvolasset.slice(-135)   
+
+            console.log(statevol.itemsvolasset23)
+            console.log(statevol.valuesvolasset23)
+            
+            setHistVolAssetStatsGraph()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    $.ajax({
+        method: "GET",
+        url: dataopenintassetURL,
+        success: function(response){
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				stateopenint.itemsopenintasset.push(key)
+                stateopenint.valuesopenintasset.push(value)}
+
+            stateopenint.itemsopenintasset23 = stateopenint.itemsopenintasset.slice(-23)
+            stateopenint.valuesopenintasset23 = stateopenint.valuesopenintasset.slice(-23)
+
+            stateopenint.itemsopenintasset68 = stateopenint.itemsopenintasset.slice(-68)
+            stateopenint.valuesopenintasset68 = stateopenint.valuesopenintasset.slice(-68)   
+
+            stateopenint.itemsopenintasset135 = stateopenint.itemsopenintasset.slice(-135)
+            stateopenint.valuesopenintasset135 = stateopenint.valuesopenintasset.slice(-135)     
+
+            console.log(stateopenint.itemsopenintasset23)
+            console.log(stateopenint.valuesopenintasset23)
+            
+            setHistOpenIntAllStatsGraph()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setHistVolAssetStatsGraph(){
+        if (histVolAssetChart) {
+            histVolAssetChart.destroy();
+        }
+        var ctx = document.getElementById("histVolAssetChart").getContext('2d');
+        
+        histVolAssetChart = new Chart(ctx, {
+        responsive: true,
+        type: 'bar',
+        data: {
+            labels: statevol.itemsvolasset23,
+            datasets: [{
+                label: 'Total Daily Volume',
+                data: statevol.valuesvolasset23,
+                borderColor: 'rgba(211, 166, 206, 0.5)',
+                backgroundColor: 'rgba(211, 166, 206, 0.5)',
+            },
+            ]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 20,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }]
+            },
+        }
+        })
+    }
+
+    function setHistOpenIntAllStatsGraph(){
+        if (histOIAssetChart) {
+            histOIAssetChart.destroy();
+        }
+        var ctx = document.getElementById("histOIAssetChart").getContext('2d');
+ 
+        //console.log(ctx)
+        histOIAssetChart = new Chart(ctx, {
+        responsive: true,
+        type: 'bar',
+        data: {
+            labels: stateopenint.itemsopenintasset23,
+            datasets: [{
+                label: 'Total Daily Open Interest',
+                data: stateopenint.valuesopenintasset23,
+                borderColor: 'rgba(211, 166, 206, 0.5)',
+                backgroundColor: 'rgba(211, 166, 206, 0.5)',
+
+            },
+            ]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 20,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }]
+            },
+        }
+        })
+    }
+
+    function updatehistVolAssetChart_1M(){
+        histVolAssetChart.data.labels = statevol.itemsvolasset23;
+        histVolAssetChart.data.datasets[0].data = statevol.valuesvolasset23;
+        histVolAssetChart.update();
+    };
+
+    function updatehistVolAssetChart_3M(){
+        histVolAssetChart.data.labels = statevol.itemsvolasset68;
+        histVolAssetChart.data.datasets[0].data = statevol.valuesvolasset68;
+        histVolAssetChart.update();
+    };
+
+    function updatehistVolAssetChart_6M(){
+        histVolAssetChart.data.labels = statevol.itemsvolasset135;
+        histVolAssetChart.data.datasets[0].data = statevol.valuesvolasset135;
+        histVolAssetChart.update();
+    };
+
+    function updatehistVolAssetChart_ALL(){
+        histVolAssetChart.data.labels = statevol.itemsvolasset;
+        histVolAssetChart.data.datasets[0].data = statevol.valuesvolasset;
+        histVolAssetChart.update();
+    };
+
+    function updatehistOpenIntAssetChart_1M(){
+        histOIAssetChart.data.labels = stateopenint.itemsopenintasset23;
+        histOIAssetChart.data.datasets[0].data = stateopenint.valuesopenintasset23;
+        histOIAssetChart.update();
+    };
+
+    function updatehistOpenIntAssetChart_3M(){
+        histOIAssetChart.data.labels = stateopenint.itemsopenintasset68;
+        histOIAssetChart.data.datasets[0].data = stateopenint.valuesopenintasset68;
+        histOIAssetChart.update();
+    };
+
+    function updatehistOpenIntAssetChart_6M(){
+        histOIAssetChart.data.labels = stateopenint.itemsopenintasset135;
+        histOIAssetChart.data.datasets[0].data = stateopenint.valuesopenintasset135;
+        histOIAssetChart.update();
+    };
+
+    function updatehistOpenIntAssetChart_ALL(){
+        histOIAssetChart.data.labels = stateopenint.itemsopenintasset;
+        histOIAssetChart.data.datasets[0].data = stateopenint.valuesopenintasset;
+        histOIAssetChart.update();
+    };
+    
+</script>
+
+{% endblock %}

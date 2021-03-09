@@ -13,7 +13,7 @@
         padding-left: 15px;
         padding-right: 60px;
         font-size: 16px;
-        font-weight: 700;
+
         font-family: 'Poppins', sans-serif;
         border: none;
         border-radius: 8px;
@@ -30,27 +30,52 @@
             <h5>Trending Futures Statistics</h5>
             <div class="wrapper mr-2">               
                 <div class="menu">
-                    <select id="asset">
-                        <option value="all">ALL</option>
-                        <option value="ADMIE">ADMIE</option>
-                        <option value="ALPHA">ALPHA</option>
-                    </select>
                     <select id="asset" onchange="location = this.value;"> 
-                        <option value="" disabled selected>Select your option</option>
+                        <option value="" disabled selected>Select Underlying</option>
                         {% for i in assets_ %}
-                            <option value="{% url 'option_pricing:option_descendingOI' %}">{{ i }}</option>
+                            <option value="{% url 'option_pricing:futurehistasset' i %}">
+                                {% if i == 'BELA' %}
+                                    JUMBO
+                                {% elif i == 'CENER' %}
+                                    CENERGY
+                                {% elif i == 'EEE' %}
+                                    COCA-COLA
+                                {% elif i == 'ELLAK' %}
+                                    ELLAKTOR
+                                {% elif i == 'EUROB' %}
+                                    EUROBANK
+                                {% elif i == 'FOYRK' %}
+                                    FOURLIS
+                                {% elif i == 'GEKTE' %}
+                                    GEKTERNA
+                                {% elif i == 'HTO' %}
+                                    OTE
+                                {% elif i == 'INLOT' %}
+                                    INTRALOT
+                                {% elif i == 'INTRK' %}
+                                    INTRACOM
+                                {% elif i == 'MOH' %}
+                                    MOTOR OIL
+                                {% elif i == 'PPA' %}
+                                    OLP
+                                {% elif i == 'PPC' %}
+                                    DEH
+                                {% elif i == 'TATT' %}
+                                    ATTICA BANK
+                                {% elif i == 'TENER' %}
+                                    TERNA ENERGY
+                                {% elif i == 'TITC' %}
+                                    TITAN
+                                {% elif i == 'TPEIR' %}
+                                    PEIRAIOS
+                                {% elif i == 'VIO' %}
+                                    VIOHALCO
+                                {% else %}
+                                    {{i}}                                   
+                                {% endif %}
+                            </option>
                         {% endfor %}
                     </select>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Dropdown button
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          {% for i in assets_ %}
-                              <a class="dropdown-item" href="{% url 'option_pricing:option_descendingOI' %}">{{ i }}</a>
-                          {% endfor %}
-                        </div>
-                      </div>
                 </div>
             </div>
         </div>
@@ -109,26 +134,9 @@
                     </div>
                 </div>
             </div>
-            <div id="ADMIE" class="data">
-                <h3>ADMIE</h3>
-            </div>
-            <div id="ALPHA" class="data">
-                <h3>ALPHA</h3>
-            </div>
         </div>
     </div>
 </div>
-
-<script>
-
-    $(document).ready(function(){
-        $("#asset").on('change', function(){
-            $(".data").hide();
-            $("#" + $(this).val()).fadeIn(700);
-        }).change();
-    });
-
-</script>
 
 <script> 
 

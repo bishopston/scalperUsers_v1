@@ -42,7 +42,9 @@ urlpatterns = [
     path('futures/historicalstats/', views.FutureHistoricalStatsView, name='futurehiststats'),
     path('futures/histvolallfuturestats/', views.FutureHistVolumeGraphAllView, name='futurehistvolallstats'),
     path('futures/histopenintallfuturestats/', views.FutureHistOpenIntGraphAllView, name='futurehistopenintallstats'),
+    path('futures/historical/<str:asset>/', views.FutureHistAssetView, name='futurehistasset'),
     path('futures/histvolassetstats/<str:asset>/', views.FutureHistVolumeGraphAssetView, name='futurehistvolassetstats'),
+    path('futures/histopenintassetstats/<str:asset>/', views.FutureHistOpenIntGraphAssetView, name='futurehistopenintassetstats'),
     #urls for greatest OI templates
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),
