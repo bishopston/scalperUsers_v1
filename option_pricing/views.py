@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.db.models import Max, Min, Avg, Sum, F
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
+from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 
@@ -406,6 +407,51 @@ class OptionScreenersListCBV(View):
                     opt.optionsymbol.optionscreeners.add(request.user)
                     is_fav = True
             return redirect('option_pricing:myoptionscreenerlistcbv')
+
+def OptionScreenersDataView(request):
+    option = Option.objects.all()
+    
+    asset_query = request.GET.get('asset')
+    callputflag_query = request.GET.get('option_type')
+    exp_month_query = request.GET.get('exp_month')
+    exp_year_query = request.GET.get('exp_year')
+
+    if asset_query != '' and asset_query is not None:
+        option = option.filter(optionsymbol__asset__iexact=asset_query)
+
+    if callputflag_query != '' and callputflag_query is not None:
+        option = option.filter(optionsymbol__optiontype__iexact=callputflag_query)
+
+    if exp_month_query != '' and exp_month_query is not None:
+        option = option.filter(optionsymbol__expmonthdate__month=exp_month_query)
+
+    if exp_year_query != '' and exp_year_query is not None:
+        option = option.filter(optionsymbol__expmonthdate__year=exp_year_query)
+
+    max_date = option.aggregate(Max('date'))
+    queryset = option.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
+
+    queryset_num = queryset.count()
+
+    paginator = Paginator(queryset, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+    'queryset' : queryset,
+    'max_date' : max_date,
+    'asset_query': asset_query,
+    'callputflag_query': callputflag_query,
+    'exp_month_query' : exp_month_query,
+    'exp_year_query' : exp_year_query,
+    'queryset_num' : queryset_num,
+    'page_obj': page_obj
+    }
+
+    if request.is_ajax():
+        html = render_to_string('option_pricing/option_screeners_data.html', context, request=request)
+    
+    return JsonResponse({'form' : html})
 
 
 def OptionGreatestOI(request):
