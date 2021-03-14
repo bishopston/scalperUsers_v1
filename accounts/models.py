@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from django.conf import settings
 
 class CustomUserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -42,3 +42,10 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
+class Portfolio(models.Model):
+    name = models.CharField(max_length=30)
+    creator = models.ForeignKey(
+	    settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

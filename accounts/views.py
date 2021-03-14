@@ -16,7 +16,7 @@ from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 
 from accounts.forms import UserAdminCreationForm
-from accounts.models import CustomUser
+from accounts.models import CustomUser, Portfolio
 from option_pricing.models import Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
@@ -289,3 +289,10 @@ def myImpliedATMScreeners(request):
     if request.is_ajax():
         html = render_to_string('accounts/myimpliedatmscreeners_section.html', context, request=request)
         return JsonResponse({'form' : html})
+
+@ login_required
+def PortfolioView(request):
+    myportfolios = Portfolio.objects.filter(creator=request.user)
+    return render(request,
+                  'accounts/myportfolios.html',
+                  {'myportfolios': myportfolios})

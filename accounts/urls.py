@@ -29,4 +29,6 @@ urlpatterns = [
           name='validate_email'),    
      path('validate-password/', csrf_exempt(PasswordValidationView.as_view()),
           name='validate_password'),  
+     #portfolio urls
+     path('portfolio/', views.PortfolioView, name='portfolio'),
 ]
