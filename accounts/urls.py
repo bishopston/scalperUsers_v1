@@ -31,4 +31,5 @@ urlpatterns = [
           name='validate_password'),  
      #portfolio urls
      path('portfolio/', views.PortfolioView, name='portfolio'),
+     path('portfolio-delete/', views.DeletePortfolioView, name='portfolio-delete'),
 ]

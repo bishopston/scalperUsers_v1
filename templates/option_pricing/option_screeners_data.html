@@ -56,7 +56,7 @@
         {% if request.user.is_authenticated %}
             <button id="fav_btn" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My Screeners</button>
         {% else %}
-            <a class="btn btn-sm btn-primary h-25 d-inline-block" href='{% url "accounts:register" %}' role="button">Add to My Screeners</a>
+            <a class="btn btn-sm btn-primary h-25 d-inline-block" href='{% url "accounts:login" %}' role="button">Add to My Screeners</a>
         {% endif %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-end">

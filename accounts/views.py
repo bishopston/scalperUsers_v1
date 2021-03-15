@@ -10,12 +10,13 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.views import View
+from django.urls import reverse
 import json
 from validate_email import validate_email
 from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 
-from accounts.forms import UserAdminCreationForm
+from accounts.forms import UserAdminCreationForm, CreatePortfolioForm
 from accounts.models import CustomUser, Portfolio
 from option_pricing.models import Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
@@ -293,6 +294,28 @@ def myImpliedATMScreeners(request):
 @ login_required
 def PortfolioView(request):
     myportfolios = Portfolio.objects.filter(creator=request.user)
-    return render(request,
-                  'accounts/myportfolios.html',
-                  {'myportfolios': myportfolios})
+
+    form = CreatePortfolioForm()
+    if request.method == "POST":
+        form = CreatePortfolioForm(request.POST)
+        if form.is_valid():
+            portfolio = Portfolio(
+                name = form.cleaned_data["name"],
+                creator = request.user
+            )
+            portfolio.save()
+        return HttpResponseRedirect(reverse('accounts:portfolio'))
+
+    context = {'myportfolios': myportfolios,
+                'form': form}
+
+    return render(request, 'accounts/myportfolios.html', context)
+
+@ login_required
+def DeletePortfolioView(request):
+    if request.method == "POST":
+        portfolio_ids = request.POST.getlist('id[]')
+        for id in portfolio_ids:
+            portfolio = Portfolio.objects.get(pk=id)
+            portfolio.delete()
+        return redirect('accounts:portfolio')
