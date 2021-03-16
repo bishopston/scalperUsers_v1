@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from accounts.models import CustomUser
+from accounts.models import CustomUser, Portfolio
 
 class Optionseries(models.Model):
 
@@ -54,6 +54,8 @@ class Optionsymbol(models.Model):
 	    CustomUser, related_name='favourite', default=None, blank=True)
     optionscreeners = models.ManyToManyField(
 	    CustomUser, related_name='optionscreeners', default=None, blank=True)
+    optionsportfolio = models.ManyToManyField(
+	    Portfolio, related_name='optionsportfolio', default=None, blank=True)
     likes = models.ManyToManyField(
 	    CustomUser, related_name='likes', default=None, blank=True)
     #like_count = models.BigIntegerField(default='0')

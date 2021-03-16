@@ -319,3 +319,12 @@ def DeletePortfolioView(request):
             portfolio = Portfolio.objects.get(pk=id)
             portfolio.delete()
         return redirect('accounts:portfolio')
+
+@ login_required
+def PortfolioDetailView(request, portfolio_id):
+    portfolio = Portfolio.objects.get(pk=portfolio_id)
+
+    context = {'portfolio': portfolio,
+                }
+
+    return render(request, 'accounts/myportfolio-detail.html', context)
