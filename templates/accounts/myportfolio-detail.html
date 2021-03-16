@@ -1,6 +1,23 @@
 {%  extends "../base/base.html" %}
 {% block content %}
 
-    <h6>{{portfolio.id}}</h6>&nbsp;<h6>{{portfolio.name}}</h6>
+<div class="mt-3 container bg-white text-dark">
+    <div class="container bg-light text-dark">
+        <div class="row">
+            <div class="col my-2">
+                <h5><a href="{% url 'accounts:portfolio' %}">My Portfolios</a> / {{portfolio.name}}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-between mb-3">
+        {% if options %}
+            {% for option in options %}
+            <div class="col-md-4">
+                {{ optionsymbol.symbol }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}

@@ -323,8 +323,10 @@ def DeletePortfolioView(request):
 @ login_required
 def PortfolioDetailView(request, portfolio_id):
     portfolio = Portfolio.objects.get(pk=portfolio_id)
+    options = Optionsymbol.objects.filter(optionsportfolio=portfolio_id)
 
     context = {'portfolio': portfolio,
+                'options': options,
                 }
 
     return render(request, 'accounts/myportfolio-detail.html', context)
