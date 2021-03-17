@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
-from accounts.models import CustomUser, Portfolio
+from django.conf import settings
+#from accounts.models import CustomUser
 
 class Optionseries(models.Model):
 
@@ -23,9 +24,9 @@ class Optionseries(models.Model):
     optiontype = models.CharField(max_length=1, choices=OPTION_TYPE,)
     expmonthdate = models.DateField()
     seriesscreeners = models.ManyToManyField(
-	    CustomUser, related_name='seriesscreeners', default=None, blank=True)
+	    settings.AUTH_USER_MODEL, related_name='seriesscreeners', default=None, blank=True)
     seriesatmscreeners = models.ManyToManyField(
-	    CustomUser, related_name='seriesatmscreeners', default=None, blank=True)
+	    settings.AUTH_USER_MODEL, related_name='seriesatmscreeners', default=None, blank=True)
     
 class Optionsymbol(models.Model):
 
@@ -51,13 +52,13 @@ class Optionsymbol(models.Model):
     expmonthdate = models.DateField()
     optionseries = models.ForeignKey(Optionseries, on_delete=models.CASCADE)
     favourites = models.ManyToManyField(
-	    CustomUser, related_name='favourite', default=None, blank=True)
+	    settings.AUTH_USER_MODEL, related_name='favourite', default=None, blank=True)
     optionscreeners = models.ManyToManyField(
-	    CustomUser, related_name='optionscreeners', default=None, blank=True)
-    optionsportfolio = models.ManyToManyField(
-	    Portfolio, related_name='optionsportfolio', default=None, blank=True)
+	    settings.AUTH_USER_MODEL, related_name='optionscreeners', default=None, blank=True)
+    #optionsportfolio = models.ManyToManyField(
+	    #Portfolio, related_name='optionsportfolio', default=None, blank=True)
     likes = models.ManyToManyField(
-	    CustomUser, related_name='likes', default=None, blank=True)
+	    settings.AUTH_USER_MODEL, related_name='likes', default=None, blank=True)
     #like_count = models.BigIntegerField(default='0')
 
     def __str__(self):
@@ -218,9 +219,9 @@ class Futuresymbol(models.Model):
         choices=FUTUREASSETS,)
     expmonthdate = models.DateField()
     favourites = models.ManyToManyField(
-	    CustomUser, related_name='favourite_future', default=None, blank=True)
+	    settings.AUTH_USER_MODEL, related_name='favourite_future', default=None, blank=True)
     futurescreeners = models.ManyToManyField(
-	    CustomUser, related_name='futurescreeners', default=None, blank=True)
+	    settings.AUTH_USER_MODEL, related_name='futurescreeners', default=None, blank=True)
 
     def __str__(self):
         return self.symbol

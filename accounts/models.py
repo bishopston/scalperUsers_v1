@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from option_pricing.models import Optionsymbol
 
 class CustomUserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -47,5 +48,12 @@ class Portfolio(models.Model):
     name = models.CharField(max_length=30)
     creator = models.ForeignKey(
 	    settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+class PortfolioOption(models.Model):
+    portfolio = models.ManyToManyField(
+	    Portfolio, related_name='optionsportfolio', default=None, blank=True)
+    optionsymbol = models.ForeignKey(Optionsymbol, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -17,7 +17,7 @@ from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 
 from accounts.forms import UserAdminCreationForm, CreatePortfolioForm
-from accounts.models import CustomUser, Portfolio
+from accounts.models import CustomUser, Portfolio, PortfolioOption
 from option_pricing.models import Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
@@ -323,7 +323,7 @@ def DeletePortfolioView(request):
 @ login_required
 def PortfolioDetailView(request, portfolio_id):
     portfolio = Portfolio.objects.get(pk=portfolio_id)
-    options = Optionsymbol.objects.filter(optionsportfolio=portfolio_id)
+    options = PortfolioOption.objects.filter(portfolio=portfolio_id)
 
     context = {'portfolio': portfolio,
                 'options': options,
