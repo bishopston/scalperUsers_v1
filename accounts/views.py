@@ -17,7 +17,7 @@ from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 
 from accounts.forms import UserAdminCreationForm, CreatePortfolioForm
-from accounts.models import CustomUser, Portfolio, PortfolioOption
+from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFuture, PortfolioStock
 from option_pricing.models import Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
@@ -324,9 +324,71 @@ def DeletePortfolioView(request):
 def PortfolioDetailView(request, portfolio_id):
     portfolio = Portfolio.objects.get(pk=portfolio_id)
     options = PortfolioOption.objects.filter(portfolio=portfolio_id)
+    futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
+    stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
 
     context = {'portfolio': portfolio,
                 'options': options,
+                'futures': futures,
+                'stocks': stocks,
                 }
 
     return render(request, 'accounts/myportfolio-detail.html', context)
+"""
+class OptionScreenersListCBV(View):
+    def get(self, request):
+        option = PortfolioOption.objects.all()
+        
+        asset_query = request.GET.get('asset')
+        callputflag_query = request.GET.get('option_type')
+        exp_month_query = request.GET.get('exp_month')
+        exp_year_query = request.GET.get('exp_year')
+
+        if asset_query != '' and asset_query is not None:
+            option = option.filter(optionsymbol__asset__iexact=asset_query)
+
+        if callputflag_query != '' and callputflag_query is not None:
+            option = option.filter(optionsymbol__optiontype__iexact=callputflag_query)
+
+        if exp_month_query != '' and exp_month_query is not None:
+            option = option.filter(optionsymbol__expmonthdate__month=exp_month_query)
+
+        if exp_year_query != '' and exp_year_query is not None:
+            option = option.filter(optionsymbol__expmonthdate__year=exp_year_query)
+
+        max_date = option.aggregate(Max('date'))
+        queryset = option.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
+
+        queryset_num = queryset.count()
+
+        paginator = Paginator(queryset, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'queryset' : queryset,
+            'max_date' : max_date,
+            'asset_query': asset_query,
+            'callputflag_query': callputflag_query,
+            'exp_month_query' : exp_month_query,
+            'exp_year_query' : exp_year_query,
+            'optionscreenerform' : OptionScreenerForm(),
+            'queryset_num' : queryset_num,
+            'page_obj': page_obj
+        }
+        return render(request, 'option_pricing/optionfavlist.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            option_ids = request.POST.getlist('id[]')
+            is_fav = False
+            for id in option_ids:
+                opt = Option.objects.get(pk=id)
+                if opt.optionsymbol.optionscreeners.filter(id=request.user.id).exists():
+                    #opt.optionsymbol.optionscreeners.remove(request.user)
+                    is_fav = False
+                else:
+                    opt.optionsymbol.optionscreeners.add(request.user)
+                    is_fav = True
+            return redirect('option_pricing:myoptionscreenerlistcbv')
+"""

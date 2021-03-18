@@ -5,6 +5,36 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from accounts.models import CustomUser
 
+EXP_YEAR_CHOICES = [('2019', '2019'), ('2020', '2020'), ('2021', '2021'), ('2022', '2022'),]
+EXP_MONTH_CHOICES = [
+    ('1', 'JAN'),
+    ('2', 'FEB'),
+    ('3', 'MAR'),
+    ('4', 'APR'),
+    ('5', 'MAY'),
+    ('6', 'JUN'),
+    ('7', 'JUL'),
+    ('8', 'AUG'),
+    ('9', 'SEP'),
+    ('10', 'OCT'),
+    ('11', 'NOV'),
+    ('12', 'DEC'),
+]
+
+ASSETS = [
+    ('FTSE', 'FTSE'),
+    ('ALPHA', 'ALPHA'),
+    ('HTO', 'OTE'),
+    ('ETE', 'ETE'),
+    ('OPAP', 'OPAP'),
+    ('PPC', 'DEH'),
+    ('TPEIR', 'PEIRAIOS'),
+]
+
+OPTION_TYPE = [
+    ('c', 'Call'),
+    ('p', 'Put'),
+]
 
 class UserAdminCreationForm(UserCreationForm):
     """
@@ -66,3 +96,45 @@ class UserLoginForm(AuthenticationForm):
 class CreatePortfolioForm(forms.Form):
     name = forms.CharField(max_length=30, label='', widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Enter portfolio name', 'id': 'create-portfolio'}))
+
+
+class PortfolioOptionForm(forms.Form):
+    asset = forms.CharField(
+        #label="Underlying Asset",
+        widget=forms.Select(
+        choices=ASSETS,
+        attrs={
+            'class': 'form-control form-control-sm',
+            'placeholder': 'Select Underlying'
+        }
+    ))
+
+    option_type = forms.ChoiceField(
+        label="Option Type",
+        widget=forms.RadioSelect(attrs={
+        'class': 'form-check-label'
+        }),
+        choices=OPTION_TYPE,
+        initial = 'c'
+
+    )
+
+    exp_month = forms.CharField(
+        label="Expiration Month",
+        widget=forms.Select(
+        choices=EXP_MONTH_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Select Expiration Month'
+    }
+    ))
+
+    exp_year = forms.CharField(
+        label="Expiration Year",
+        widget=forms.Select(
+        choices=EXP_YEAR_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Select Expiration Year'
+    }
+    ))
