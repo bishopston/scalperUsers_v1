@@ -16,7 +16,7 @@ from validate_email import validate_email
 from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 
-from accounts.forms import UserAdminCreationForm, CreatePortfolioForm
+from accounts.forms import UserAdminCreationForm, CreatePortfolioForm, PortfolioOptionForm
 from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFuture, PortfolioStock
 from option_pricing.models import Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
@@ -326,11 +326,13 @@ def PortfolioDetailView(request, portfolio_id):
     options = PortfolioOption.objects.filter(portfolio=portfolio_id)
     futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
     stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
+    portfolioOptionForm = PortfolioOptionForm(auto_id=False)
 
     context = {'portfolio': portfolio,
                 'options': options,
                 'futures': futures,
                 'stocks': stocks,
+                'portfolioOptionForm': portfolioOptionForm,
                 }
 
     return render(request, 'accounts/myportfolio-detail.html', context)

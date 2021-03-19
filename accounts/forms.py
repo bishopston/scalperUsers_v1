@@ -5,8 +5,9 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from accounts.models import CustomUser
 
-EXP_YEAR_CHOICES = [('2019', '2019'), ('2020', '2020'), ('2021', '2021'), ('2022', '2022'),]
+EXP_YEAR_CHOICES = [('', 'Select expiration year...'), ('2019', '2019'), ('2020', '2020'), ('2021', '2021'), ('2022', '2022'),]
 EXP_MONTH_CHOICES = [
+    ('', 'Select expiration month...'),
     ('1', 'JAN'),
     ('2', 'FEB'),
     ('3', 'MAR'),
@@ -22,6 +23,7 @@ EXP_MONTH_CHOICES = [
 ]
 
 ASSETS = [
+    ('', 'Select underlying...'),
     ('FTSE', 'FTSE'),
     ('ALPHA', 'ALPHA'),
     ('HTO', 'OTE'),
@@ -100,9 +102,11 @@ class CreatePortfolioForm(forms.Form):
 
 class PortfolioOptionForm(forms.Form):
     asset = forms.CharField(
-        #label="Underlying Asset",
+        label='',
+
         widget=forms.Select(
         choices=ASSETS,
+
         attrs={
             'class': 'form-control form-control-sm',
             'placeholder': 'Select Underlying'
@@ -110,7 +114,7 @@ class PortfolioOptionForm(forms.Form):
     ))
 
     option_type = forms.ChoiceField(
-        label="Option Type",
+        label='',
         widget=forms.RadioSelect(attrs={
         'class': 'form-check-label'
         }),
@@ -120,7 +124,7 @@ class PortfolioOptionForm(forms.Form):
     )
 
     exp_month = forms.CharField(
-        label="Expiration Month",
+        label='',
         widget=forms.Select(
         choices=EXP_MONTH_CHOICES,
         attrs={
@@ -130,7 +134,7 @@ class PortfolioOptionForm(forms.Form):
     ))
 
     exp_year = forms.CharField(
-        label="Expiration Year",
+        label='',
         widget=forms.Select(
         choices=EXP_YEAR_CHOICES,
         attrs={
@@ -138,3 +142,8 @@ class PortfolioOptionForm(forms.Form):
         'placeholder': 'Select Expiration Year'
     }
     ))
+"""
+    def __init__(self, *args, **kwargs):
+        super(PortfolioOptionForm, self).__init__(*args, **kwargs)
+        self.fields['asset'].widget = forms.TextInput(attrs={'placeholder': (u'Select Asset')})
+"""
