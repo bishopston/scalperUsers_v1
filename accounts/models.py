@@ -52,9 +52,18 @@ class Portfolio(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
 class PortfolioOption(models.Model):
+
+    POSITION_TYPE = [
+        ('Long', 'Long'),
+        ('Short', 'Short'),
+    ]
+
     portfolio = models.ManyToManyField(
 	    Portfolio, related_name='optionsportfolio', default=None, blank=True)
     optionsymbol = models.ForeignKey(Optionsymbol, on_delete=models.CASCADE)
+    position = models.CharField(max_length=5, choices=POSITION_TYPE,)
+    contracts = models.IntegerField()
+    buysellprice = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
