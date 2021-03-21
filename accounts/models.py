@@ -64,8 +64,8 @@ class PortfolioOption(models.Model):
     position = models.CharField(max_length=5, choices=POSITION_TYPE,)
     contracts = models.IntegerField()
     buysellprice = models.DecimalField(max_digits=8, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
 class PortfolioFuture(models.Model):
     portfolio = models.ManyToManyField(

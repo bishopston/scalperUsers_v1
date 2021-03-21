@@ -38,6 +38,11 @@ OPTION_TYPE = [
     ('p', 'Put'),
 ]
 
+POSITION_TYPE = [
+    ('Long', 'Long'),
+    ('Short', 'Short'),
+]
+
 class UserAdminCreationForm(UserCreationForm):
     """
     A Custom form for creating new users.
@@ -122,7 +127,6 @@ class PortfolioOptionForm(forms.Form):
         }),
         choices=OPTION_TYPE,
         initial = 'c'
-
     )
 
     exp_month = forms.CharField(
@@ -145,12 +149,39 @@ class PortfolioOptionForm(forms.Form):
     }
     ))
 
-    strike = forms.CharField(
+    strike = forms.DecimalField(
         label='',
         widget=forms.TextInput(
         attrs={
         'class': 'form-control form-control-sm',
         'placeholder': 'Enter Strike'
+    }
+    ))
+
+    position_type = forms.ChoiceField(
+        label='',
+        widget=forms.RadioSelect(attrs={
+        'class': 'form-check-label'
+        }),
+        choices=POSITION_TYPE,
+        initial = 'Long'
+    )
+
+    contracts = forms.IntegerField(
+        label='',
+        widget=forms.TextInput(
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Enter Number of Contracts'
+    }
+    ))
+
+    buysellprice = forms.DecimalField(
+        label='',
+        widget=forms.TextInput(
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Enter Buy/Sell price per unit'
     }
     ))
 """

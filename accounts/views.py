@@ -22,6 +22,7 @@ from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFut
 from option_pricing.models import Option, Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
+from datetime import date
 
 def register(request):
     if request.method == 'POST':
@@ -328,6 +329,30 @@ def PortfolioDetailView(request, portfolio_id):
     futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
     stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
     portfolioOptionForm = PortfolioOptionForm()
+
+    if request.method == "POST":
+        portfolioOptionForm = PortfolioOptionForm(request.POST)
+        if portfolioOptionForm.is_valid():
+            asset_ = request.POST.get('asset')
+            optiontype_ = request.POST.get('option_type')
+            expmonth_ = request.POST.get('exp_month')
+            expyear_ = request.POST.get('exp_year')
+            strike_ = request.POST.get('strike')
+            qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
+            optionsymbol_ = qs[0]
+            #portfolioid = Portfolio.objects.get(pk=id)
+            portfolioOption = PortfolioOption(
+                
+                optionsymbol = optionsymbol_,
+                position = portfolioOptionForm.cleaned_data["position_type"],
+                contracts = portfolioOptionForm.cleaned_data["contracts"],
+                buysellprice = portfolioOptionForm.cleaned_data["buysellprice"],
+                #created_at = date.today()
+            )
+            
+            portfolioOption.save()
+            portfolioOption.portfolio.add(portfolio)
+        return HttpResponseRedirect(request.path_info)
 
     context = {'portfolio': portfolio,
                 'options': options,
