@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -338,21 +338,35 @@ def PortfolioDetailView(request, portfolio_id):
             expmonth_ = request.POST.get('exp_month')
             expyear_ = request.POST.get('exp_year')
             strike_ = request.POST.get('strike')
-            qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
-            optionsymbol_ = qs[0]
-            #portfolioid = Portfolio.objects.get(pk=id)
-            portfolioOption = PortfolioOption(
+            expdate_ = request.POST.get('exp_date')
+            #qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate=expdate_).filter(strike=strike_)
+            try:
+                qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
+                optionsymbol_ = qs[0]
+                #portfolioid = Portfolio.objects.get(pk=id)
+                portfolioOption = PortfolioOption(
+                    
+                    optionsymbol = optionsymbol_,
+                    position = portfolioOptionForm.cleaned_data["position_type"],
+                    contracts = portfolioOptionForm.cleaned_data["contracts"],
+                    buysellprice = portfolioOptionForm.cleaned_data["buysellprice"],
+                    #created_at = date.today()
+                )
                 
-                optionsymbol = optionsymbol_,
-                position = portfolioOptionForm.cleaned_data["position_type"],
-                contracts = portfolioOptionForm.cleaned_data["contracts"],
-                buysellprice = portfolioOptionForm.cleaned_data["buysellprice"],
-                #created_at = date.today()
-            )
-            
-            portfolioOption.save()
-            portfolioOption.portfolio.add(portfolio)
-        return HttpResponseRedirect(request.path_info)
+                portfolioOption.save()
+                portfolioOption.portfolio.add(portfolio)
+            #except IndexError:
+                #raise ValidationError("Article does not exist on this site")
+                return HttpResponseRedirect(request.path_info)            
+            except (IndexError, Optionsymbol.DoesNotExist):
+                return render(request, 'accounts/myportfolio-detail.html', {
+                    'portfolio': portfolio,
+                    'options': options,
+                    'futures': futures,
+                    'stocks': stocks,
+                    'portfolioOptionForm': portfolioOptionForm,                    
+                    'error_message': 'Wrong strike',
+                    })
 
     context = {'portfolio': portfolio,
                 'options': options,

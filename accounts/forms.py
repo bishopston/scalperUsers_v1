@@ -2,8 +2,12 @@ from django import forms
 from django.contrib.auth import get_user_model, password_validation
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.utils.translation import ugettext as _
 
 from accounts.models import CustomUser
+from option_pricing.models import Optionsymbol
+
+from datetime import datetime, date
 
 EXP_YEAR_CHOICES = [('', 'Select expiration year...'), ('2019', '2019'), ('2020', '2020'), ('2021', '2021'), ('2022', '2022'),]
 EXP_MONTH_CHOICES = [
@@ -42,6 +46,13 @@ POSITION_TYPE = [
     ('Long', 'Long'),
     ('Short', 'Short'),
 ]
+
+DATES = Optionsymbol.objects.filter(expmonthdate__gte=date.today()).order_by('expmonthdate').values_list('expmonthdate', flat=True).distinct()
+DATES_=[]
+for i in range(len(DATES)):
+    DATES_.append(DATES[i].strftime("%#d-%#m-%Y"))
+#_DATES = DATES_.insert(0, float('Select expiration date...'))
+#_DATES_ = _DATES[-1:] + _DATES[:-1]
 
 class UserAdminCreationForm(UserCreationForm):
     """
@@ -108,6 +119,7 @@ class CreatePortfolioForm(forms.Form):
 
 
 class PortfolioOptionForm(forms.Form):
+
     asset = forms.CharField(
         label='',
 
@@ -185,7 +197,19 @@ class PortfolioOptionForm(forms.Form):
     }
     ))
 """
+    def clean_strike(self):
+        asset_ = self.cleaned_data['asset']
+        optiontype_ = self.cleaned_data['option_type']
+        expmonth_ = self.cleaned_data['exp_month']
+        expyear_ = self.cleaned_data['exp_year']
+        strike_ = self.cleaned_data['strike']
+
+        qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
+        if qs.exists():                
+            return qs
+        else:
+            raise forms.ValidationError(_("CSV must be a file."))
+
     def __init__(self, *args, **kwargs):
         super(PortfolioOptionForm, self).__init__(*args, **kwargs)
-        self.fields['asset'].widget = forms.TextInput(attrs={'placeholder': (u'Select Asset')})
 """
