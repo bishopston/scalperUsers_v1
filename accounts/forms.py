@@ -196,20 +196,4 @@ class PortfolioOptionForm(forms.Form):
         'placeholder': 'Enter Buy/Sell price per unit'
     }
     ))
-"""
-    def clean_strike(self):
-        asset_ = self.cleaned_data['asset']
-        optiontype_ = self.cleaned_data['option_type']
-        expmonth_ = self.cleaned_data['exp_month']
-        expyear_ = self.cleaned_data['exp_year']
-        strike_ = self.cleaned_data['strike']
 
-        qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
-        if qs.exists():                
-            return qs
-        else:
-            raise forms.ValidationError(_("CSV must be a file."))
-
-    def __init__(self, *args, **kwargs):
-        super(PortfolioOptionForm, self).__init__(*args, **kwargs)
-"""

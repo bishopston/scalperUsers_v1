@@ -332,6 +332,7 @@ def PortfolioDetailView(request, portfolio_id):
 
     if request.method == "POST":
         portfolioOptionForm = PortfolioOptionForm(request.POST)
+        
         if portfolioOptionForm.is_valid():
             asset_ = request.POST.get('asset')
             optiontype_ = request.POST.get('option_type')
@@ -339,25 +340,21 @@ def PortfolioDetailView(request, portfolio_id):
             expyear_ = request.POST.get('exp_year')
             strike_ = request.POST.get('strike')
             expdate_ = request.POST.get('exp_date')
-            #qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate=expdate_).filter(strike=strike_)
             try:
-                qs = Optionsymbol.objects.filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
+                qs = Optionsymbol.objects.filter(expmonthdate__gte=date.today()).filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
                 optionsymbol_ = qs[0]
-                #portfolioid = Portfolio.objects.get(pk=id)
                 portfolioOption = PortfolioOption(
-                    
                     optionsymbol = optionsymbol_,
                     position = portfolioOptionForm.cleaned_data["position_type"],
                     contracts = portfolioOptionForm.cleaned_data["contracts"],
                     buysellprice = portfolioOptionForm.cleaned_data["buysellprice"],
-                    #created_at = date.today()
                 )
                 
                 portfolioOption.save()
                 portfolioOption.portfolio.add(portfolio)
-            #except IndexError:
-                #raise ValidationError("Article does not exist on this site")
+
                 return HttpResponseRedirect(request.path_info)            
+
             except (IndexError, Optionsymbol.DoesNotExist):
                 return render(request, 'accounts/myportfolio-detail.html', {
                     'portfolio': portfolio,
@@ -365,7 +362,7 @@ def PortfolioDetailView(request, portfolio_id):
                     'futures': futures,
                     'stocks': stocks,
                     'portfolioOptionForm': portfolioOptionForm,                    
-                    'error_message': 'Wrong strike',
+                    'error_message': 'Please select a valid active option',
                     })
 
     context = {'portfolio': portfolio,
@@ -376,66 +373,3 @@ def PortfolioDetailView(request, portfolio_id):
                 }
 
     return render(request, 'accounts/myportfolio-detail.html', context)
-"""
-class OptionScreenersListCBV(View):
-    def get(self, request):
-        option = PortfolioOption.objects.all()
-        
-        asset_query = request.GET.get('asset')
-        callputflag_query = request.GET.get('option_type')
-        exp_month_query = request.GET.get('exp_month')
-        exp_year_query = request.GET.get('exp_year')
-
-        if asset_query != '' and asset_query is not None:
-            option = option.filter(optionsymbol__asset__iexact=asset_query)
-
-        if callputflag_query != '' and callputflag_query is not None:
-            option = option.filter(optionsymbol__optiontype__iexact=callputflag_query)
-
-        if exp_month_query != '' and exp_month_query is not None:
-            option = option.filter(optionsymbol__expmonthdate__month=exp_month_query)
-
-        if exp_year_query != '' and exp_year_query is not None:
-            option = option.filter(optionsymbol__expmonthdate__year=exp_year_query)
-
-        max_date = option.aggregate(Max('date'))
-        queryset = option.filter(date=max_date['date__max']).order_by('optionsymbol__strike')
-
-        queryset_num = queryset.count()
-
-        paginator = Paginator(queryset, 10)
-        page_number = request.GET.get('page', 1)
-        page_obj = paginator.get_page(page_number)
-
-        context = {
-            'queryset' : queryset,
-            'max_date' : max_date,
-            'asset_query': asset_query,
-            'callputflag_query': callputflag_query,
-            'exp_month_query' : exp_month_query,
-            'exp_year_query' : exp_year_query,
-            'optionscreenerform' : OptionScreenerForm(),
-            'queryset_num' : queryset_num,
-            'page_obj': page_obj
-        }
-        return render(request, 'option_pricing/optionfavlist.html', context)
-    
-    def post(self, request, *args, **kwargs):
-        if request.method == "POST":
-            option_ids = request.POST.getlist('id[]')
-            is_fav = False
-            for id in option_ids:
-                opt = Option.objects.get(pk=id)
-                if opt.optionsymbol.optionscreeners.filter(id=request.user.id).exists():
-                    #opt.optionsymbol.optionscreeners.remove(request.user)
-                    is_fav = False
-                else:
-                    opt.optionsymbol.optionscreeners.add(request.user)
-                    is_fav = True
-            return redirect('option_pricing:myoptionscreenerlistcbv')
-
-@ login_required
-def OptionAddPortfolioView(request):
-    portfolio = request.POST.get('portfolio_id')
-
-"""
