@@ -2,6 +2,8 @@
 
 {% block content %}
 
+{% load index %}
+
 <div class="mt-2 container bg-white text-dark">
     <div class="container bg-light text-dark">
         <div class="row">
@@ -39,6 +41,7 @@
                             <th><small><strong></strong></small></th>
                             <th><small><strong>Symbol</strong></small></th>
                             <th><small><strong>Option Type</strong></small></th>
+                            <th><small><strong>Position</strong></small></th>
                             <th><small><strong>Added On</strong></small></th>
                             <th><small><strong>Latest Trading</strong></small></th>
                             <th><small><strong>Expiration</strong></small></th>
@@ -50,28 +53,42 @@
                           </tr>
                           {%csrf_token%}
                           {% for option in options %}
-                            <tr>
+                            <tr id="{{option.id}}">
                                 <td><input type="checkbox" name="option_id[]" value="{{option.id}}" id="portfolio_option"></td>
                                 <td><small><a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a></small></td>
-                                <td><small>{{ option.optionsymbol.get_optiontype_display}}</small></td> 
-                                <td><small>{{ option.created_at|date:"SHORT_DATE_FORMAT"}}</small></td>              
+                                <td><small>{{option.optionsymbol.get_optiontype_display}}</small></td>
+                                <td><small>{{option.position}}</small></td>  
+                                <td><small>{{option.created_at|date:"SHORT_DATE_FORMAT"}}</small></td> 
+                                <td><small>{{max_options_dates|index:forloop.counter0}}</small></td>
+                                <td><small>{{option.optionsymbol.expmonthdate|date:"SHORT_DATE_FORMAT"}}</small></td>
+                                <td><small>{{option.contracts}}</small></td>
+                                <td><small>{{option.buysellprice}}</small></td> 
+                                <td><small>{{options_clos_prices|index:forloop.counter0}}</small></td>  
+                                <td><small>{{stock_prices|index:forloop.counter0}}</small></td>     
+                                <td><small>
+                                  {% if profits|index:forloop.counter0 < 0 %}
+                                  <div class="change-negative"> 
+                                  {% else %} 
+                                  <div class="change-positive">
+                                  {% endif %}
+                                  {{ profits|index:forloop.counter0|floatformat:2 }}
+                                  </div>
+                                </small></td> 
                             </tr>
                           {% endfor %}
                         </table>
                       </div>
                     </div>
                   </div>  
-                  {% for option in options %}
-                  <div class="col-md-4">
-                      {{ option.optionsymbol.symbol }}
-                  </div>
-                  {% endfor %}
                   
-                  <div class="row d-flex justify-content-center mb-3">
-                    <button type="button" class="btn btn-primary d-flex flex-wrap align-content-center" data-toggle="modal" data-target="#optionAddModal">
-                        <small>Add option</small> 
-                    </button>
-                    
+                  <div class="d-flex justify-content-center my-1 ml-1">
+                    <button type="button" class="btn btn-outline-primary d-flex flex-wrap align-content-center" id="del_btn"><small>Delete Option</small></button>
+
+                    <div class="d-flex justify-content-center px-3">
+                      <button type="button" class="btn btn-primary d-flex flex-wrap align-content-center" data-toggle="modal" data-target="#optionAddModal">
+                          <small>Add option</small> 
+                      </button>
+                    </div>
                     <!-- Modal -->
                     <div class="modal fade" id="optionAddModal" tabindex="-1" role="dialog" aria-labelledby="optionAddModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -292,14 +309,41 @@
     </div>
 </div>
 
-<!-- <script>
-  var err_status = "{{has_errors}}"
-  $('#optionmodalform').on('submit', function (e) {
-    if (err_status){
-    e.preventDefault();
-    }
-  })
-</script> -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#del_btn').click(function(){
 
+                var id=[];
+                var portfolio_id="{{portfolio.id}}";
+                var csrf=$('input[name=csrfmiddlewaretoken]').val();
+                $(':checkbox:checked').each(function(i){
+                    id[i]=$(this).val()
+                })
+                if(id.length===0){
+                    alert("Please select at least one option to delete")
+                }else{
+                    console.log(id)
+                    console.log(portfolio_id)
+                    $.ajax({
+                        url:'{% url "accounts:portfolio-option-delete" %}',
+                        method:"POST",
+                        data:{
+                            id,
+                            portfolio_id,
+                            csrfmiddlewaretoken:csrf
+                        },
+                        success:function(response){
+                            for (var i=0; i < id.length; i++){
+                                $('tr#'+id[i]+'').css('background-color', '#ccc');
+                                $('tr#'+id[i]+'').fadeOut('slow');
+                            }
+                        }
+                    })
+                }
+                $( 'input[type="checkbox"]' ).prop('checked', false);
+        })
+    })
+</script>
 
 {% endblock %}

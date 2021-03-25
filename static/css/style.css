@@ -229,11 +229,13 @@ ul{
 .change-negative {
 	color: #FF0000;
 	font-weight: bold;
+	align-content: end;
   }
   
 .change-positive {
 	color: #33FF3C;
 	font-weight: bold;
+	align-content: end;
   }
 
 .vertical{

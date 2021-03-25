@@ -23,6 +23,7 @@ from option_pricing.models import Option, Optionsymbol, Futuresymbol, Optionseri
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
 from datetime import date
+from decimal import Decimal
 
 def register(request):
     if request.method == 'POST':
@@ -322,6 +323,12 @@ def DeletePortfolioView(request):
             portfolio.delete()
         return redirect('accounts:portfolio')
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
+
 @ login_required
 def PortfolioDetailView(request, portfolio_id):
     portfolio = Portfolio.objects.get(pk=portfolio_id)
@@ -329,6 +336,34 @@ def PortfolioDetailView(request, portfolio_id):
     futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
     stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
     portfolioOptionForm = PortfolioOptionForm()
+
+    max_options_dates, options_clos_prices, stock_prices, profits = ([] for i in range(4))
+
+    for i in options:
+        qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
+        max_options_date = qs_options.aggregate(Max('date'))
+        option_strike = json.dumps(qs_options[0].optionsymbol.strike, cls=DecimalEncoder)
+        option_type = qs_options[0].optionsymbol.optiontype
+
+        max_options_dates.append(max_options_date['date__max'].strftime("%#d/%#m/%Y"))
+
+        latest_clos = qs_options.filter(date=max_options_date['date__max']).values('closing_price')[0]['closing_price']
+        options_clos_prices.append(json.dumps(latest_clos, cls=DecimalEncoder))
+
+        latest_stock = qs_options.filter(date=max_options_date['date__max']).values('stock')[0]['stock']
+        stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+        if option_type == 'c':
+            if i.position == 'Long':
+                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+            else:
+                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+
+        if option_type == 'p':
+            if i.position == 'Long':                
+                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+            else:
+                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
 
     if request.method == "POST":
         portfolioOptionForm = PortfolioOptionForm(request.POST)
@@ -361,7 +396,11 @@ def PortfolioDetailView(request, portfolio_id):
                     'options': options,
                     'futures': futures,
                     'stocks': stocks,
-                    'portfolioOptionForm': portfolioOptionForm,                    
+                    'portfolioOptionForm': portfolioOptionForm,
+                    'max_options_dates': max_options_dates,   
+                    'options_clos_prices': options_clos_prices,     
+                    'stock_prices': stock_prices,       
+                    'profits': profits,     
                     'error_message': 'Please select a valid active option',
                     })
 
@@ -370,6 +409,23 @@ def PortfolioDetailView(request, portfolio_id):
                 'futures': futures,
                 'stocks': stocks,
                 'portfolioOptionForm': portfolioOptionForm,
+                'max_options_dates': max_options_dates,
+                'options_clos_prices': options_clos_prices,
+                'stock_prices': stock_prices,
+                'profits': profits,
                 }
 
     return render(request, 'accounts/myportfolio-detail.html', context)
+
+@ login_required
+def DeletePortfolioOptionView(request):
+    if request.method == "POST":
+        portfoliooption_ids = request.POST.getlist('id[]')
+        portfolio_id = request.POST.get('portfolio_id')
+        for id in portfoliooption_ids:
+            portfoliooption = PortfolioOption.objects.get(pk=id)
+            portfoliooption.delete()
+            return redirect('accounts:portfolio')
+    #print(portfolio_id)
+    #return HttpResponseRedirect(reverse('accounts:portfolio-detail', args=(portfolio_id)))
+    #return redirect('/accounts/portfolio/portfolio_id/')
