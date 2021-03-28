@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from option_pricing.models import Optionsymbol, Futuresymbol, Stocksymbol
 
+from datetime import date
+
 class CustomUserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 
@@ -66,6 +68,9 @@ class PortfolioOption(models.Model):
     buysellprice = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
+
+    def active_option(self):
+        return self.optionsymbol.expmonthdate >= date.today()
 
 class PortfolioFuture(models.Model):
     portfolio = models.ManyToManyField(

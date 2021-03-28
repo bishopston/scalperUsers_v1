@@ -226,7 +226,7 @@ class PortfolioOptionUpdateForm(forms.Form):
         widget=forms.TextInput(
         attrs={
         'class': 'form-control form-control-sm',
-        'placeholder': 'Enter Buy/Sell price per unit'
+        'placeholder': 'Enter Buy/Sell Price per Unit'
     }
     ))
 

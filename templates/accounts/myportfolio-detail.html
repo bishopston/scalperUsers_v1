@@ -56,7 +56,13 @@
                           {% for option in options %}
                             <tr id="{{option.id}}">
                                 <td><input type="checkbox" name="option_id[]" value="{{option.id}}" id="portfolio_option"></td>
-                                <td><small><a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a></small></td>
+                                <td><small>
+                                  {% if option.active_option %}
+                                    <a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a>
+                                  {% else %}
+                                    <a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}"><del>{{ option.optionsymbol.symbol }}</del></a>
+                                  {% endif %}
+                                </small></td>
                                 <td><small>{{option.optionsymbol.get_optiontype_display}}</small></td>
                                 <td><small>{{option.position}}</small></td>  
                                 <td><small>{{option.created_at|date:"SHORT_DATE_FORMAT"}}</small></td> 

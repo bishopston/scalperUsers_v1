@@ -438,6 +438,7 @@ def DeletePortfolioOptionView(request):
 @ login_required
 def UpdatePortfolioOptionView(request, portfolio_id, portfoliooption_id):
     portfoliooption = PortfolioOption.objects.get(pk=portfoliooption_id)
+    symbol = portfoliooption.optionsymbol.symbol
     portfolioOptionUpdateForm = PortfolioOptionUpdateModelForm(instance=portfoliooption)
 
     if request.method == 'POST':
@@ -446,4 +447,4 @@ def UpdatePortfolioOptionView(request, portfolio_id, portfoliooption_id):
             portfolioOptionUpdateForm.save()
             return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
 
-    return render(request, 'accounts/myportfoliooption-update.html', {'portfoliooption':portfoliooption, 'portfolioOptionUpdateForm': portfolioOptionUpdateForm})
+    return render(request, 'accounts/myportfoliooption-update.html', {'portfoliooption':portfoliooption, 'portfolioOptionUpdateForm': portfolioOptionUpdateForm, 'symbol':symbol,})
