@@ -17,7 +17,7 @@ from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 from django.db.models import Max, Min, Avg, Sum, F
 
-from accounts.forms import UserAdminCreationForm, CreatePortfolioForm, PortfolioOptionForm
+from accounts.forms import UserAdminCreationForm, CreatePortfolioForm, PortfolioOptionForm, PortfolioOptionUpdateForm, PortfolioOptionUpdateModelForm
 from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFuture, PortfolioStock
 from option_pricing.models import Option, Optionsymbol, Futuresymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
@@ -336,6 +336,7 @@ def PortfolioDetailView(request, portfolio_id):
     futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
     stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
     portfolioOptionForm = PortfolioOptionForm()
+    portfolioOptionUpdateForm = PortfolioOptionUpdateForm()
 
     max_options_dates, options_clos_prices, stock_prices, profits = ([] for i in range(4))
 
@@ -367,6 +368,7 @@ def PortfolioDetailView(request, portfolio_id):
 
     if request.method == "POST":
         portfolioOptionForm = PortfolioOptionForm(request.POST)
+        portfolioOptionUpdateForm = PortfolioOptionUpdateForm(request.POST)
         
         if portfolioOptionForm.is_valid():
             asset_ = request.POST.get('asset')
@@ -397,6 +399,7 @@ def PortfolioDetailView(request, portfolio_id):
                     'futures': futures,
                     'stocks': stocks,
                     'portfolioOptionForm': portfolioOptionForm,
+                    'portfolioOptionUpdateForm': portfolioOptionUpdateForm,
                     'max_options_dates': max_options_dates,   
                     'options_clos_prices': options_clos_prices,     
                     'stock_prices': stock_prices,       
@@ -409,6 +412,7 @@ def PortfolioDetailView(request, portfolio_id):
                 'futures': futures,
                 'stocks': stocks,
                 'portfolioOptionForm': portfolioOptionForm,
+                'portfolioOptionUpdateForm': portfolioOptionUpdateForm,
                 'max_options_dates': max_options_dates,
                 'options_clos_prices': options_clos_prices,
                 'stock_prices': stock_prices,
@@ -419,6 +423,7 @@ def PortfolioDetailView(request, portfolio_id):
 
 @ login_required
 def DeletePortfolioOptionView(request):
+    portfolioOptionUpdateForm = PortfolioOptionUpdateForm()
     if request.method == "POST":
         portfoliooption_ids = request.POST.getlist('id[]')
         portfolio_id = request.POST.get('portfolio_id')
@@ -429,3 +434,16 @@ def DeletePortfolioOptionView(request):
     #print(portfolio_id)
     #return HttpResponseRedirect(reverse('accounts:portfolio-detail', args=(portfolio_id)))
     #return redirect('/accounts/portfolio/portfolio_id/')
+
+@ login_required
+def UpdatePortfolioOptionView(request, portfolio_id, portfoliooption_id):
+    portfoliooption = PortfolioOption.objects.get(pk=portfoliooption_id)
+    portfolioOptionUpdateForm = PortfolioOptionUpdateModelForm(instance=portfoliooption)
+
+    if request.method == 'POST':
+        portfolioOptionUpdateForm = PortfolioOptionUpdateModelForm(request.POST, instance=portfoliooption)
+        if portfolioOptionUpdateForm.is_valid():
+            portfolioOptionUpdateForm.save()
+            return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
+
+    return render(request, 'accounts/myportfoliooption-update.html', {'portfoliooption':portfoliooption, 'portfolioOptionUpdateForm': portfolioOptionUpdateForm})

@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 
 from accounts.models import CustomUser
 from option_pricing.models import Optionsymbol
+from accounts.models import PortfolioOption
 
 from datetime import datetime, date
 
@@ -199,8 +200,9 @@ class PortfolioOptionForm(forms.Form):
 
 class PortfolioOptionUpdateForm(forms.Form):
 
-    position_type = forms.ChoiceField(
+    position_type_upd = forms.ChoiceField(
         label='',
+        required=False,
         widget=forms.RadioSelect(attrs={
         'class': 'form-check-label'
         }),
@@ -208,8 +210,9 @@ class PortfolioOptionUpdateForm(forms.Form):
         initial = 'Long'
     )
 
-    contracts = forms.IntegerField(
+    contracts_upd = forms.IntegerField(
         label='',
+        required=False,
         widget=forms.TextInput(
         attrs={
         'class': 'form-control form-control-sm',
@@ -217,11 +220,17 @@ class PortfolioOptionUpdateForm(forms.Form):
     }
     ))
 
-    buysellprice = forms.DecimalField(
+    buysellprice_upd = forms.DecimalField(
         label='',
+        required=False,
         widget=forms.TextInput(
         attrs={
         'class': 'form-control form-control-sm',
         'placeholder': 'Enter Buy/Sell price per unit'
     }
     ))
+
+class PortfolioOptionUpdateModelForm(forms.ModelForm):
+    class Meta:
+        model = PortfolioOption
+        fields = ('position', 'contracts', 'buysellprice',)

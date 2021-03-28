@@ -50,6 +50,7 @@
                             <th><small><strong>Latest Value</strong></small></th>
                             <th><small><strong>Underlying Price</strong></small></th>
                             <th><small><strong>Exercise Profit/Loss</strong></small></th>
+                            <th><small><strong></strong></small></th>
                           </tr>
                           {%csrf_token%}
                           {% for option in options %}
@@ -74,7 +75,9 @@
                                   {{ profits|index:forloop.counter0|floatformat:2 }}
                                   </div>
                                 </small></td> 
+                                <td><a href="{% url 'accounts:portfolio-option-update' portfolio.id option.id %}"><small>Edit</small></a></td>
                             </tr>
+
                           {% endfor %}
                         </table>
                       </div>
@@ -174,7 +177,30 @@
                         </div>
                         </div>
                     </div>
+
                   </div>
+
+                  <!-- Test Update Modal -->
+                  <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                    
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Bootstrap Modal with Dynamic Content</h4>
+                            </div>
+                            <div class="modal-body">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                      
+                    </div>
+                  </div>
+
                 {% else %}
                     <div class="col-md-12 d-flex justify-content-center">
                         <div class="card border-0">
@@ -345,5 +371,6 @@
         })
     })
 </script>
+
 
 {% endblock %}

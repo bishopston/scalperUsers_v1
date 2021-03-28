@@ -34,4 +34,6 @@ urlpatterns = [
      path('portfolio-delete/', views.DeletePortfolioView, name='portfolio-delete'),
      path('portfolio/<int:portfolio_id>/', views.PortfolioDetailView, name='portfolio-detail'),
      path('portfoliooption-delete/', views.DeletePortfolioOptionView, name='portfolio-option-delete'),
+     path('portfoliooption-update/<int:portfolio_id>/<int:portfoliooption_id>/', views.UpdatePortfolioOptionView, name='portfolio-option-update'),
+     #path('portfoliooption-edit/<int:portfoliooption_id>/', views.EditPortfolioOptionView, name='portfolio-option-edit'),
 ]
