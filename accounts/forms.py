@@ -231,6 +231,24 @@ class PortfolioOptionUpdateForm(forms.Form):
     ))
 
 class PortfolioOptionUpdateModelForm(forms.ModelForm):
+
     class Meta:
         model = PortfolioOption
         fields = ('position', 'contracts', 'buysellprice',)
+
+        widgets = {
+            'position':forms.RadioSelect(choices=POSITION_TYPE, attrs={'class': 'form-check-label'}),
+            'contracts':forms.TextInput(attrs={
+                        'class': 'form-control form-control-sm',
+                        'placeholder': 'Enter Number of Contracts'
+                        }),
+            'buysellprice':forms.TextInput(attrs={
+                        'class': 'form-control form-control-sm',
+                        'placeholder': 'Enter Buy/Sell price per unit'
+                        }),
+        }
+"""
+        def __init__(self, *args, **kwargs):
+            super(PortfolioOptionUpdateModelForm, self).__init__(*args, **kwargs)
+            self.fields['position'].choices = POSITION_TYPE
+"""

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'option_pricing',
     'crispy_forms',
     'widget_tweaks',
+    'bootstrap_modal_forms',
 ]
 
 MIDDLEWARE = [

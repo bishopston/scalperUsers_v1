@@ -1,14 +1,44 @@
-<div class="row">
-	<div class="col-md-6">
-		<div class="card card-body">
+{%  extends "../base/base.html" %}
 
-			<form action="" method="POST">
-				{% csrf_token %}
-				{{portfolioOptionUpdateForm}}
-				
-				<input type="submit" name="Submit">
-			</form>
+{% block content %}
+<div class="mt-2 container bg-white text-dark">
+  <div class="d-flex flex-wrap align-content-center justify-content-center">
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-row mb-2">
+        <div class="form-group" aria-describedby="positionTypeHelpInline">
+          {% for radio in portfolioOptionUpdateForm.position %}
+            {{ radio }}
+          {% endfor %} 
+          <small id="positionTypeHelpInline" class="text-muted ml-2">
+            Please select the type of position
+          </small>
+        </div>
+      </div>
+      <div class="form-row mb-2">
+        <div class="form-group">
+          {{ portfolioOptionUpdateForm.contracts }}
+        </div>
+        <div class="ml-2"> 
+          <small id="buySellPriceHelpBlock" class="form-text text-muted">
+            Please select an integer value
+          </small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          {{ portfolioOptionUpdateForm.buysellprice }}
+        
 
-		</div>
-	</div>
+          <small id="buySellPriceHelpBlock" class="form-text text-muted">
+            Please select either an integer or decimal number (use dot as a separator)
+          </small>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success">Update</button>
+    </form>
+
+  </div>
 </div>
+{% endblock %}
