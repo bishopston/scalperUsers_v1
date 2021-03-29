@@ -6,6 +6,11 @@ from option_pricing.models import Optionsymbol, Futuresymbol, Stocksymbol
 
 from datetime import date
 
+POSITION_TYPE = [
+        ('Long', 'Long'),
+        ('Short', 'Short'),
+    ]
+
 class CustomUserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 
@@ -73,15 +78,23 @@ class PortfolioOption(models.Model):
         return self.optionsymbol.expmonthdate >= date.today()
 
 class PortfolioFuture(models.Model):
-    portfolio = models.ManyToManyField(
-	    Portfolio, related_name='futuresportfolio', default=None, blank=True)
+
+    portfolio = models.ManyToManyField(Portfolio, related_name='futuresportfolio', default=None, blank=True)
     futuresymbol = models.ForeignKey(Futuresymbol, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    position = models.CharField(max_length=5, choices=POSITION_TYPE, blank=False, default='Long')
+    contracts = models.IntegerField()
+    buysellprice = models.DecimalField(max_digits=8, decimal_places=2)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
+
+    def active_future(self):
+        return self.futuresymbol.expmonthdate >= date.today()
 
 class PortfolioStock(models.Model):
     portfolio = models.ManyToManyField(
 	    Portfolio, related_name='stocksportfolio', default=None, blank=True)
     stocksymbol = models.ForeignKey(Stocksymbol, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    quantity = models.IntegerField()
+    buyprice = models.DecimalField(max_digits=8, decimal_places=2)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
