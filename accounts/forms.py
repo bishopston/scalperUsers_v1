@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 
 from accounts.models import CustomUser
 from option_pricing.models import Optionsymbol
-from accounts.models import PortfolioOption
+from accounts.models import PortfolioOption, PortfolioFuture, PortfolioStock
 
 from datetime import datetime, date
 
@@ -47,6 +47,71 @@ POSITION_TYPE = [
     ('Long', 'Long'),
     ('Short', 'Short'),
 ]
+
+FUTUREASSETS = [
+    ('', 'Select underlying...'),
+    ('ADMIE', 'ADMIE'),
+    ('ALPHA', 'ALPHA'),
+    ('BELA', 'JUMBO'),
+    ('CENER', 'CENERGY'),
+    ('EEE', 'COCA-COLA'),
+    ('ELLAK', 'ELLAKTOR'),
+    ('ELPE', 'ELPE'),
+    ('ETE', 'ETE'),
+    ('EUROB', 'EUROBANK'),
+    ('EXAE', 'EXAE'),
+    ('EYDAP', 'EYDAP'),
+    ('FOYRK', 'FOURLIS'),
+    ('FTSE', 'FTSE'),
+    ('GEKTE', 'GEKTERNA'),
+    ('HTO', 'OTE'),
+    ('INLOT', 'INTRALOT'),
+    ('INTRK', 'INTRACOM'),
+    ('LAMDA', 'LAMDA'),
+    ('MIG', 'MIG'),
+    ('MOH', 'MOTOR OIL'),
+    ('MYTIL', 'MYTIL'),
+    ('OPAP', 'OPAP'),
+    ('PPA', 'OLP'),
+    ('PPC', 'DEH'),
+    ('TATT', 'ATTICA BANK'),
+    ('TENER', 'TERNA ENERGY'),
+    ('TITC', 'TITAN'),
+    ('TPEIR', 'PEIRAIOS'),
+    ('VIO', 'VIOHALCO'),
+    ]
+
+STOCKASSETS = [
+    ('', 'Select underlying...'),
+    ('ADMIE', 'ADMIE'),
+    ('ALPHA', 'ALPHA'),
+    ('BELA', 'JUMBO'),
+    ('CENER', 'CENERGY'),
+    ('EEE', 'COCA-COLA'),
+    ('ELLAK', 'ELLAKTOR'),
+    ('ELPE', 'ELPE'),
+    ('ETE', 'ETE'),
+    ('EUROB', 'EUROBANK'),
+    ('EXAE', 'EXAE'),
+    ('EYDAP', 'EYDAP'),
+    ('FOYRK', 'FOURLIS'),
+    ('GEKTE', 'GEKTERNA'),
+    ('HTO', 'OTE'),
+    ('INLOT', 'INTRALOT'),
+    ('INTRK', 'INTRACOM'),
+    ('LAMDA', 'LAMDA'),
+    ('MIG', 'MIG'),
+    ('MOH', 'MOTOR OIL'),
+    ('MYTIL', 'MYTIL'),
+    ('OPAP', 'OPAP'),
+    ('PPA', 'OLP'),
+    ('PPC', 'DEH'),
+    ('TATT', 'ATTICA BANK'),
+    ('TENER', 'TERNA ENERGY'),
+    ('TITC', 'TITAN'),
+    ('TPEIR', 'PEIRAIOS'),
+    ('VIO', 'VIOHALCO'),
+    ]
 
 DATES = Optionsymbol.objects.filter(expmonthdate__gte=date.today()).order_by('expmonthdate').values_list('expmonthdate', flat=True).distinct()
 DATES_=[]
@@ -252,3 +317,114 @@ class PortfolioOptionUpdateModelForm(forms.ModelForm):
             super(PortfolioOptionUpdateModelForm, self).__init__(*args, **kwargs)
             self.fields['position'].choices = POSITION_TYPE
 """
+
+class PortfolioFutureForm(forms.Form):
+
+    asset = forms.CharField(
+        label='',
+
+        widget=forms.Select(
+        choices=FUTUREASSETS,
+
+        attrs={
+            'class': 'form-control form-control-sm',
+            'placeholder': 'Select Underlying'
+        }
+    ))
+
+    exp_month = forms.CharField(
+        label='',
+        widget=forms.Select(
+        choices=EXP_MONTH_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Select Expiration Month'
+    }
+    ))
+
+    exp_year = forms.CharField(
+        label='',
+        widget=forms.Select(
+        choices=EXP_YEAR_CHOICES,
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Select Expiration Year'
+    }
+    ))
+
+    position_type = forms.ChoiceField(
+        label='',
+        widget=forms.RadioSelect(attrs={
+        'class': 'form-check-label'
+        }),
+        choices=POSITION_TYPE,
+        initial = 'Long'
+    )
+
+    contracts = forms.IntegerField(
+        label='',
+        widget=forms.TextInput(
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Enter Number of Contracts'
+    }
+    ))
+
+    buysellprice = forms.DecimalField(
+        label='',
+        widget=forms.TextInput(
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Enter Buy/Sell price per unit'
+    }
+    ))
+
+class PortfolioFutureUpdateModelForm(forms.ModelForm):
+
+    class Meta:
+        model = PortfolioFuture
+        fields = ('position', 'contracts', 'buysellprice',)
+
+        widgets = {
+            'position':forms.RadioSelect(choices=POSITION_TYPE, attrs={'class': 'form-check-label'}),
+            'contracts':forms.TextInput(attrs={
+                        'class': 'form-control form-control-sm',
+                        'placeholder': 'Enter Number of Contracts'
+                        }),
+            'buysellprice':forms.TextInput(attrs={
+                        'class': 'form-control form-control-sm',
+                        'placeholder': 'Enter Buy/Sell price per unit'
+                        }),
+        }
+
+class PortfolioStockForm(forms.Form):
+
+    asset = forms.CharField(
+        label='',
+
+        widget=forms.Select(
+        choices=STOCKASSETS,
+
+        attrs={
+            'class': 'form-control form-control-sm',
+            'placeholder': 'Select Underlying'
+        }
+    ))
+
+    quantity = forms.IntegerField(
+        label='',
+        widget=forms.TextInput(
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Enter Number of Stocks'
+    }
+    ))
+
+    buyprice = forms.DecimalField(
+        label='',
+        widget=forms.TextInput(
+        attrs={
+        'class': 'form-control form-control-sm',
+        'placeholder': 'Enter Buy/Sell price per unit'
+    }
+    ))
