@@ -82,7 +82,7 @@ FUTUREASSETS = [
     ]
 
 STOCKASSETS = [
-    ('', 'Select underlying...'),
+    ('', 'Select stock...'),
     ('ADMIE', 'ADMIE'),
     ('ALPHA', 'ALPHA'),
     ('BELA', 'JUMBO'),
@@ -375,7 +375,7 @@ class PortfolioFutureForm(forms.Form):
         widget=forms.TextInput(
         attrs={
         'class': 'form-control form-control-sm',
-        'placeholder': 'Enter Buy/Sell price per unit'
+        'placeholder': 'Enter Buy/Sell Price per Unit'
     }
     ))
 
@@ -401,13 +401,11 @@ class PortfolioStockForm(forms.Form):
 
     asset = forms.CharField(
         label='',
-
         widget=forms.Select(
         choices=STOCKASSETS,
-
         attrs={
             'class': 'form-control form-control-sm',
-            'placeholder': 'Select Underlying'
+            'placeholder': 'Select'
         }
     ))
 
@@ -425,6 +423,23 @@ class PortfolioStockForm(forms.Form):
         widget=forms.TextInput(
         attrs={
         'class': 'form-control form-control-sm',
-        'placeholder': 'Enter Buy/Sell price per unit'
+        'placeholder': 'Enter Buy Price per Stock'
     }
     ))
+
+class PortfolioStockUpdateModelForm(forms.ModelForm):
+
+    class Meta:
+        model = PortfolioStock
+        fields = ('quantity', 'buyprice',)
+
+        widgets = {
+            'quantity':forms.TextInput(attrs={
+                        'class': 'form-control form-control-sm',
+                        'placeholder': 'Enter Number of Stocks',
+                        }),
+            'buyprice':forms.TextInput(attrs={
+                        'class': 'form-control form-control-sm',
+                        'placeholder': 'Enter Buy Price per Stock',
+                        }),
+        }

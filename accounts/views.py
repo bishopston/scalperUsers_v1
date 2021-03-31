@@ -17,9 +17,9 @@ from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 from django.db.models import Max, Min, Avg, Sum, F
 
-from accounts.forms import UserAdminCreationForm, CreatePortfolioForm, PortfolioOptionForm, PortfolioFutureForm, PortfolioOptionUpdateForm, PortfolioOptionUpdateModelForm, PortfolioFutureUpdateModelForm
+from accounts.forms import UserAdminCreationForm, CreatePortfolioForm, PortfolioOptionForm, PortfolioFutureForm, PortfolioStockForm, PortfolioOptionUpdateForm, PortfolioOptionUpdateModelForm, PortfolioFutureUpdateModelForm, PortfolioStockUpdateModelForm
 from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFuture, PortfolioStock
-from option_pricing.models import Option, Future, Optionsymbol, Futuresymbol, Optionseries
+from option_pricing.models import Option, Future, Stock, Optionsymbol, Futuresymbol, Stocksymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
 from datetime import date
@@ -337,6 +337,7 @@ def PortfolioDetailView(request, portfolio_id):
     stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
     portfolioOptionForm = PortfolioOptionForm()
     portfolioFutureForm = PortfolioFutureForm()
+    portfolioStockForm = PortfolioStockForm()
 
     max_options_dates, options_clos_prices, stock_prices, profits = ([] for i in range(4))
 
@@ -395,6 +396,19 @@ def PortfolioDetailView(request, portfolio_id):
             else:
                 futures_profits.append(float(i.buysellprice) - float(latest_clos))
 
+    max_stocks_dates, stock_stock_prices, stocks_profits = ([] for i in range(3))
+
+    for i in stocks:
+        qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
+        max_stocks_date = qs_stocks.aggregate(Max('date'))
+        
+        max_stocks_dates.append(max_stocks_date['date__max'].strftime("%#d/%#m/%Y"))
+        
+        latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
+        stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+        
+        stocks_profits.append(float(latest_stock)-float(i.buyprice))
+
     if request.method == "POST":
         portfolioOptionForm = PortfolioOptionForm(request.POST)
         
@@ -428,6 +442,7 @@ def PortfolioDetailView(request, portfolio_id):
                     'stocks': stocks,
                     'portfolioOptionForm': portfolioOptionForm,
                     'portfolioFutureForm': portfolioFutureForm,
+                    'portfolioStockForm': portfolioStockForm,
                     'max_options_dates': max_options_dates,   
                     'options_clos_prices': options_clos_prices,     
                     'stock_prices': stock_prices,       
@@ -435,10 +450,15 @@ def PortfolioDetailView(request, portfolio_id):
                     'max_futures_dates': max_futures_dates, 
                     'futures_clos_prices': futures_clos_prices,
                     'futures_stock_prices': futures_stock_prices,
+                    'max_stocks_dates': max_stocks_dates,
                     'fixing_prices': fixing_prices,
                     'futures_profits': futures_profits,
+                    'max_stocks_dates': max_stocks_dates,
+                    'stock_stock_prices': stock_stock_prices,
+                    'stocks_profits': stocks_profits,
                     'error_message': 'Please select a valid active option',
                     })
+
 
     context = {'portfolio': portfolio,
                 'options': options,
@@ -446,6 +466,7 @@ def PortfolioDetailView(request, portfolio_id):
                 'stocks': stocks,
                 'portfolioOptionForm': portfolioOptionForm,
                 'portfolioFutureForm': portfolioFutureForm,
+                'portfolioStockForm': portfolioStockForm,
                 'max_options_dates': max_options_dates,
                 'options_clos_prices': options_clos_prices,
                 'stock_prices': stock_prices,
@@ -455,6 +476,9 @@ def PortfolioDetailView(request, portfolio_id):
                 'futures_stock_prices': futures_stock_prices,
                 'fixing_prices': fixing_prices,
                 'futures_profits': futures_profits,
+                'max_stocks_dates': max_stocks_dates,
+                'stock_stock_prices': stock_stock_prices,
+                'stocks_profits': stocks_profits,
                 }
 
     return render(request, 'accounts/myportfolio-detail.html', context)
@@ -515,13 +539,16 @@ def UpdatePortfolioFutureView(request, portfolio_id, portfoliofuture_id):
 
     return render(request, 'accounts/myportfoliofuture-update.html', {'portfoliofuture':portfoliofuture, 'portfolioFutureUpdateForm': portfolioFutureUpdateForm, 'symbol':symbol,})
 
+@ login_required
 def PortfolioFutureDetailView(request, portfolio_id):
 
     portfolio = Portfolio.objects.get(pk=portfolio_id)
     options = PortfolioOption.objects.filter(portfolio=portfolio_id)
     futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
+    stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
     portfolioOptionForm = PortfolioOptionForm()
     portfolioFutureForm = PortfolioFutureForm()
+    portfolioStockForm = PortfolioStockForm()
 
     max_options_dates, options_clos_prices, stock_prices, profits = ([] for i in range(4))
 
@@ -581,6 +608,19 @@ def PortfolioFutureDetailView(request, portfolio_id):
             else:
                 futures_profits.append(float(i.buysellprice) - float(latest_clos))
 
+    max_stocks_dates, stock_stock_prices, stocks_profits = ([] for i in range(3))
+
+    for i in stocks:
+        qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
+        max_stocks_date = qs_stocks.aggregate(Max('date'))
+        
+        max_stocks_dates.append(max_stocks_date['date__max'].strftime("%#d/%#m/%Y"))
+        
+        latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
+        stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+        
+        stocks_profits.append(float(latest_stock)-float(i.buyprice))
+
     if request.method == "POST":
         portfolioFutureForm = PortfolioFutureForm(request.POST)
         if portfolioFutureForm.is_valid():
@@ -599,15 +639,13 @@ def PortfolioFutureDetailView(request, portfolio_id):
                 
                 portfolioFuture.save()
                 portfolioFuture.portfolio.add(portfolio)
-
-                return HttpResponseRedirect(request.path_info)            
-
+       
             except (IndexError, Futuresymbol.DoesNotExist):
                 return render(request, 'accounts/myportfolio-detail.html', {
                     'portfolio': portfolio,
                     'options': options,
                     'futures': futures,
-                    #'stocks': stocks,
+                    'stocks': stocks,
                     'portfolioFutureForm': portfolioFutureForm,
                     'max_options_dates': max_options_dates,   
                     'options_clos_prices': options_clos_prices,     
@@ -618,15 +656,22 @@ def PortfolioFutureDetailView(request, portfolio_id):
                     'futures_stock_prices': futures_stock_prices,
                     'fixing_prices': fixing_prices,
                     'futures_profits': futures_profits,
+                    'max_stocks_dates': max_stocks_dates,
+                    'stock_stock_prices': stock_stock_prices,
+                    'stocks_profits': stocks_profits,
                     'error_future_message': 'Please select a valid active future',
                     })
+
+            else:
+                return HttpResponseRedirect(request.path_info)
 
     context = {'portfolio': portfolio,
                 'options': options,
                 'futures': futures,
-                #'stocks': stocks,
+                'stocks': stocks,
                 'portfolioOptionForm': portfolioOptionForm,
                 'portfolioFutureForm': portfolioFutureForm,
+                'portfolioStockForm': portfolioStockForm,
                 'max_options_dates': max_options_dates,
                 'options_clos_prices': options_clos_prices,
                 'stock_prices': stock_prices,
@@ -636,8 +681,182 @@ def PortfolioFutureDetailView(request, portfolio_id):
                 'futures_stock_prices': futures_stock_prices,
                 'fixing_prices': fixing_prices,
                 'futures_profits': futures_profits,
+                'max_stocks_dates': max_stocks_dates,
+                'stock_stock_prices': stock_stock_prices,
+                'stocks_profits': stocks_profits,
                 }
 
     return render(request, 'accounts/myportfolio-detail.html', context)
     #return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
 
+@ login_required
+def PortfolioStockDetailView(request, portfolio_id):
+
+    portfolio = Portfolio.objects.get(pk=portfolio_id)
+    options = PortfolioOption.objects.filter(portfolio=portfolio_id)
+    futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
+    stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
+    portfolioOptionForm = PortfolioOptionForm()
+    portfolioFutureForm = PortfolioFutureForm()
+    portfolioStockForm = PortfolioStockForm()
+
+    max_options_dates, options_clos_prices, stock_prices, profits = ([] for i in range(4))
+
+    for i in options:
+        qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
+        max_options_date = qs_options.aggregate(Max('date'))
+        option_strike = json.dumps(qs_options[0].optionsymbol.strike, cls=DecimalEncoder)
+        option_type = qs_options[0].optionsymbol.optiontype
+
+        max_options_dates.append(max_options_date['date__max'].strftime("%#d/%#m/%Y"))
+
+        latest_clos = qs_options.filter(date=max_options_date['date__max']).values('closing_price')[0]['closing_price']
+        options_clos_prices.append(json.dumps(latest_clos, cls=DecimalEncoder))
+
+        latest_stock = qs_options.filter(date=max_options_date['date__max']).values('stock')[0]['stock']
+        stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+        if option_type == 'c':
+            if i.position == 'Long':
+                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+            else:
+                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+
+        if option_type == 'p':
+            if i.position == 'Long':                
+                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+            else:
+                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+
+
+    max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits = ([] for i in range(5))
+
+    for i in futures:
+        qs_futures = Future.objects.filter(futuresymbol=PortfolioFuture.objects.get(id=i.id).futuresymbol.id)
+        max_futures_date = qs_futures.aggregate(Max('date'))
+
+        max_futures_dates.append(max_futures_date['date__max'].strftime("%#d/%#m/%Y"))
+
+        latest_clos = qs_futures.filter(date=max_futures_date['date__max']).values('closing_price')[0]['closing_price']
+        futures_clos_prices.append(json.dumps(latest_clos, cls=DecimalEncoder))
+
+        latest_stock = qs_futures.filter(date=max_futures_date['date__max']).values('stock')[0]['stock']
+        futures_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+        latest_fixing_price = qs_futures.filter(date=max_futures_date['date__max']).values('fixing_price')[0]['fixing_price']
+        fixing_prices.append(json.dumps(latest_fixing_price, cls=DecimalEncoder))
+
+        if i.position == 'Long':
+            if latest_fixing_price > 0:
+                futures_profits.append(float(latest_fixing_price) - float(i.buysellprice))
+            else:
+                futures_profits.append(float(latest_clos) - float(i.buysellprice))
+                
+        if i.position == 'Short':
+            if latest_fixing_price > 0:
+                futures_profits.append(float(i.buysellprice) - float(latest_fixing_price))
+            else:
+                futures_profits.append(float(i.buysellprice) - float(latest_clos))
+
+    max_stocks_dates, stock_stock_prices, stocks_profits = ([] for i in range(3))
+
+    for i in stocks:
+        qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
+        max_stocks_date = qs_stocks.aggregate(Max('date'))
+        
+        max_stocks_dates.append(max_stocks_date['date__max'].strftime("%#d/%#m/%Y"))
+        
+        latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
+        stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+        
+        stocks_profits.append(float(latest_stock)-float(i.buyprice))
+
+    if request.method == "POST":
+        portfolioStockForm = PortfolioStockForm(request.POST)
+        if portfolioStockForm.is_valid():
+            asset_stock = request.POST.get('asset')
+            try:
+                qs = Stocksymbol.objects.filter(asset=asset_stock)
+                stocksymbol_ = qs[0]
+                portfolioStock = PortfolioStock(
+                    stocksymbol = stocksymbol_,
+                    quantity = portfolioStockForm.cleaned_data["quantity"],
+                    buyprice = portfolioStockForm.cleaned_data["buyprice"],
+                )
+                
+                portfolioStock.save()
+                portfolioStock.portfolio.add(portfolio)
+
+            except (IndexError, Stocksymbol.DoesNotExist):
+                return render(request, 'accounts/myportfolio-detail.html', {
+                    'portfolio': portfolio,
+                    'options': options,
+                    'futures': futures,
+                    'stocks': stocks,
+                    'portfolioOptionForm': portfolioOptionForm,
+                    'portfolioFutureForm': portfolioFutureForm,
+                    'portfolioStockForm': portfolioStockForm,
+                    'max_options_dates': max_options_dates,   
+                    'options_clos_prices': options_clos_prices,     
+                    'stock_prices': stock_prices,       
+                    'profits': profits,    
+                    'max_futures_dates': max_futures_dates, 
+                    'futures_clos_prices': futures_clos_prices,
+                    'futures_stock_prices': futures_stock_prices,
+                    'fixing_prices': fixing_prices,
+                    'futures_profits': futures_profits,
+                    'max_stocks_dates': max_stocks_dates,
+                    'stock_stock_prices': stock_stock_prices,
+                    'stocks_profits': stocks_profits,
+                    'error_stock_message': 'Please select a valid stock',
+                    })
+
+            else:
+                return HttpResponseRedirect(request.path_info)
+
+    context = {'portfolio': portfolio,
+                'options': options,
+                'futures': futures,
+                'stocks': stocks,
+                'portfolioOptionForm': portfolioOptionForm,
+                'portfolioFutureForm': portfolioFutureForm,
+                'portfolioStockForm': portfolioStockForm,
+                'max_options_dates': max_options_dates,
+                'options_clos_prices': options_clos_prices,
+                'stock_prices': stock_prices,
+                'profits': profits,
+                'max_futures_dates': max_futures_dates, 
+                'futures_clos_prices': futures_clos_prices,
+                'futures_stock_prices': futures_stock_prices,
+                'fixing_prices': fixing_prices,
+                'futures_profits': futures_profits,
+                'max_stocks_dates': max_stocks_dates,
+                'stock_stock_prices': stock_stock_prices,
+                'stocks_profits': stocks_profits,
+                }
+
+    return render(request, 'accounts/myportfolio-detail.html', context)
+
+@ login_required
+def DeletePortfolioStockView(request):
+    if request.method == "POST":
+        portfoliostock_ids = request.POST.getlist('id[]')
+        portfolio_id = request.POST.get('portfolio_id')
+        for id in portfoliostock_ids:
+            portfoliostock = PortfolioStock.objects.get(pk=id)
+            portfoliostock.delete()
+    return redirect('accounts:portfolio')
+
+@ login_required
+def UpdatePortfolioStockView(request, portfolio_id, portfoliostock_id):
+    portfoliostock = PortfolioStock.objects.get(pk=portfoliostock_id)
+    asset = portfoliostock.stocksymbol.asset
+    portfolioStockUpdateForm = PortfolioStockUpdateModelForm(instance=portfoliostock)
+
+    if request.method == 'POST':
+        portfolioStockUpdateForm = PortfolioStockUpdateModelForm(request.POST, instance=portfoliostock)
+        if portfolioStockUpdateForm.is_valid():
+            portfolioStockUpdateForm.save()
+        return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
+
+    return render(request, 'accounts/myportfoliostock-update.html', {'portfoliostock':portfoliostock, 'portfolioStockUpdateForm': portfolioStockUpdateForm, 'asset':asset,})

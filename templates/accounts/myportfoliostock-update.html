@@ -1,0 +1,40 @@
+{%  extends "../base/base.html" %}
+
+{% block content %}
+<div class="mt-2 container bg-white text-dark">
+  <div class="d-flex flex-wrap align-content-center justify-content-center">
+    <div class="card">
+      <h5 class="card-header">Update {{asset}}</h5>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          {% for error in portfolioStockUpdateForm.errors %}
+          <center><p><strong class="text-danger">Please select a valid {{ error }} value</strong></p></center>
+          {% endfor %} 
+          <div class="form-row mb-2">
+            <div class="form-group col-md-12">
+              <label>Number of Stocks</label>
+              {{ portfolioStockUpdateForm.quantity }}
+              <small id="buyPriceHelpBlock" class="form-text text-muted">
+                Please select an integer value
+              </small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label>Buy Price per Unit</label>
+              {{ portfolioStockUpdateForm.buyprice }}
+              <small id="buyPriceHelpBlock" class="form-text text-muted">
+                Please select either an integer or decimal number (use dot as a separator)
+              </small>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success">Update</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

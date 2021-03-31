@@ -38,5 +38,7 @@ urlpatterns = [
      path('portfoliofuture/<int:portfolio_id>/', views.PortfolioFutureDetailView, name='portfolio-future-detail'),
      path('portfoliofuture-delete/', views.DeletePortfolioFutureView, name='portfolio-future-delete'),
      path('portfoliofuture-update/<int:portfolio_id>/<int:portfoliofuture_id>/', views.UpdatePortfolioFutureView, name='portfolio-future-update'),
-     #path('portfoliostock/<int:portfolio_id>/', views.PortfolioStockDetailView, name='portfolio-stock-detail'),
+     path('portfoliostock/<int:portfolio_id>/', views.PortfolioStockDetailView, name='portfolio-stock-detail'),
+     path('portfoliostock-delete/', views.DeletePortfolioStockView, name='portfolio-stock-delete'),
+     path('portfoliostock-update/<int:portfolio_id>/<int:portfoliostock_id>/', views.UpdatePortfolioStockView, name='portfolio-stock-update'),
 ]
