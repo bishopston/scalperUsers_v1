@@ -850,7 +850,7 @@ def DeletePortfolioStockView(request):
 @ login_required
 def UpdatePortfolioStockView(request, portfolio_id, portfoliostock_id):
     portfoliostock = PortfolioStock.objects.get(pk=portfoliostock_id)
-    asset = portfoliostock.stocksymbol.asset
+    asset = portfoliostock.stocksymbol.get_asset_display()
     portfolioStockUpdateForm = PortfolioStockUpdateModelForm(instance=portfoliostock)
 
     if request.method == 'POST':

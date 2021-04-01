@@ -571,7 +571,7 @@
                           {% for stock in stocks %}
                             <tr id="{{stock.id}}">
                                 <td><input type="checkbox" name="stock_id[]" value="{{stock.id}}" id="portfolio_stock"></td>
-                                <td><small>{{ stock.stocksymbol.asset }}</small></td>                                 
+                                <td><small>{{ stock.stocksymbol.get_asset_display }}</small></td>                                 
                                 <td><small>{{stock.created_at|date:"SHORT_DATE_FORMAT"}}</small></td> 
                                 <td><small>{{max_stocks_dates|index:forloop.counter0}}</small></td>
                                 <td><small>{{stock.quantity}}</small></td>
