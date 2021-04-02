@@ -44,70 +44,71 @@
                 </div>
             </div>
     </div>   
-</div>
-<div class="container bg-white text-dark">
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-hover table-sm">
-                <tr>
-                    <th><small><strong></strong></small></th>
-                    <th><small><strong>Portfolio Name</strong></small></th>
-                </tr>
-                {%csrf_token%}
-                {% for portfolio in myportfolios %}
-                    <tr id="{{portfolio.id}}">
-                        <td><input type="checkbox" name="portfolio_id[]" value="{{portfolio.id}}" id="del_option"></td>
-                        <td><small><a href="{% url 'accounts:portfolio-detail' portfolio.id %}">{{ portfolio.name }}</a></small></td>
+
+    <div class="container bg-white text-dark">
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm">
+                    <tr>
+                        <th><small><strong></strong></small></th>
+                        <th><small><strong>Portfolio Name</strong></small></th>
                     </tr>
-                {% endfor %}
-                </table>
+                    {%csrf_token%}
+                    {% for portfolio in myportfolios %}
+                        <tr id="{{portfolio.id}}">
+                            <td><input type="checkbox" name="portfolio_id[]" value="{{portfolio.id}}" id="del_option"></td>
+                            <td><small><a href="{% url 'accounts:portfolio-detail' portfolio.id %}">{{ portfolio.name }}</a></small></td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
             </div>
-        </div>
-        {% else %}
-            <div class="col-md-12 d-flex justify-content-center">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title d-flex justify-content-center">My Portfolios</h5>
-                        <p class="card-text d-flex justify-content-center">Your list is empty. Create a portfolio to start monitoring.</p>                       
-                    </div>
-                    <div class="row d-flex justify-content-center mb-3">
-                        <button type="button" class="btn btn-primary d-flex flex-wrap align-content-center" data-toggle="modal" data-target="#exampleModal">
-                            <small>Create Portfolio</small> 
-                        </button>
-                        
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Create Portfolio</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+            {% else %}
+                <div class="col-md-12 d-flex justify-content-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex justify-content-center">My Portfolios</h5>
+                            <p class="card-text d-flex justify-content-center">Your list is empty. Create a portfolio to start monitoring.</p>                       
+                        </div>
+                        <div class="row d-flex justify-content-center mb-3">
+                            <button type="button" class="btn btn-primary d-flex flex-wrap align-content-center" data-toggle="modal" data-target="#exampleModal">
+                                <small>Create Portfolio</small> 
+                            </button>
+                            
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Create Portfolio</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            {% if form.errors %}
+                                                <p class="label label-danger">
+                                                    Name must be less than 30 characters long
+                                                </p>
+                                            {% endif %}                                    
+                                            </div>
+                                            <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        {{ form.as_p }}
-                                        {% if form.errors %}
-                                            <p class="label label-danger">
-                                                Name must be less than 30 characters long
-                                            </p>
-                                        {% endif %}                                    
-                                        </div>
-                                        <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
                                 </div>
-                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
