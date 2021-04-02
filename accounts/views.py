@@ -339,7 +339,7 @@ def PortfolioDetailView(request, portfolio_id):
     portfolioFutureForm = PortfolioFutureForm()
     portfolioStockForm = PortfolioStockForm()
 
-    max_options_dates, options_clos_prices, stock_prices, profits = ([] for i in range(4))
+    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff = ([] for i in range(7))
 
     for i in options:
         qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
@@ -357,15 +357,19 @@ def PortfolioDetailView(request, portfolio_id):
 
         if option_type == 'c':
             if i.position == 'Long':
-                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))
             else:
-                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+                profits.append(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))
 
         if option_type == 'p':
             if i.position == 'Long':                
-                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))
             else:
-                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+                profits.append(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))
+
+        option_debit_credit.append(float(100*i.contracts*i.buysellprice))
+        option_valuation.append(float(100*i.contracts*latest_clos))
+        #option_payoff.append(100*i.contracts*profits[i])
 
     max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits = ([] for i in range(5))
 
@@ -568,15 +572,15 @@ def PortfolioFutureDetailView(request, portfolio_id):
 
         if option_type == 'c':
             if i.position == 'Long':
-                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))
             else:
-                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+                profits.append(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))
 
         if option_type == 'p':
             if i.position == 'Long':                
-                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))
             else:
-                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+                profits.append(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))
 
 
     max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits = ([] for i in range(5))
@@ -718,15 +722,15 @@ def PortfolioStockDetailView(request, portfolio_id):
 
         if option_type == 'c':
             if i.position == 'Long':
-                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))
             else:
-                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+                profits.append(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))
 
         if option_type == 'p':
             if i.position == 'Long':                
-                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock))
+                profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))
             else:
-                profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike))
+                profits.append(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))
 
 
     max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits = ([] for i in range(5))
