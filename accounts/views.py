@@ -539,6 +539,7 @@ def PortfolioDetailView(request, portfolio_id):
                     'stocks_profits': stocks_profits,
                     'stocks_valuation': stocks_valuation,
                     'stocks_total_payoff': stocks_total_payoff,
+                    'stocks_count': len(stocks),
                     'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
                     'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
                     'error_message': 'Please select a valid active option',
@@ -576,6 +577,7 @@ def PortfolioDetailView(request, portfolio_id):
                 'stocks_profits': stocks_profits,
                 'stocks_valuation': stocks_valuation,
                 'stocks_total_payoff': stocks_total_payoff,
+                'stocks_count': len(stocks),
                 'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
                 'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
                 }
@@ -830,6 +832,7 @@ def PortfolioFutureDetailView(request, portfolio_id):
                     'stocks_profits': stocks_profits,
                     'stocks_valuation': stocks_valuation,
                     'stocks_total_payoff': stocks_total_payoff,
+                    'stocks_count': len(stocks),
                     'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
                     'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
                     'error_future_message': 'Please select a valid active future',
@@ -869,6 +872,7 @@ def PortfolioFutureDetailView(request, portfolio_id):
                 'stocks_profits': stocks_profits,
                 'stocks_valuation': stocks_valuation,
                 'stocks_total_payoff': stocks_total_payoff,
+                'stocks_count': len(stocks),
                 'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
                 'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
                 }
@@ -1067,6 +1071,7 @@ def PortfolioStockDetailView(request, portfolio_id):
                     'stocks_profits': stocks_profits,
                     'stocks_valuation': stocks_valuation,
                     'stocks_total_payoff': stocks_total_payoff,
+                    'stocks_count': len(stocks),
                     'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
                     'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
                     'error_stock_message': 'Please select a valid stock',
@@ -1106,6 +1111,7 @@ def PortfolioStockDetailView(request, portfolio_id):
                 'stocks_profits': stocks_profits,
                 'stocks_valuation': stocks_valuation,
                 'stocks_total_payoff': stocks_total_payoff,
+                'stocks_count': len(stocks),
                 'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
                 'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
                 }

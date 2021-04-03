@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start mt-2">
-      <div class="row">
+      <div class="row w-100">
           <div class="col-md-12">
               <ul class="nav nav-pills">
                   <li class="nav-item">
@@ -27,7 +27,7 @@
               <div class="my-1 tab-content justify-content-center">
                       <div role="tabpanel" class="tab-pane active" id="summary">
                         <div id="accordion">
-                            <div class="card mt-4">
+                            <div class="card mt-2">
                               <div class="card-header bg-secondary" id="headingOne">
                                 <h5 class="mb-0">
                                   <button class="btn btn-link text-light" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -735,31 +735,36 @@
                         </div>
                       </div>
                       <div role="tabpanel" class="tab-pane" id="valuation">
-                        <div class="row mt-2">
-                          <div class="container">
+                        <div class="col-md-4">
                               <div class="table-responsive mt-2">
-                                <table class="table table-striped table-sm mt-2">
-                                  <thead class="thead-dark">
+                                <table class="table table-sm table-bordered mt-2">
+                                  <thead>
                                     <tr>
-                                      <th scope="col">Active Options</th>
-                                      <th scope="col">Active Futures</th>
-                                      <th scope="col">Stocks</th>
-                                      <th scope="col">Total Valuation</th>
-                                      <th scope="col">Total Payoff</th>
+                                      <th colspan="2">As of 31/12/2021</th>
                                     </tr>
                                   </thead>
-                                  <tbody>
                                     <tr>
-                                      <td class="d-flex justify-content-center">{{active_options_count}}</td>
-                                      <td>{{active_futures_count}}</td>
-                                      <td>mitsos</td>
-                                      <td>{{total_portfolio_valuation}}</td>
-                                      <td>{{total_portfolio_payoff}}</td>
+                                      <td>Active Options</th>
+                                      <td>{{active_options_count}}</td>
                                     </tr>
-                                  </tbody>
+                                    <tr>
+                                      <th scope="col">Active Futures</th>
+                                      <td>{{active_futures_count}}</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="col">Stocks</th>
+                                      <td>{{stocks_count}}</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="col">Total Valuation</th>
+                                      <td>{{total_portfolio_valuation|floatformat:2}}</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="col">Total Payoff</th>
+                                      <td>{{total_portfolio_payoff|floatformat:2}}</td>
+                                    </tr>
                                 </table>
                               </div>
-                          </div>
                         </div>
                       </div>
               </div>
