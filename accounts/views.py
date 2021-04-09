@@ -349,9 +349,9 @@ def PortfolioDetailView(request, portfolio_id):
         if futures[i].active_future():
             active_futures.append(futures[i])
 
-    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff = ([] for i in range(7))
+    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff, option_delta = ([] for i in range(8))
 
-    for i in options:
+    for i in active_options:
         qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
         max_options_date = qs_options.aggregate(Max('date'))
         option_strike = json.dumps(qs_options[0].optionsymbol.strike, cls=DecimalEncoder)
@@ -364,6 +364,8 @@ def PortfolioDetailView(request, portfolio_id):
 
         latest_stock = qs_options.filter(date=max_options_date['date__max']).values('stock')[0]['stock']
         stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+        latest_delta = qs_options.filter(date=max_options_date['date__max']).values('delta')[0]['delta']    
 
         if i.optionsymbol.asset == 'FTSE':
             if option_type == 'c':
@@ -403,13 +405,15 @@ def PortfolioDetailView(request, portfolio_id):
         if i.optionsymbol.asset == 'FTSE':
             option_debit_credit.append(float(2*i.contracts*i.buysellprice))
             option_valuation.append(float(2*i.contracts*latest_clos))
+            option_delta.append(float(i.contracts*latest_delta))
         else:
             option_debit_credit.append(float(100*i.contracts*i.buysellprice))
-            option_valuation.append(float(100*i.contracts*latest_clos))            
+            option_valuation.append(float(100*i.contracts*latest_clos))      
+            option_delta.append(float(i.contracts*latest_delta))      
 
     max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits, future_debit_credit, future_valuation, future_payoff = ([] for i in range(8))
 
-    for i in futures:
+    for i in active_futures:
         qs_futures = Future.objects.filter(futuresymbol=PortfolioFuture.objects.get(id=i.id).futuresymbol.id)
         max_futures_date = qs_futures.aggregate(Max('date'))
 
@@ -465,7 +469,7 @@ def PortfolioDetailView(request, portfolio_id):
             future_debit_credit.append(float(100*i.contracts*i.buysellprice))
             future_valuation.append(float(100*i.contracts*latest_clos)) 
 
-    max_stocks_dates, stock_stock_prices, stocks_profits, stocks_valuation, stocks_total_payoff = ([] for i in range(5))
+    max_stocks_dates, stock_stock_prices, stock_debit_credit, stocks_profits, stocks_valuation, stocks_total_payoff = ([] for i in range(6))
 
     for i in stocks:
         qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
@@ -475,6 +479,7 @@ def PortfolioDetailView(request, portfolio_id):
         
         latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
         stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+        stock_debit_credit.append(float(i.quantity*float(i.buyprice)))
         
         stocks_profits.append(float(latest_stock)-float(i.buyprice))
         stocks_valuation.append(float(i.quantity*latest_stock))
@@ -525,23 +530,26 @@ def PortfolioDetailView(request, portfolio_id):
                     'option_debit_credit': option_debit_credit,
                     'option_valuation': option_valuation,
                     'option_payoff': option_payoff,
+                    'option_delta': option_delta,
                     'max_futures_dates': max_futures_dates, 
                     'futures_clos_prices': futures_clos_prices,
                     'futures_stock_prices': futures_stock_prices,
                     'max_stocks_dates': max_stocks_dates,
                     'fixing_prices': fixing_prices,
                     'futures_profits': futures_profits,
-                    'future_debit_credit': option_debit_credit,
-                    'future_valuation': option_valuation,
-                    'future_payoff': option_payoff,
+                    'future_debit_credit': future_debit_credit,
+                    'future_valuation': future_valuation,
+                    'future_payoff': future_payoff,
                     'max_stocks_dates': max_stocks_dates,
                     'stock_stock_prices': stock_stock_prices,
+                    'stock_debit_credit': stock_debit_credit,
                     'stocks_profits': stocks_profits,
                     'stocks_valuation': stocks_valuation,
                     'stocks_total_payoff': stocks_total_payoff,
                     'stocks_count': len(stocks),
                     'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
                     'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
+                    #'total_option_contracts': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
                     'error_message': 'Please select a valid active option',
                     })
 
@@ -564,16 +572,18 @@ def PortfolioDetailView(request, portfolio_id):
                 'option_debit_credit': option_debit_credit,
                 'option_valuation': option_valuation,
                 'option_payoff': option_payoff,
+                'option_delta': option_delta,
                 'max_futures_dates': max_futures_dates, 
                 'futures_clos_prices': futures_clos_prices,
                 'futures_stock_prices': futures_stock_prices,
                 'fixing_prices': fixing_prices,
                 'futures_profits': futures_profits,
-                'future_debit_credit': option_debit_credit,
-                'future_valuation': option_valuation,
-                'future_payoff': option_payoff,
+                'future_debit_credit': future_debit_credit,
+                'future_valuation': future_valuation,
+                'future_payoff': future_payoff,
                 'max_stocks_dates': max_stocks_dates,
                 'stock_stock_prices': stock_stock_prices,
+                'stock_debit_credit': stock_debit_credit,
                 'stocks_profits': stocks_profits,
                 'stocks_valuation': stocks_valuation,
                 'stocks_total_payoff': stocks_total_payoff,
@@ -593,7 +603,7 @@ def DeletePortfolioOptionView(request):
         for id in portfoliooption_ids:
             portfoliooption = PortfolioOption.objects.get(pk=id)
             portfoliooption.delete()
-    return redirect('accounts:portfolio')
+        return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
     #print(portfolio_id)
     #return HttpResponseRedirect(reverse('accounts:portfolio-detail', args=(portfolio_id)))
     #return redirect('/accounts/portfolio/portfolio_id/')
@@ -621,7 +631,7 @@ def DeletePortfolioFutureView(request):
         for id in portfoliofuture_ids:
             portfoliofuture = PortfolioFuture.objects.get(pk=id)
             portfoliofuture.delete()
-    return redirect('accounts:portfolio')
+        return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
     #print(portfolio_id)
     #return HttpResponseRedirect(reverse('accounts:portfolio-detail', args=(portfolio_id)))
     #return redirect('/accounts/portfolio/portfolio_id/')
@@ -651,9 +661,19 @@ def PortfolioFutureDetailView(request, portfolio_id):
     portfolioFutureForm = PortfolioFutureForm()
     portfolioStockForm = PortfolioStockForm()
 
-    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff = ([] for i in range(7))
+    active_options=[]
+    for i in range(len(options)):
+        if options[i].active_option():
+            active_options.append(options[i])
 
-    for i in options:
+    active_futures=[]
+    for i in range(len(futures)):
+        if futures[i].active_future():
+            active_futures.append(futures[i])
+
+    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff, option_delta = ([] for i in range(8))
+
+    for i in active_options:
         qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
         max_options_date = qs_options.aggregate(Max('date'))
         option_strike = json.dumps(qs_options[0].optionsymbol.strike, cls=DecimalEncoder)
@@ -666,6 +686,9 @@ def PortfolioFutureDetailView(request, portfolio_id):
 
         latest_stock = qs_options.filter(date=max_options_date['date__max']).values('stock')[0]['stock']
         stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+        latest_delta = qs_options.filter(date=max_options_date['date__max']).values('delta')[0]['delta']
+        #option_delta.append(json.dumps(latest_delta, cls=DecimalEncoder)) 
 
         if i.optionsymbol.asset == 'FTSE':
             if option_type == 'c':
@@ -705,13 +728,15 @@ def PortfolioFutureDetailView(request, portfolio_id):
         if i.optionsymbol.asset == 'FTSE':
             option_debit_credit.append(float(2*i.contracts*i.buysellprice))
             option_valuation.append(float(2*i.contracts*latest_clos))
+            option_delta.append(float(i.contracts*latest_delta)) 
         else:
             option_debit_credit.append(float(100*i.contracts*i.buysellprice))
-            option_valuation.append(float(100*i.contracts*latest_clos))            
+            option_valuation.append(float(100*i.contracts*latest_clos))    
+            option_delta.append(float(i.contracts*latest_delta))         
 
     max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits, future_debit_credit, future_valuation, future_payoff = ([] for i in range(8))
 
-    for i in futures:
+    for i in active_futures:
         qs_futures = Future.objects.filter(futuresymbol=PortfolioFuture.objects.get(id=i.id).futuresymbol.id)
         max_futures_date = qs_futures.aggregate(Max('date'))
 
@@ -767,7 +792,7 @@ def PortfolioFutureDetailView(request, portfolio_id):
             future_debit_credit.append(float(100*i.contracts*i.buysellprice))
             future_valuation.append(float(100*i.contracts*latest_clos)) 
 
-    max_stocks_dates, stock_stock_prices, stocks_profits, stocks_valuation, stocks_total_payoff = ([] for i in range(5))
+    max_stocks_dates, stock_stock_prices, stock_debit_credit, stocks_profits, stocks_valuation, stocks_total_payoff = ([] for i in range(6))
 
     for i in stocks:
         qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
@@ -777,6 +802,7 @@ def PortfolioFutureDetailView(request, portfolio_id):
         
         latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
         stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+        stock_debit_credit.append(float(i.quantity*float(i.buyprice)))
         
         stocks_profits.append(float(latest_stock)-float(i.buyprice))
         stocks_valuation.append(float(i.quantity*latest_stock))
@@ -819,16 +845,18 @@ def PortfolioFutureDetailView(request, portfolio_id):
                     'option_debit_credit': option_debit_credit,
                     'option_valuation': option_valuation,
                     'option_payoff': option_payoff,    
+                    'option_delta': option_delta,
                     'max_futures_dates': max_futures_dates, 
                     'futures_clos_prices': futures_clos_prices,
                     'futures_stock_prices': futures_stock_prices,
                     'fixing_prices': fixing_prices,
                     'futures_profits': futures_profits,
-                    'future_debit_credit': option_debit_credit,
-                    'future_valuation': option_valuation,
-                    'future_payoff': option_payoff,
+                    'future_debit_credit': future_debit_credit,
+                    'future_valuation': future_valuation,
+                    'future_payoff': future_payoff,
                     'max_stocks_dates': max_stocks_dates,
                     'stock_stock_prices': stock_stock_prices,
+                    'stock_debit_credit':stock_debit_credit,
                     'stocks_profits': stocks_profits,
                     'stocks_valuation': stocks_valuation,
                     'stocks_total_payoff': stocks_total_payoff,
@@ -859,16 +887,18 @@ def PortfolioFutureDetailView(request, portfolio_id):
                 'option_debit_credit': option_debit_credit,
                 'option_valuation': option_valuation,
                 'option_payoff': option_payoff,
+                'option_delta': option_delta,
                 'max_futures_dates': max_futures_dates, 
                 'futures_clos_prices': futures_clos_prices,
                 'futures_stock_prices': futures_stock_prices,
                 'fixing_prices': fixing_prices,
                 'futures_profits': futures_profits,
-                'future_debit_credit': option_debit_credit,
-                'future_valuation': option_valuation,
-                'future_payoff': option_payoff,
+                'future_debit_credit': future_debit_credit,
+                'future_valuation': future_valuation,
+                'future_payoff': future_payoff,
                 'max_stocks_dates': max_stocks_dates,
                 'stock_stock_prices': stock_stock_prices,
+                'stock_debit_credit':stock_debit_credit,
                 'stocks_profits': stocks_profits,
                 'stocks_valuation': stocks_valuation,
                 'stocks_total_payoff': stocks_total_payoff,
@@ -891,9 +921,19 @@ def PortfolioStockDetailView(request, portfolio_id):
     portfolioFutureForm = PortfolioFutureForm()
     portfolioStockForm = PortfolioStockForm()
 
-    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff = ([] for i in range(7))
+    active_options=[]
+    for i in range(len(options)):
+        if options[i].active_option():
+            active_options.append(options[i])
 
-    for i in options:
+    active_futures=[]
+    for i in range(len(futures)):
+        if futures[i].active_future():
+            active_futures.append(futures[i])
+
+    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff, option_delta = ([] for i in range(8))
+
+    for i in active_options:
         qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
         max_options_date = qs_options.aggregate(Max('date'))
         option_strike = json.dumps(qs_options[0].optionsymbol.strike, cls=DecimalEncoder)
@@ -906,6 +946,9 @@ def PortfolioStockDetailView(request, portfolio_id):
 
         latest_stock = qs_options.filter(date=max_options_date['date__max']).values('stock')[0]['stock']
         stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+        latest_delta = qs_options.filter(date=max_options_date['date__max']).values('delta')[0]['delta']
+        #option_delta.append(json.dumps(latest_delta, cls=DecimalEncoder)) 
 
         if i.optionsymbol.asset == 'FTSE':
             if option_type == 'c':
@@ -945,13 +988,15 @@ def PortfolioStockDetailView(request, portfolio_id):
         if i.optionsymbol.asset == 'FTSE':
             option_debit_credit.append(float(2*i.contracts*i.buysellprice))
             option_valuation.append(float(2*i.contracts*latest_clos))
+            option_delta.append(float(i.contracts*latest_delta)) 
         else:
             option_debit_credit.append(float(100*i.contracts*i.buysellprice))
-            option_valuation.append(float(100*i.contracts*latest_clos))            
+            option_valuation.append(float(100*i.contracts*latest_clos))    
+            option_delta.append(float(i.contracts*latest_delta))         
 
     max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits, future_debit_credit, future_valuation, future_payoff = ([] for i in range(8))
 
-    for i in futures:
+    for i in active_futures:
         qs_futures = Future.objects.filter(futuresymbol=PortfolioFuture.objects.get(id=i.id).futuresymbol.id)
         max_futures_date = qs_futures.aggregate(Max('date'))
 
@@ -1007,7 +1052,7 @@ def PortfolioStockDetailView(request, portfolio_id):
             future_debit_credit.append(float(100*i.contracts*i.buysellprice))
             future_valuation.append(float(100*i.contracts*latest_clos)) 
 
-    max_stocks_dates, stock_stock_prices, stocks_profits, stocks_valuation, stocks_total_payoff = ([] for i in range(5))
+    max_stocks_dates, stock_stock_prices, stock_debit_credit, stocks_profits, stocks_valuation, stocks_total_payoff = ([] for i in range(6))
 
     for i in stocks:
         qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
@@ -1017,6 +1062,7 @@ def PortfolioStockDetailView(request, portfolio_id):
         
         latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
         stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+        stock_debit_credit.append(float(i.quantity*float(i.buyprice)))
         
         stocks_profits.append(float(latest_stock)-float(i.buyprice))
         stocks_valuation.append(float(i.quantity*latest_stock))
@@ -1058,16 +1104,18 @@ def PortfolioStockDetailView(request, portfolio_id):
                     'option_debit_credit': option_debit_credit,
                     'option_valuation': option_valuation,
                     'option_payoff': option_payoff,
+                    'option_delta': option_delta,
                     'max_futures_dates': max_futures_dates, 
                     'futures_clos_prices': futures_clos_prices,
                     'futures_stock_prices': futures_stock_prices,
                     'fixing_prices': fixing_prices,
                     'futures_profits': futures_profits,
-                    'future_debit_credit': option_debit_credit,
-                    'future_valuation': option_valuation,
-                    'future_payoff': option_payoff,
+                    'future_debit_credit': future_debit_credit,
+                    'future_valuation': future_valuation,
+                    'future_payoff': future_payoff,
                     'max_stocks_dates': max_stocks_dates,
                     'stock_stock_prices': stock_stock_prices,
+                    'stock_debit_credit':stock_debit_credit,
                     'stocks_profits': stocks_profits,
                     'stocks_valuation': stocks_valuation,
                     'stocks_total_payoff': stocks_total_payoff,
@@ -1098,6 +1146,7 @@ def PortfolioStockDetailView(request, portfolio_id):
                 'option_debit_credit': option_debit_credit,
                 'option_valuation': option_valuation,
                 'option_payoff': option_payoff,
+                'option_delta': option_delta,
                 'max_futures_dates': max_futures_dates, 
                 'futures_clos_prices': futures_clos_prices,
                 'futures_stock_prices': futures_stock_prices,
@@ -1108,6 +1157,7 @@ def PortfolioStockDetailView(request, portfolio_id):
                 'future_payoff': option_payoff,
                 'max_stocks_dates': max_stocks_dates,
                 'stock_stock_prices': stock_stock_prices,
+                'stock_debit_credit':stock_debit_credit,
                 'stocks_profits': stocks_profits,
                 'stocks_valuation': stocks_valuation,
                 'stocks_total_payoff': stocks_total_payoff,
@@ -1126,7 +1176,7 @@ def DeletePortfolioStockView(request):
         for id in portfoliostock_ids:
             portfoliostock = PortfolioStock.objects.get(pk=id)
             portfoliostock.delete()
-    return redirect('accounts:portfolio')
+        return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
 
 @ login_required
 def UpdatePortfolioStockView(request, portfolio_id, portfoliostock_id):
