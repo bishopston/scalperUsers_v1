@@ -737,11 +737,11 @@
                       <div role="tabpanel" class="tab-pane" id="valuation">
                         <div class="row">
                           <div class="col-md-4">
-                                <div class="table-responsive mt-2">
+                                <div class="table-responsive">
                                   <table class="table table-sm table-bordered mt-2">
                                     <thead>
-                                      <tr>
-                                        <th colspan="2">As of 31/12/2021</th>
+                                      <tr class="bg-secondary text-white">
+                                        <th colspan="2"><center>Portfolio performance as of {{ today|date:"SHORT_DATE_FORMAT" }}</center></th>
                                       </tr>
                                     </thead>
                                       <tr>
@@ -749,31 +749,39 @@
                                         <td>{{active_options_count}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="col">Active Futures</th>
+                                        <td>Active Futures</td>
                                         <td>{{active_futures_count}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="col">Stocks</th>
+                                        <td>Stocks</td>
                                         <td>{{stocks_count}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="col">Total Valuation</th>
+                                        <td>Total Valuation (€)</td>
                                         <td>{{total_portfolio_valuation|floatformat:2}}</td>
                                       </tr>
                                       <tr>
-                                        <th scope="col">Total Payoff</th>
-                                        <td>{{total_portfolio_payoff|floatformat:2}}</td>
+                                        <td>Total Payoff (€)</td>
+                                        <td>
+                                          {% if total_portfolio_payoff < 0 %}
+                                          <div class="change-negative"> 
+                                          {% else %} 
+                                          <div class="change-positive">
+                                          {% endif %}
+                                          {{total_portfolio_payoff|floatformat:2}}
+                                          </div>
+                                        </td>
                                       </tr>
                                   </table>
                                 </div>
                           </div>
                           <div class="col-md-8">
                             <div id="accordion">
-                              <div class="card mt-3">
+                              <div class="card mt-2">
                                 <div class="card-header" id="headingOne">
                                   <h5 class="mb-0">
                                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                      Active Options
+                                      Active Options Analysis
                                     </button>
                                   </h5>
                                 </div>
@@ -786,9 +794,9 @@
                                           <tr>
                                             <th scope="col"><small><strong>Symbol</strong></small></th>
                                             <th scope="col"><small><strong>Contracts</strong></small></th>
-                                            <th scope="col"><small><strong>Debit/Credit</strong></small></th>
-                                            <th scope="col"><small><strong>Valuation</strong></small></th>
-                                            <th scope="col"><small><strong>Payoff</strong></small></th>
+                                            <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
+                                            <th scope="col"><small><strong>Valuation (€)</strong></small></th>
+                                            <th scope="col"><small><strong>Payoff (€)</strong></small></th>
                                             <th scope="col"><small><strong>Position Delta</strong></small></th>
                                           </tr>
                                         </thead>
@@ -797,12 +805,28 @@
                                             <tr>
                                               <td><small>{{item.optionsymbol.symbol}}</small></td>
                                               <td><small>{{item.contracts}}</small></td>
-                                              <td><small>{{option_debit_credit|index:forloop.counter0}}</small></td>
-                                              <td><small>{{option_valuation|index:forloop.counter0}}</small></td> 
+                                              <td><small>{{option_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
+                                              <td><small>{{option_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
                                               <td><small>{{option_payoff|index:forloop.counter0|floatformat:2}}</small></td> 
                                               <td><small>{{option_delta|index:forloop.counter0|floatformat:2}}</small></td>  
                                             </tr>
                                           {% endfor %}
+                                          <tr>
+                                            <th scope="col"><small><strong>Total</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_option_contracts|floatformat:0}}</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_option_debit_credit|floatformat:2}}</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_option_valuation|floatformat:2}}</strong></small></th>
+                                            {% if total_option_payoff < 0 %}
+                                              <th scope="col" class="change-negative"><small><strong>
+                                                {{total_option_payoff|floatformat:2}}
+                                              </strong></small></th>
+                                            {% else %} 
+                                              <th scope="col" class="change-positive"><small><strong>
+                                                {{total_option_payoff|floatformat:2}}
+                                              </strong></small></th>
+                                            {% endif %}
+                                            <th scope="col"><small><strong>{{total_option_delta|floatformat:2}}</strong></small></th>
+                                          </tr>
                                         </tbody>
                                       </table>
                                     </div>
@@ -813,7 +837,7 @@
                                 <div class="card-header" id="headingTwo">
                                   <h5 class="mb-0">
                                     <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                      Active Futures
+                                      Active Futures Analysis
                                     </button>
                                   </h5>
                                 </div>
@@ -825,9 +849,9 @@
                                           <tr>
                                             <th scope="col"><small><strong>Symbol</strong></small></th>
                                             <th scope="col"><small><strong>Contracts</strong></small></th>
-                                            <th scope="col"><small><strong>Debit/Credit</strong></small></th>
-                                            <th scope="col"><small><strong>Valuation</strong></small></th>
-                                            <th scope="col"><small><strong>Payoff</strong></small></th>
+                                            <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
+                                            <th scope="col"><small><strong>Valuation (€)</strong></small></th>
+                                            <th scope="col"><small><strong>Payoff (€)</strong></small></th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -835,11 +859,26 @@
                                             <tr>
                                               <td><small>{{future.futuresymbol.symbol}}</small></td>
                                               <td><small>{{future.contracts}}</small></td>
-                                              <td><small>{{future_debit_credit|index:forloop.counter0}}</small></td>
-                                              <td><small>{{future_valuation|index:forloop.counter0}}</small></td> 
+                                              <td><small>{{future_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
+                                              <td><small>{{future_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
                                               <td><small>{{future_payoff|index:forloop.counter0|floatformat:2}}</small></td>  
                                             </tr>
                                           {% endfor %}
+                                          <tr>
+                                            <th scope="col"><small><strong>Total</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_future_contracts|floatformat:0}}</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_future_debit_credit|floatformat:2}}</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_future_valuation|floatformat:2}}</strong></small></th>
+                                            {% if total_future_payoff < 0 %}
+                                              <th scope="col" class="change-negative"><small><strong>
+                                                {{total_future_payoff|floatformat:2}}
+                                              </strong></small></th>
+                                            {% else %} 
+                                              <th scope="col" class="change-positive"><small><strong>
+                                                {{total_future_payoff|floatformat:2}}
+                                              </strong></small></th>
+                                            {% endif %}
+                                          </tr>
                                         </tbody>
                                       </table>
                                     </div>
@@ -850,7 +889,7 @@
                                 <div class="card-header" id="headingThree">
                                   <h5 class="mb-0">
                                     <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                      Stocks
+                                      Stocks Analysis
                                     </button>
                                   </h5>
                                 </div>
@@ -861,10 +900,10 @@
                                         <thead>
                                           <tr>
                                             <th scope="col"><small><strong>Stock</strong></small></th>
-                                            <th scope="col"><small><strong>Contracts</strong></small></th>
-                                            <th scope="col"><small><strong>Debit/Credit</strong></small></th>
-                                            <th scope="col"><small><strong>Valuation</strong></small></th>
-                                            <th scope="col"><small><strong>Payoff</strong></small></th>
+                                            <th scope="col"><small><strong>Quantity</strong></small></th>
+                                            <th scope="col"><small><strong>Debit (€)</strong></small></th>
+                                            <th scope="col"><small><strong>Valuation (€)</strong></small></th>
+                                            <th scope="col"><small><strong>Payoff (€)</strong></small></th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -872,11 +911,26 @@
                                             <tr>
                                               <td><small>{{item.stocksymbol.get_asset_display}}</small></td>
                                               <td><small>{{item.quantity}}</small></td>
-                                              <td><small>{{stock_debit_credit|index:forloop.counter0}}</small></td>
-                                              <td><small>{{stocks_valuation|index:forloop.counter0}}</small></td> 
+                                              <td><small>{{stock_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
+                                              <td><small>{{stocks_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
                                               <td><small>{{stocks_total_payoff|index:forloop.counter0|floatformat:2}}</small></td>  
                                             </tr>
                                           {% endfor %}
+                                          <tr>
+                                            <th scope="col"><small><strong>Total</strong></small></th>
+                                            <th scope="col"><small><strong>{{stocks_quantity|floatformat:0}}</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_stock_debit_credit|floatformat:2}}</strong></small></th>
+                                            <th scope="col"><small><strong>{{total_stock_valuation|floatformat:2}}</strong></small></th>
+                                            {% if total_stock_payoff < 0 %}
+                                              <th scope="col" class="change-negative"><small><strong>
+                                                {{total_stock_payoff|floatformat:2}}
+                                              </strong></small></th>
+                                            {% else %} 
+                                              <th scope="col" class="change-positive"><small><strong>
+                                                {{total_stock_payoff|floatformat:2}}
+                                              </strong></small></th>
+                                            {% endif %}
+                                          </tr>
                                         </tbody>
                                       </table>
                                     </div>
