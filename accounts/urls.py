@@ -41,4 +41,5 @@ urlpatterns = [
      path('portfoliostock/<int:portfolio_id>/', views.PortfolioStockDetailView, name='portfolio-stock-detail'),
      path('portfoliostock-delete/', views.DeletePortfolioStockView, name='portfolio-stock-delete'),
      path('portfoliostock-update/<int:portfolio_id>/<int:portfoliostock_id>/', views.UpdatePortfolioStockView, name='portfolio-stock-update'),
+     path('portfolio-valuation/<int:portfolio_id>/', views.PortfolioValuationView, name='portfolio-valuation'),
 ]

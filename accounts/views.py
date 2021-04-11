@@ -580,7 +580,7 @@ def PortfolioDetailView(request, portfolio_id):
                     'total_stock_valuation': sum(stocks_valuation),
                     'total_stock_payoff': sum(stocks_total_payoff),
                     'today': date.today(),
-                    'error_message': 'Please select a valid active option',
+                    'error_message': 'Please select a valid not expired option',
                     })
 
 
@@ -938,7 +938,7 @@ def PortfolioFutureDetailView(request, portfolio_id):
                     'total_stock_valuation': sum(stocks_valuation),
                     'total_stock_payoff': sum(stocks_total_payoff),
                     'today': date.today(),
-                    'error_future_message': 'Please select a valid active future',
+                    'error_future_message': 'Please select a valid not expired future',
                     })
 
             else:
@@ -1325,3 +1325,52 @@ def UpdatePortfolioStockView(request, portfolio_id, portfoliostock_id):
         return redirect(reverse('accounts:portfolio-detail', kwargs={ 'portfolio_id': portfolio_id, }))
 
     return render(request, 'accounts/myportfoliostock-update.html', {'portfoliostock':portfoliostock, 'portfolioStockUpdateForm': portfolioStockUpdateForm, 'asset':asset,})
+
+@ login_required
+def PortfolioValuationView(request, portfolio_id):
+    portfolio = Portfolio.objects.get(pk=portfolio_id)
+    active_options=PortfolioOption.objects.filter(portfolio=portfolio_id).filter(optionsymbol__expmonthdate__gte=date.today())
+    active_futures=PortfolioFuture.objects.filter(portfolio=portfolio_id).filter(futuresymbol__expmonthdate__gte=date.today())
+    stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
+
+    option_valuation, future_valuation, stock_valuation, option_names, future_names, stock_names = ([] for i in range(6)) 
+
+    for i in active_options:
+        qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
+        max_options_date = qs_options.aggregate(Max('date'))
+        latest_clos = qs_options.filter(date=max_options_date['date__max']).values('closing_price')[0]['closing_price']
+        if i.optionsymbol.asset == 'FTSE':
+            option_valuation.append(float(2*i.contracts*latest_clos))
+            option_names.append(i.optionsymbol.symbol)
+        else:
+            option_valuation.append(float(100*i.contracts*latest_clos))
+            option_names.append(i.optionsymbol.symbol)
+        
+    for i in active_futures:
+        qs_futures = Future.objects.filter(futuresymbol=PortfolioFuture.objects.get(id=i.id).futuresymbol.id)
+        max_futures_date = qs_futures.aggregate(Max('date'))
+        latest_clos = qs_futures.filter(date=max_futures_date['date__max']).values('closing_price')[0]['closing_price']
+        if i.futuresymbol.asset == 'FTSE':
+            future_valuation.append(float(2*i.contracts*latest_clos))
+            future_names.append(i.futuresymbol.symbol)
+        else:
+            future_valuation.append(float(100*i.contracts*latest_clos))
+            future_names.append(i.futuresymbol.symbol)
+
+    for i in stocks:
+        qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
+        max_stocks_date = qs_stocks.aggregate(Max('date'))
+        latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
+        stock_valuation.append(float(i.quantity*latest_stock))
+        stock_names.append(i.stocksymbol.get_asset_display())
+
+    option_valuation.extend(future_valuation)
+    option_valuation.extend(stock_valuation)
+    option_names.extend(future_names)
+    option_names.extend(stock_names)
+
+    portfolio_valuations=[]
+    for i in range(len(option_names)):
+        portfolio_valuations.append({option_names[i]:option_valuation[i]})
+
+    return JsonResponse(portfolio_valuations, safe=False)

@@ -4,6 +4,8 @@
 
 {% load index %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
 <div class="mt-2 container bg-white text-dark">
     <div class="container bg-light text-dark">
         <div class="row">
@@ -774,6 +776,7 @@
                                       </tr>
                                   </table>
                                 </div>
+
                           </div>
                           <div class="col-md-8">
                             <div id="accordion">
@@ -940,6 +943,26 @@
                             </div>
                           </div>
                         </div>
+                        <div class="row mt-4">
+                          <div class="col-md-12 d-flex justify-content-center">
+                            <div class="w-100">
+                            <nav aria-label="breadcrumb">
+                              <ol class="breadcrumb bg-secondary">
+                                <li class="breadcrumb-item active text-white" aria-current="page"><center><strong>Portfolio Valuation as of {{ today|date:"SHORT_DATE_FORMAT" }}</strong></center></li>
+                              </ol>
+                            </nav>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div>
+                              <canvas id="portfolioValuationChart" width="300" height="150"></canvas>
+                            </div>
+                            <div class="btn-group-vertical mt-3 mx-2">    
+                            </div>
+                          </div>
+                        </div>
                       </div>
               </div>
           </div>
@@ -1054,6 +1077,89 @@
               $( 'input[type="checkbox"]' ).prop('checked', false);
       })
   })
+</script>
+
+<script>
+
+  var portfolio_id="{{portfolio.id}}";
+  var dataportfolioval = `/accounts/portfolio-valuation/${portfolio_id}/`
+
+  var state ={
+    'items':[],
+    'values':[],
+    'coloR':[],
+  }
+
+  $.ajax({
+        method: "GET",
+        url: dataportfolioval,
+        success: function(response){
+            // var coloR = [];
+            var dynamicColors = function() {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            return "rgb(" + r + "," + g + "," + b + ")";
+            };
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var value = Object.values(response[i])[0]
+              
+            state.items.push(key)
+            state.values.push(value)
+            state.coloR.push(dynamicColors());
+            }
+            console.log(state.items)
+            console.log(state.values)
+            setChart()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+  })
+
+  function setChart(){
+
+    var ctx = document.getElementById("portfolioValuationChart").getContext('2d');
+    
+    var portfolioValuationChart = new Chart(ctx, {
+    
+    responsive: true,
+    type: 'pie',
+    data: {
+        labels: state.items,
+        datasets: [{
+            label: 'Portfolio Valuation Distribution',
+            data: state.values,
+            yAxisID: 'A',
+            borderWidth: 1,
+            backgroundColor: state.coloR,
+            borderColor: 'rgba(200, 200, 200, 0.75)',
+            fill: true,
+            order: 1
+        },
+        ]
+    },
+    options: {
+      plugins: {
+        tooltip: {
+          mode: 'label',
+          callbacks: {
+            label: function (context) {
+              var label = context.dataset.label || '';
+              if (context.parsed.y !== null) {
+                label += '€';
+              }
+              return label;
+            }
+          }
+        }
+      }
+    },
+    })
+  }
+
 </script>
 
 {% endblock %}
