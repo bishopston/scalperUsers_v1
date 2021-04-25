@@ -22,8 +22,11 @@ from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFut
 from option_pricing.models import Option, Future, Stock, Optionsymbol, Futuresymbol, Stocksymbol, Optionseries
 from accounts.validators import NumberValidator, UppercaseValidator, LowercaseValidator, SymbolValidator
 
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 def register(request):
     if request.method == 'POST':
@@ -1374,3 +1377,24 @@ def PortfolioValuationView(request, portfolio_id):
         portfolio_valuations.append({option_names[i]:option_valuation[i]})
 
     return JsonResponse(portfolio_valuations, safe=False)
+
+def render_pdf_view(request):
+    template_path = 'accounts/pdf_test.html'
+    context = {'myvar': 'this is your template context'}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    # if download:
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # if display:
+    #response['Content-Disposition'] = 'filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response

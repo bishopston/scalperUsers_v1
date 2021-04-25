@@ -776,6 +776,9 @@
                                       </tr>
                                   </table>
                                 </div>
+                                <div>
+                                  <a class="btn btn-info" href='{% url "accounts:test-pdf" %}' role="button">Export PDF</a>
+                                </div>
 
                           </div>
                           <div class="col-md-8">
@@ -788,53 +791,56 @@
                                     </button>
                                   </h5>
                                 </div>
-                            
-                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                  <div class="card-body">
-                                    <div class="table-responsive">
-                                      <table class="table table-sm">
-                                        <thead>
-                                          <tr>
-                                            <th scope="col"><small><strong>Symbol</strong></small></th>
-                                            <th scope="col"><small><strong>Contracts</strong></small></th>
-                                            <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
-                                            <th scope="col"><small><strong>Valuation (€)</strong></small></th>
-                                            <th scope="col"><small><strong>Payoff (€)</strong></small></th>
-                                            <th scope="col"><small><strong>Position Delta</strong></small></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {% for item in active_options %}
+                                {% if active_options %}
+                                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="table-responsive">
+                                        <table class="table table-sm">
+                                          <thead>
                                             <tr>
-                                              <td><small>{{item.optionsymbol.symbol}}</small></td>
-                                              <td><small>{{item.contracts}}</small></td>
-                                              <td><small>{{option_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
-                                              <td><small>{{option_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
-                                              <td><small>{{option_payoff|index:forloop.counter0|floatformat:2}}</small></td> 
-                                              <td><small>{{option_delta|index:forloop.counter0|floatformat:2}}</small></td>  
+                                              <th scope="col"><small><strong>Symbol</strong></small></th>
+                                              <th scope="col"><small><strong>Contracts</strong></small></th>
+                                              <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
+                                              <th scope="col"><small><strong>Valuation (€)</strong></small></th>
+                                              <th scope="col"><small><strong>Payoff (€)</strong></small></th>
+                                              <th scope="col"><small><strong>Position Delta</strong></small></th>
                                             </tr>
-                                          {% endfor %}
-                                          <tr>
-                                            <th scope="col"><small><strong>Total</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_option_contracts|floatformat:0}}</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_option_debit_credit|floatformat:2}}</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_option_valuation|floatformat:2}}</strong></small></th>
-                                            {% if total_option_payoff < 0 %}
-                                              <th scope="col" class="change-negative"><small><strong>
-                                                {{total_option_payoff|floatformat:2}}
-                                              </strong></small></th>
-                                            {% else %} 
-                                              <th scope="col" class="change-positive"><small><strong>
-                                                {{total_option_payoff|floatformat:2}}
-                                              </strong></small></th>
-                                            {% endif %}
-                                            <th scope="col"><small><strong>{{total_option_delta|floatformat:2}}</strong></small></th>
-                                          </tr>
-                                        </tbody>
-                                      </table>
+                                          </thead>
+                                          <tbody>
+                                            {% for item in active_options %}
+                                              <tr>
+                                                <td><small>{{item.optionsymbol.symbol}}</small></td>
+                                                <td><small>{{item.contracts}}</small></td>
+                                                <td><small>{{option_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
+                                                <td><small>{{option_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
+                                                <td><small>{{option_payoff|index:forloop.counter0|floatformat:2}}</small></td> 
+                                                <td><small>{{option_delta|index:forloop.counter0|floatformat:2}}</small></td>  
+                                              </tr>
+                                            {% endfor %}
+                                            <tr>
+                                              <th scope="col"><small><strong>Total</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_option_contracts|floatformat:0}}</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_option_debit_credit|floatformat:2}}</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_option_valuation|floatformat:2}}</strong></small></th>
+                                              {% if total_option_payoff < 0 %}
+                                                <th scope="col" class="change-negative"><small><strong>
+                                                  {{total_option_payoff|floatformat:2}}
+                                                </strong></small></th>
+                                              {% else %} 
+                                                <th scope="col" class="change-positive"><small><strong>
+                                                  {{total_option_payoff|floatformat:2}}
+                                                </strong></small></th>
+                                              {% endif %}
+                                              <th scope="col"><small><strong>{{total_option_delta|floatformat:2}}</strong></small></th>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
+                                {% else %}
+                                  <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active options.</p></center></div>
+                                {% endif %}
                               </div>
                               <div class="card">
                                 <div class="card-header" id="headingTwo">
@@ -844,49 +850,53 @@
                                     </button>
                                   </h5>
                                 </div>
-                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                                  <div class="card-body">
-                                    <div class="table-responsive">
-                                      <table class="table table-sm">
-                                        <thead>
-                                          <tr>
-                                            <th scope="col"><small><strong>Symbol</strong></small></th>
-                                            <th scope="col"><small><strong>Contracts</strong></small></th>
-                                            <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
-                                            <th scope="col"><small><strong>Valuation (€)</strong></small></th>
-                                            <th scope="col"><small><strong>Payoff (€)</strong></small></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {% for future in active_futures %}
+                                {% if active_futures %}
+                                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="table-responsive">
+                                        <table class="table table-sm">
+                                          <thead>
                                             <tr>
-                                              <td><small>{{future.futuresymbol.symbol}}</small></td>
-                                              <td><small>{{future.contracts}}</small></td>
-                                              <td><small>{{future_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
-                                              <td><small>{{future_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
-                                              <td><small>{{future_payoff|index:forloop.counter0|floatformat:2}}</small></td>  
+                                              <th scope="col"><small><strong>Symbol</strong></small></th>
+                                              <th scope="col"><small><strong>Contracts</strong></small></th>
+                                              <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
+                                              <th scope="col"><small><strong>Valuation (€)</strong></small></th>
+                                              <th scope="col"><small><strong>Payoff (€)</strong></small></th>
                                             </tr>
-                                          {% endfor %}
-                                          <tr>
-                                            <th scope="col"><small><strong>Total</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_future_contracts|floatformat:0}}</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_future_debit_credit|floatformat:2}}</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_future_valuation|floatformat:2}}</strong></small></th>
-                                            {% if total_future_payoff < 0 %}
-                                              <th scope="col" class="change-negative"><small><strong>
-                                                {{total_future_payoff|floatformat:2}}
-                                              </strong></small></th>
-                                            {% else %} 
-                                              <th scope="col" class="change-positive"><small><strong>
-                                                {{total_future_payoff|floatformat:2}}
-                                              </strong></small></th>
-                                            {% endif %}
-                                          </tr>
-                                        </tbody>
-                                      </table>
+                                          </thead>
+                                          <tbody>
+                                            {% for future in active_futures %}
+                                              <tr>
+                                                <td><small>{{future.futuresymbol.symbol}}</small></td>
+                                                <td><small>{{future.contracts}}</small></td>
+                                                <td><small>{{future_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
+                                                <td><small>{{future_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
+                                                <td><small>{{future_payoff|index:forloop.counter0|floatformat:2}}</small></td>  
+                                              </tr>
+                                            {% endfor %}
+                                            <tr>
+                                              <th scope="col"><small><strong>Total</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_future_contracts|floatformat:0}}</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_future_debit_credit|floatformat:2}}</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_future_valuation|floatformat:2}}</strong></small></th>
+                                              {% if total_future_payoff < 0 %}
+                                                <th scope="col" class="change-negative"><small><strong>
+                                                  {{total_future_payoff|floatformat:2}}
+                                                </strong></small></th>
+                                              {% else %} 
+                                                <th scope="col" class="change-positive"><small><strong>
+                                                  {{total_future_payoff|floatformat:2}}
+                                                </strong></small></th>
+                                              {% endif %}
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
+                                {% else %}
+                                  <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active futures.</p></center></div>
+                                {% endif %}
                               </div>
                               <div class="card">
                                 <div class="card-header" id="headingThree">
@@ -896,49 +906,53 @@
                                     </button>
                                   </h5>
                                 </div>
-                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                                  <div class="card-body">
-                                    <div class="table-responsive">
-                                      <table class="table table-sm">
-                                        <thead>
-                                          <tr>
-                                            <th scope="col"><small><strong>Stock</strong></small></th>
-                                            <th scope="col"><small><strong>Quantity</strong></small></th>
-                                            <th scope="col"><small><strong>Debit (€)</strong></small></th>
-                                            <th scope="col"><small><strong>Valuation (€)</strong></small></th>
-                                            <th scope="col"><small><strong>Payoff (€)</strong></small></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {% for item in stocks %}
+                                {% if stocks %}
+                                  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="table-responsive">
+                                        <table class="table table-sm">
+                                          <thead>
                                             <tr>
-                                              <td><small>{{item.stocksymbol.get_asset_display}}</small></td>
-                                              <td><small>{{item.quantity}}</small></td>
-                                              <td><small>{{stock_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
-                                              <td><small>{{stocks_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
-                                              <td><small>{{stocks_total_payoff|index:forloop.counter0|floatformat:2}}</small></td>  
+                                              <th scope="col"><small><strong>Stock</strong></small></th>
+                                              <th scope="col"><small><strong>Quantity</strong></small></th>
+                                              <th scope="col"><small><strong>Debit (€)</strong></small></th>
+                                              <th scope="col"><small><strong>Valuation (€)</strong></small></th>
+                                              <th scope="col"><small><strong>Payoff (€)</strong></small></th>
                                             </tr>
-                                          {% endfor %}
-                                          <tr>
-                                            <th scope="col"><small><strong>Total</strong></small></th>
-                                            <th scope="col"><small><strong>{{stocks_quantity|floatformat:0}}</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_stock_debit_credit|floatformat:2}}</strong></small></th>
-                                            <th scope="col"><small><strong>{{total_stock_valuation|floatformat:2}}</strong></small></th>
-                                            {% if total_stock_payoff < 0 %}
-                                              <th scope="col" class="change-negative"><small><strong>
-                                                {{total_stock_payoff|floatformat:2}}
-                                              </strong></small></th>
-                                            {% else %} 
-                                              <th scope="col" class="change-positive"><small><strong>
-                                                {{total_stock_payoff|floatformat:2}}
-                                              </strong></small></th>
-                                            {% endif %}
-                                          </tr>
-                                        </tbody>
-                                      </table>
+                                          </thead>
+                                          <tbody>
+                                            {% for item in stocks %}
+                                              <tr>
+                                                <td><small>{{item.stocksymbol.get_asset_display}}</small></td>
+                                                <td><small>{{item.quantity}}</small></td>
+                                                <td><small>{{stock_debit_credit|index:forloop.counter0|floatformat:2}}</small></td>
+                                                <td><small>{{stocks_valuation|index:forloop.counter0|floatformat:2}}</small></td> 
+                                                <td><small>{{stocks_total_payoff|index:forloop.counter0|floatformat:2}}</small></td>  
+                                              </tr>
+                                            {% endfor %}
+                                            <tr>
+                                              <th scope="col"><small><strong>Total</strong></small></th>
+                                              <th scope="col"><small><strong>{{stocks_quantity|floatformat:0}}</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_stock_debit_credit|floatformat:2}}</strong></small></th>
+                                              <th scope="col"><small><strong>{{total_stock_valuation|floatformat:2}}</strong></small></th>
+                                              {% if total_stock_payoff < 0 %}
+                                                <th scope="col" class="change-negative"><small><strong>
+                                                  {{total_stock_payoff|floatformat:2}}
+                                                </strong></small></th>
+                                              {% else %} 
+                                                <th scope="col" class="change-positive"><small><strong>
+                                                  {{total_stock_payoff|floatformat:2}}
+                                                </strong></small></th>
+                                              {% endif %}
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
+                                {% else %}
+                                  <div class="mt-1"><center><p>{{portfolio.name}} does not contain any stocks.</p></center></div>
+                                {% endif %}
                               </div>
                             </div>
                           </div>
@@ -948,7 +962,7 @@
                             <div class="w-100">
                             <nav aria-label="breadcrumb">
                               <ol class="breadcrumb bg-secondary">
-                                <li class="breadcrumb-item active text-white" aria-current="page"><center><strong>Portfolio Valuation as of {{ today|date:"SHORT_DATE_FORMAT" }}</strong></center></li>
+                                <li class="breadcrumb-item active text-white" aria-current="page"><center><strong>Portfolio Valuation (€) as of {{ today|date:"SHORT_DATE_FORMAT" }}</strong></center></li>
                               </ol>
                             </nav>
                             </div>
@@ -1140,22 +1154,6 @@
             order: 1
         },
         ]
-    },
-    options: {
-      plugins: {
-        tooltip: {
-          mode: 'label',
-          callbacks: {
-            label: function (context) {
-              var label = context.dataset.label || '';
-              if (context.parsed.y !== null) {
-                label += '€';
-              }
-              return label;
-            }
-          }
-        }
-      }
     },
     })
   }
