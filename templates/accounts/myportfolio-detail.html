@@ -839,7 +839,11 @@
                                     </div>
                                   </div>
                                 {% else %}
-                                  <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active options.</p></center></div>
+                                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active options.</p></center></div>
+                                    </div>
+                                  </div>                                 
                                 {% endif %}
                               </div>
                               <div class="card">
@@ -895,7 +899,11 @@
                                     </div>
                                   </div>
                                 {% else %}
-                                  <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active futures.</p></center></div>
+                                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active futures.</p></center></div>
+                                    </div>
+                                  </div>                                 
                                 {% endif %}
                               </div>
                               <div class="card">
@@ -951,7 +959,11 @@
                                     </div>
                                   </div>
                                 {% else %}
-                                  <div class="mt-1"><center><p>{{portfolio.name}} does not contain any stocks.</p></center></div>
+                                  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="mt-1"><center><p>{{portfolio.name}} does not contain any stocks.</p></center></div>
+                                    </div>
+                                  </div>
                                 {% endif %}
                               </div>
                             </div>

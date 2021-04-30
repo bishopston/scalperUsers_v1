@@ -43,5 +43,6 @@ urlpatterns = [
      path('portfoliostock-update/<int:portfolio_id>/<int:portfoliostock_id>/', views.UpdatePortfolioStockView, name='portfolio-stock-update'),
      path('portfolio-valuation/<int:portfolio_id>/', views.PortfolioValuationView, name='portfolio-valuation'),
      path('portfolio-valuation-pdf/<int:portfolio_id>/', views.PortfolioValuationPDFView, name='portfolio-valuation-pdf'),
+     # path('myportfolio-pdf/', views.MyPortfolioPDFView, name='myportfolio-pdf'),
      path('test-pdf/', views.render_pdf_view, name='test-pdf'),
 ]

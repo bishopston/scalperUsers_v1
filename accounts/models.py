@@ -58,6 +58,26 @@ class Portfolio(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def active_option_count(self):
+        options = PortfolioOption.objects.filter(portfolio=self.id)
+        active_options=[]
+        for i in range(len(options)):
+            if options[i].active_option():
+                active_options.append(options[i])
+        return len(active_options)
+
+    def active_future_count(self):
+        futures = PortfolioFuture.objects.filter(portfolio=self.id)
+        active_futures=[]
+        for i in range(len(futures)):
+            if futures[i].active_future():
+                active_futures.append(futures[i])
+        return len(active_futures)
+
+    def stock_count(self):
+        stocks = PortfolioStock.objects.filter(portfolio=self.id)
+        return len(stocks)
+
 class PortfolioOption(models.Model):
 
     POSITION_TYPE = [

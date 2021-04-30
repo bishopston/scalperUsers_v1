@@ -11,7 +11,7 @@
     <body>
       <div class="w-50">
         <div class="row">
-          <p><strong>Portfolio performance as of {{ today|date:"SHORT_DATE_FORMAT" }}</strong></p>
+          <p><strong>Portfolio performance as of {{ today|date:"SHORT_DATE_FORMAT" }} - ({{portfolio.name}})</strong></p>
             
                   <div class="table-responsive">
                     <table class="table table-sm table-bordered mt-2">
@@ -64,31 +64,31 @@
                   <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                     <div class="card-body">
                       <div class="table-responsive">
-                        <table class="table table-sm">
-                          <thead>
+                        <table class="table table-sm table-bordered mt-2">
                             <tr>
-                              <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
-                              <th scope="col"><small><strong>Valuation (€)</strong></small></th>
-                              <th scope="col"><small><strong>Payoff (€)</strong></small></th>
-                              <th scope="col"><small><strong>Position Delta</strong></small></th>
+                              <td>Total Options Debit/Credit (€)</td>
+                              <td>{{total_option_debit_credit|floatformat:2}}</td>
                             </tr>
-                          </thead>
-                          <tbody>
                             <tr>
-                              <th scope="col"><small>{{total_option_debit_credit|floatformat:2}}</small></th>
-                              <th scope="col"><small>{{total_option_valuation|floatformat:2}}</small></th>
-                              {% if total_option_payoff < 0 %}
-                                <th scope="col" class="change-negative"><small>
-                                  {{total_option_payoff|floatformat:2}}
-                                </small></th>
-                              {% else %} 
-                                <th scope="col" class="change-positive"><small>
-                                  {{total_option_payoff|floatformat:2}}
-                                </small></th>
-                              {% endif %}
-                              <th scope="col"><small>{{total_option_delta|floatformat:2}}</small></th>
+                              <td>Total Options Valuation (€)</td>
+                              <td>{{total_option_valuation|floatformat:2}}</td>
                             </tr>
-                          </tbody>
+                            <tr>
+                              <td>Total Options Payoff (€)</td>
+                              <td>
+                                {% if total_option_payoff < 0 %}
+                                <div class="change-negative"> 
+                                {% else %} 
+                                <div class="change-positive">
+                                {% endif %}
+                                {{total_option_payoff|floatformat:2}}
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Total Options Delta</td>
+                              <td>{{total_option_delta|floatformat:2}}</td>
+                            </tr>
                         </table>
                       </div>
                     </div>
@@ -97,41 +97,39 @@
                   <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active options.</p></center></div>
                 {% endif %}
               </div>
-              <div class="card">
-                <div class="card-header" id="headingTwo">
+              <div class="card mt-2">
+                <div class="card-header" id="headingOne">
                   <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       Active Futures Analysis
                     </button>
                   </h5>
                 </div>
                 {% if active_futures %}
-                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                     <div class="card-body">
                       <div class="table-responsive">
-                        <table class="table table-sm">
-                          <thead>
+                        <table class="table table-sm table-bordered mt-2">
                             <tr>
-                              <th scope="col"><small><strong>Debit/Credit (€)</strong></small></th>
-                              <th scope="col"><small><strong>Valuation (€)</strong></small></th>
-                              <th scope="col"><small><strong>Payoff (€)</strong></small></th>
+                              <td>Total Futures Debit/Credit (€)</td>
+                              <td>{{total_future_debit_credit|floatformat:2}}</td>
                             </tr>
-                          </thead>
-                          <tbody>
                             <tr>
-                              <th scope="col"><small><strong>{{total_future_debit_credit|floatformat:2}}</strong></small></th>
-                              <th scope="col"><small><strong>{{total_future_valuation|floatformat:2}}</strong></small></th>
-                              {% if total_future_payoff < 0 %}
-                                <th scope="col" class="change-negative"><small><strong>
-                                  {{total_future_payoff|floatformat:2}}
-                                </strong></small></th>
-                              {% else %} 
-                                <th scope="col" class="change-positive"><small><strong>
-                                  {{total_future_payoff|floatformat:2}}
-                                </strong></small></th>
-                              {% endif %}
+                              <td>Total Futures Valuation (€)</td>
+                              <td>{{total_future_valuation|floatformat:2}}</td>
                             </tr>
-                          </tbody>
+                            <tr>
+                              <td>Total Futures Payoff (€)</td>
+                              <td>
+                                {% if total_future_payoff < 0 %}
+                                <div class="change-negative"> 
+                                {% else %} 
+                                <div class="change-positive">
+                                {% endif %}
+                                {{total_future_payoff|floatformat:2}}
+                                </div>
+                              </td>
+                            </tr>
                         </table>
                       </div>
                     </div>
@@ -140,41 +138,39 @@
                   <div class="mt-1"><center><p>{{portfolio.name}} does not contain any active futures.</p></center></div>
                 {% endif %}
               </div>
-              <div class="card">
-                <div class="card-header" id="headingThree">
+              <div class="card mt-2">
+                <div class="card-header" id="headingOne">
                   <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       Stocks Analysis
                     </button>
                   </h5>
                 </div>
                 {% if stocks %}
-                  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                     <div class="card-body">
                       <div class="table-responsive">
-                        <table class="table table-sm">
-                          <thead>
+                        <table class="table table-sm table-bordered mt-2">
                             <tr>
-                              <th scope="col"><small><strong>Debit (€)</strong></small></th>
-                              <th scope="col"><small><strong>Valuation (€)</strong></small></th>
-                              <th scope="col"><small><strong>Payoff (€)</strong></small></th>
+                              <td>Total Stocks Debit (€)</td>
+                              <td>{{total_stock_debit_credit|floatformat:2}}</td>
                             </tr>
-                          </thead>
-                          <tbody>
                             <tr>
-                              <th scope="col"><small><strong>{{total_stock_debit_credit|floatformat:2}}</strong></small></th>
-                              <th scope="col"><small><strong>{{total_stock_valuation|floatformat:2}}</strong></small></th>
-                              {% if total_stock_payoff < 0 %}
-                                <th scope="col" class="change-negative"><small><strong>
-                                  {{total_stock_payoff|floatformat:2}}
-                                </strong></small></th>
-                              {% else %} 
-                                <th scope="col" class="change-positive"><small><strong>
-                                  {{total_stock_payoff|floatformat:2}}
-                                </strong></small></th>
-                              {% endif %}
+                              <td>Total Stocks Valuation (€)</td>
+                              <td>{{total_stock_valuation|floatformat:2}}</td>
                             </tr>
-                          </tbody>
+                            <tr>
+                              <td>Total Stocks Payoff (€)</td>
+                              <td>
+                                {% if total_stock_payoff < 0 %}
+                                <div class="change-negative"> 
+                                {% else %} 
+                                <div class="change-positive">
+                                {% endif %}
+                                {{total_stock_payoff|floatformat:2}}
+                                </div>
+                              </td>
+                            </tr>
                         </table>
                       </div>
                     </div>

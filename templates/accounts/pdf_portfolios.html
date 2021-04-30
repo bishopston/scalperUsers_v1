@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{{portfolio.name}} valuation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <div class="row">
+            <div class="mt-3 container bg-white text-dark">
+                {% if myportfolios %}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm">
+                        <tr>
+                            <th><small><strong></strong></small></th>
+                            <th><small><strong>Portfolio Name</strong></small></th>
+                            <th><small><strong>Active Options</strong></small></th>
+                            <th><small><strong>Active Futures</strong></small></th>
+                            <th><small><strong>Stocks</strong></small></th>
+                            <th><small><strong>Created at</strong></small></th>
+                            <!-- <th><small><strong>Updated at</strong></small></th> -->
+                        </tr>
+                        {%csrf_token%}
+                        {% for portfolio in myportfolios %}
+                            <tr id="{{portfolio.id}}">
+                                <td><input type="checkbox" name="portfolio_id[]" value="{{portfolio.id}}" id="del_option"></td>
+                                <td><small><a href="{% url 'accounts:portfolio-detail' portfolio.id %}">{{ portfolio.name }}</a></small></td>
+                                <td><small>{{portfolio.active_option_count}}</small></td>
+                                <td><small>{{portfolio.active_futures_count}}</small></td>
+                                <td><small>{{portfolio.stocks_count}}</small></td>
+                                <td><small>{{portfolio.created_at|date:"SHORT_DATE_FORMAT"}}</small></td>
+                                <!-- <td><small>{{portfolio.updated_at|date:"SHORT_DATE_FORMAT"}}</small></td> -->
+                            </tr>
+                        {% endfor %}
+                        </table>
+                    </div>
+                {% else %}
+                <p class="card-text d-flex justify-content-center">Your list is empty. Create a portfolio to start monitoring.</p>  
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

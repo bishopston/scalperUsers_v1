@@ -301,6 +301,18 @@ def myImpliedATMScreeners(request):
 def PortfolioView(request):
     myportfolios = Portfolio.objects.filter(creator=request.user)
 
+    portfolio_active_options_count=[]
+    for i in range(len(myportfolios)):
+        portfolio_active_options_count.append(myportfolios[i].active_option_count())
+
+    portfolio_active_futures_count=[]
+    for i in range(len(myportfolios)):
+        portfolio_active_futures_count.append(myportfolios[i].active_future_count())
+
+    portfolio_stocks_count=[]
+    for i in range(len(myportfolios)):
+        portfolio_stocks_count.append(myportfolios[i].stock_count())
+
     form = CreatePortfolioForm()
     if request.method == "POST":
         form = CreatePortfolioForm(request.POST)
@@ -313,7 +325,10 @@ def PortfolioView(request):
         return HttpResponseRedirect(reverse('accounts:portfolio'))
 
     context = {'myportfolios': myportfolios,
-                'form': form}
+                'form': form,
+                'portfolio_active_options_count': portfolio_active_options_count,
+                'portfolio_active_futures_count': portfolio_active_futures_count,
+                'portfolio_stocks_count': portfolio_stocks_count}
 
     return render(request, 'accounts/myportfolios.html', context)
 
@@ -1638,3 +1653,44 @@ def PortfolioValuationPDFView(request, portfolio_id):
     if pisa_status.err:
        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
+
+""" def MyPortfolioPDFView(request):
+
+    myportfolios = Portfolio.objects.filter(creator=request.user)
+
+    portfolio_active_options_count=[]
+    for i in range(len(myportfolios)):
+        portfolio_active_options_count.append(myportfolios[i].active_option_count())
+
+    portfolio_active_futures_count=[]
+    for i in range(len(myportfolios)):
+        portfolio_active_futures_count.append(myportfolios[i].active_future_count())
+
+    portfolio_stocks_count=[]
+    for i in range(len(myportfolios)):
+        portfolio_stocks_count.append(myportfolios[i].stock_count())
+
+    context = {'myportfolios': myportfolios,
+                'portfolio_active_options_count': portfolio_active_options_count,
+                'portfolio_active_futures_count': portfolio_active_futures_count,
+                'portfolio_stocks_count': portfolio_stocks_count}
+
+    template_path = 'accounts/pdf_portfolios.html'
+    #context = {'myvar': 'this is your template context'}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    # if download:
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # if display:
+    #response['Content-Disposition'] = 'filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response """
