@@ -50,269 +50,271 @@
         <div class="row"><div class="col-md-2 align-text-top"><p class="subtext">At close: {{latest_trad_date}}</p></div></div>
     </div>
     <div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
-                    </li>
+        <div class="w-100">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a href="#chart" class="nav-link" role="tab" data-toggle="tab">Price Chart</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#deltachart" class="nav-link" role="tab" data-toggle="tab">Delta Chart</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#gammachart" class="nav-link" role="tab" data-toggle="tab">Gamma Chart</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#thetachart" class="nav-link" role="tab" data-toggle="tab">Theta Chart</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#vegachart" class="nav-link" role="tab" data-toggle="tab">Vega Chart</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#impliedchart" class="nav-link" role="tab" data-toggle="tab">Implied Chart</a>
-                    </li>
-                </ul>
+                        <li class="nav-item">
+                            <a href="#chart" class="nav-link" role="tab" data-toggle="tab">Price Chart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#deltachart" class="nav-link" role="tab" data-toggle="tab">Delta Chart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#gammachart" class="nav-link" role="tab" data-toggle="tab">Gamma Chart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#thetachart" class="nav-link" role="tab" data-toggle="tab">Theta Chart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#vegachart" class="nav-link" role="tab" data-toggle="tab">Vega Chart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#impliedchart" class="nav-link" role="tab" data-toggle="tab">Implied Chart</a>
+                        </li>
+                    </ul>
 
-                <div class="my-3 tab-content justify-content-center">
-                        <div role="tabpanel" class="tab-pane active" id="summary">
-                            
-                                <div class="d-flex justify-content-center">
-                                    <div class="col-md-3">
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-hover">
-                                                <tbody>
-                                                    <tr>
-                                                        <td><small>Asset:</small></td>
-                                                        <td><small class="font-weight-bold">{{asset}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Option Type:</small></td>
-                                                        <td><small class="font-weight-bold">{{optiontype}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Expiration Date:</small></td>
-                                                        <td><small class="font-weight-bold">{{expdate}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Exercise Price:</small></td>
-                                                        <td><small class="font-weight-bold">
-                                                            {% if asset == 'FTSE' %}
-                                                                {{ strike|add:"0" }}
-                                                            {% else %}
-                                                                {{ strike }}
-                                                            {% endif %}
-                                                        </small></td>												
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                    <div class="my-3 tab-content justify-content-center">
+                            <div role="tabpanel" class="tab-pane active" id="summary">
+                                
+                                    <div class="d-flex justify-content-center">
+                                        <div class="col-md-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><small>Asset:</small></td>
+                                                            <td><small class="font-weight-bold">{{asset}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Option Type:</small></td>
+                                                            <td><small class="font-weight-bold">{{optiontype}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Expiration Date:</small></td>
+                                                            <td><small class="font-weight-bold">{{expdate}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Exercise Price:</small></td>
+                                                            <td><small class="font-weight-bold">
+                                                                {% if asset == 'FTSE' %}
+                                                                    {{ strike|add:"0" }}
+                                                                {% else %}
+                                                                    {{ strike }}
+                                                                {% endif %}
+                                                            </small></td>												
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><small>Latest Trading:</small></td>
+                                                            <td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Volume:</small></td>
+                                                            <td><small class="font-weight-bold">{{volume}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Trades:</small></td>
+                                                            <td><small class="font-weight-bold">{{trades}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Open Interest:</small></td>
+                                                            <td><small class="font-weight-bold">{{open_interest}}</small></td>												
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><small>Imp. Volatility:</small></td>
+                                                            <td><small class="font-weight-bold">{{imp_vol}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Moneyness:</small></td>
+                                                            <td><small class="font-weight-bold">
+                                                                {% if moneyness == 'OTM' %}
+                                                                <div class="change-negative"> 
+                                                                {% else %} 
+                                                                <div class="change-positive">
+                                                                {% endif %}
+                                                                {{moneyness}}
+                                                            </small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Lifetime High:</small></td>
+                                                            <td><small class="font-weight-bold">
+                                                                {% if asset == 'FTSE' %}
+                                                                    {{lifetime_high|floatformat:2}}
+                                                                {% else %}
+                                                                    {{lifetime_high|floatformat:3}}
+                                                                {% endif %}
+                                                            </small></td>													
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Lifetime Low:</small></td>
+                                                            <td><small class="font-weight-bold">
+                                                                {% if asset == 'FTSE' %}
+                                                                    {{lifetime_low|floatformat:2}}
+                                                                {% else %}
+                                                                    {{lifetime_low|floatformat:3}}
+                                                                {% endif %}
+                                                            </small></td>												
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><small>Delta:</small></td>
+                                                            <td><small class="font-weight-bold">{{delta|floatformat:2}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Gamma:</small></td>
+                                                            <td><small class="font-weight-bold">{{gamma|floatformat:2}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Theta per day:</small></td>
+                                                            <td><small class="font-weight-bold">{{theta|floatformat:2}}</small></td>												
+                                                        </tr>
+                                                        <tr>
+                                                            <td><small>Vega:</small></td>
+                                                            <td><small class="font-weight-bold">{{vega|floatformat:2}}</small></td>												
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-hover">
-                                                <tbody>
-                                                    <tr>
-                                                        <td><small>Latest Trading:</small></td>
-                                                        <td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Volume:</small></td>
-                                                        <td><small class="font-weight-bold">{{volume}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Trades:</small></td>
-                                                        <td><small class="font-weight-bold">{{trades}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Open Interest:</small></td>
-                                                        <td><small class="font-weight-bold">{{open_interest}}</small></td>												
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-hover">
-                                                <tbody>
-                                                    <tr>
-                                                        <td><small>Imp. Volatility:</small></td>
-                                                        <td><small class="font-weight-bold">{{imp_vol}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Moneyness:</small></td>
-                                                        <td><small class="font-weight-bold">
-                                                            {% if moneyness == 'OTM' %}
-                                                            <div class="change-negative"> 
-                                                            {% else %} 
-                                                            <div class="change-positive">
-                                                            {% endif %}
-                                                            {{moneyness}}
-                                                        </small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Lifetime High:</small></td>
-                                                        <td><small class="font-weight-bold">
-                                                            {% if asset == 'FTSE' %}
-                                                                {{lifetime_high|floatformat:2}}
-                                                            {% else %}
-                                                                {{lifetime_high|floatformat:3}}
-                                                            {% endif %}
-                                                        </small></td>													
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Lifetime Low:</small></td>
-                                                        <td><small class="font-weight-bold">
-                                                            {% if asset == 'FTSE' %}
-                                                                {{lifetime_low|floatformat:2}}
-                                                            {% else %}
-                                                                {{lifetime_low|floatformat:3}}
-                                                            {% endif %}
-                                                        </small></td>												
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-hover">
-                                                <tbody>
-                                                    <tr>
-                                                        <td><small>Delta:</small></td>
-                                                        <td><small class="font-weight-bold">{{delta|floatformat:2}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Gamma:</small></td>
-                                                        <td><small class="font-weight-bold">{{gamma|floatformat:2}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Theta per day:</small></td>
-                                                        <td><small class="font-weight-bold">{{theta|floatformat:2}}</small></td>												
-                                                    </tr>
-                                                    <tr>
-                                                        <td><small>Vega:</small></td>
-                                                        <td><small class="font-weight-bold">{{vega|floatformat:2}}</small></td>												
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            							
-                        </div>
+                                                            
+                            </div>
 
-                        <div role="tabpanel" class="tab-pane" id="chart">
-                            <div class="container bg-white text-dark">
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <canvas id="optionChart" width="400" height="150">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="btn-group-vertical mt-3">
-                                            <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
-                                            <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
-                                            <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
-                                            <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
+                            <div role="tabpanel" class="tab-pane" id="chart">
+                                <div class="container bg-white text-dark">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <canvas id="optionChart" width="400" height="150">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="btn-group-vertical mt-3">
+                                                <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
+                                                <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
+                                                <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
+                                                <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div role="tabpanel" class="tab-pane" id="deltachart">
-                            <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <canvas id="deltaChart" width="400" height="150">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="btn-group-vertical mt-3">
-                                            <button class="btn btn-link" onclick="updatedeltaChart_1M()">1M</button>
-                                            <button class="btn btn-link" onclick="updatedeltaChart_3M()">3M</button>
-                                            <button class="btn btn-link" onclick="updatedeltaChart_6M()">6M</button>
-                                            <button class="btn btn-link" onclick="updatedeltaChart_ALL()">ALL</button>
+                            <div role="tabpanel" class="tab-pane" id="deltachart">
+                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <canvas id="deltaChart" width="400" height="150">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="btn-group-vertical mt-3">
+                                                <button class="btn btn-link" onclick="updatedeltaChart_1M()">1M</button>
+                                                <button class="btn btn-link" onclick="updatedeltaChart_3M()">3M</button>
+                                                <button class="btn btn-link" onclick="updatedeltaChart_6M()">6M</button>
+                                                <button class="btn btn-link" onclick="updatedeltaChart_ALL()">ALL</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div role="tabpanel" class="tab-pane" id="gammachart">
-                            <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <canvas id="gammaChart" width="400" height="150">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="btn-group-vertical mt-3">
-                                            <button class="btn btn-link" onclick="updategammaChart_1M()">1M</button>
-                                            <button class="btn btn-link" onclick="updategammaChart_3M()">3M</button>
-                                            <button class="btn btn-link" onclick="updategammaChart_6M()">6M</button>
-                                            <button class="btn btn-link" onclick="updategammaChart_ALL()">ALL</button>
+                            <div role="tabpanel" class="tab-pane" id="gammachart">
+                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <canvas id="gammaChart" width="400" height="150">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="btn-group-vertical mt-3">
+                                                <button class="btn btn-link" onclick="updategammaChart_1M()">1M</button>
+                                                <button class="btn btn-link" onclick="updategammaChart_3M()">3M</button>
+                                                <button class="btn btn-link" onclick="updategammaChart_6M()">6M</button>
+                                                <button class="btn btn-link" onclick="updategammaChart_ALL()">ALL</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div role="tabpanel" class="tab-pane" id="thetachart">
-                            <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <canvas id="thetaChart" width="400" height="150">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="btn-group-vertical mt-3">
-                                            <button class="btn btn-link" onclick="updatethetaChart_1M()">1M</button>
-                                            <button class="btn btn-link" onclick="updatethetaChart_3M()">3M</button>
-                                            <button class="btn btn-link" onclick="updatethetaChart_6M()">6M</button>
-                                            <button class="btn btn-link" onclick="updatethetaChart_ALL()">ALL</button>
+                            <div role="tabpanel" class="tab-pane" id="thetachart">
+                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <canvas id="thetaChart" width="400" height="150">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="btn-group-vertical mt-3">
+                                                <button class="btn btn-link" onclick="updatethetaChart_1M()">1M</button>
+                                                <button class="btn btn-link" onclick="updatethetaChart_3M()">3M</button>
+                                                <button class="btn btn-link" onclick="updatethetaChart_6M()">6M</button>
+                                                <button class="btn btn-link" onclick="updatethetaChart_ALL()">ALL</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div role="tabpanel" class="tab-pane" id="vegachart">
-                            <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <canvas id="vegaChart" width="400" height="150">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="btn-group-vertical mt-3">
-                                            <button class="btn btn-link" onclick="updatevegaChart_1M()">1M</button>
-                                            <button class="btn btn-link" onclick="updatevegaChart_3M()">3M</button>
-                                            <button class="btn btn-link" onclick="updatevegaChart_6M()">6M</button>
-                                            <button class="btn btn-link" onclick="updatevegaChart_ALL()">ALL</button>
+                            <div role="tabpanel" class="tab-pane" id="vegachart">
+                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <canvas id="vegaChart" width="400" height="150">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="btn-group-vertical mt-3">
+                                                <button class="btn btn-link" onclick="updatevegaChart_1M()">1M</button>
+                                                <button class="btn btn-link" onclick="updatevegaChart_3M()">3M</button>
+                                                <button class="btn btn-link" onclick="updatevegaChart_6M()">6M</button>
+                                                <button class="btn btn-link" onclick="updatevegaChart_ALL()">ALL</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div role="tabpanel" class="tab-pane" id="impliedchart">
-                            <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <canvas id="impliedChart" width="400" height="150">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="btn-group-vertical mt-3">
-                                            <button class="btn btn-link" onclick="updateimpliedChart_1M()">1M</button>
-                                            <button class="btn btn-link" onclick="updateimpliedChart_3M()">3M</button>
-                                            <button class="btn btn-link" onclick="updateimpliedChart_6M()">6M</button>
-                                            <button class="btn btn-link" onclick="updateimpliedChart_ALL()">ALL</button>
+                            <div role="tabpanel" class="tab-pane" id="impliedchart">
+                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <canvas id="impliedChart" width="400" height="150">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="btn-group-vertical mt-3">
+                                                <button class="btn btn-link" onclick="updateimpliedChart_1M()">1M</button>
+                                                <button class="btn btn-link" onclick="updateimpliedChart_3M()">3M</button>
+                                                <button class="btn btn-link" onclick="updateimpliedChart_6M()">6M</button>
+                                                <button class="btn btn-link" onclick="updateimpliedChart_ALL()">ALL</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
