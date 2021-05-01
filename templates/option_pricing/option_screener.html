@@ -5,6 +5,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
 <div class="container light-blue text-dark mb-3 d-flex flex-wrap overflow-auto">
+    
     <div class="container light-blue text-dark mb-3">
         <div class="row mb-0">
             <div class="col-md-12 mt-2 d-flex justify-content-start">
@@ -47,7 +48,7 @@
                 </div>
 
         </div>
-        <div class="row"><div class="col-md-2 align-text-top"><p class="subtext">At close: {{latest_trad_date}}</p></div></div>
+        <div class="row"><div class="col-md-2 align-text-top"><p class="subtext"><strong>At close: {{latest_trad_date}}</strong></p></div></div>
     </div>
     <div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
         <div class="w-100">
@@ -78,12 +79,13 @@
                         </li>
                     </ul>
 
-                    <div class="my-3 tab-content justify-content-center">
+                    <div class="my-3 tab-content justify-content-start">
                             <div role="tabpanel" class="tab-pane active" id="summary">
                                 
-                                    <div class="d-flex justify-content-center">
+                                
+                                    <div class="d-flex justify-content-start">
                                         <div class="col-md-3">
-                                            <div class="table-responsive">
+                                            <div class="table table-responsive">
                                                 <table class="table table-sm table-hover">
                                                     <tbody>
                                                         <tr>
@@ -113,7 +115,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="table-responsive">
+                                            <div class="table table-responsive">
                                                 <table class="table table-sm table-hover">
                                                     <tbody>
                                                         <tr>
@@ -137,7 +139,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="table-responsive">
+                                            <div class="table table-responsive">
                                                 <table class="table table-sm table-hover">
                                                     <tbody>
                                                         <tr>
@@ -180,7 +182,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="table-responsive">
+                                            <div class="table table-responsive">
                                                 <table class="table table-sm table-hover">
                                                     <tbody>
                                                         <tr>
@@ -204,112 +206,102 @@
                                             </div>
                                         </div>
                                     </div>
-                                                            
+                                
+                                            
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="chart">
-                                <div class="container bg-white text-dark">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updateChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updateChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updateChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updateChart_ALL()"><small>ALL</small></button>
+                                    </div>
                                     <div class="row">
-                                        <div class="col-md-11">
-                                            <canvas id="optionChart" width="400" height="150">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="btn-group-vertical mt-3">
-                                                <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
-                                                <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
-                                                <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
-                                                <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
-                                            </div>
+                                        <div class="col-md-12">
+                                            <canvas id="optionChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="deltachart">
-                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updatedeltaChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updatedeltaChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updatedeltaChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updatedeltaChart_ALL()"><small>ALL</small></button>
+                                    </div>
                                     <div class="row">
-                                        <div class="col-md-11">
-                                            <canvas id="deltaChart" width="400" height="150">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="btn-group-vertical mt-3">
-                                                <button class="btn btn-link" onclick="updatedeltaChart_1M()">1M</button>
-                                                <button class="btn btn-link" onclick="updatedeltaChart_3M()">3M</button>
-                                                <button class="btn btn-link" onclick="updatedeltaChart_6M()">6M</button>
-                                                <button class="btn btn-link" onclick="updatedeltaChart_ALL()">ALL</button>
-                                            </div>
+                                        <div class="col-md-12">
+                                            <canvas id="deltaChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="gammachart">
-                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updategammaChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updategammaChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updategammaChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updategammaChart_ALL()"><small>ALL</small></button>
+                                    </div>
                                     <div class="row">
-                                        <div class="col-md-11">
-                                            <canvas id="gammaChart" width="400" height="150">
+                                        <div class="col-md-12">
+                                            <canvas id="gammaChart"></canvas>
                                         </div>
-                                        <div class="col-md-1">
-                                            <div class="btn-group-vertical mt-3">
-                                                <button class="btn btn-link" onclick="updategammaChart_1M()">1M</button>
-                                                <button class="btn btn-link" onclick="updategammaChart_3M()">3M</button>
-                                                <button class="btn btn-link" onclick="updategammaChart_6M()">6M</button>
-                                                <button class="btn btn-link" onclick="updategammaChart_ALL()">ALL</button>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="thetachart">
-                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updatethetaChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updatethetaChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updatethetaChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updatethetaChart_ALL()"><small>ALL</small></button>
+                                    </div>
                                     <div class="row">
-                                        <div class="col-md-11">
-                                            <canvas id="thetaChart" width="400" height="150">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="btn-group-vertical mt-3">
-                                                <button class="btn btn-link" onclick="updatethetaChart_1M()">1M</button>
-                                                <button class="btn btn-link" onclick="updatethetaChart_3M()">3M</button>
-                                                <button class="btn btn-link" onclick="updatethetaChart_6M()">6M</button>
-                                                <button class="btn btn-link" onclick="updatethetaChart_ALL()">ALL</button>
-                                            </div>
+                                        <div class="col-md-12">
+                                            <canvas id="thetaChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="vegachart">
-                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updatevegaChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updatevegaChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updatevegaChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updatevegaChart_ALL()"><small>ALL</small></button>
+                                    </div>
                                     <div class="row">
-                                        <div class="col-md-11">
-                                            <canvas id="vegaChart" width="400" height="150">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="btn-group-vertical mt-3">
-                                                <button class="btn btn-link" onclick="updatevegaChart_1M()">1M</button>
-                                                <button class="btn btn-link" onclick="updatevegaChart_3M()">3M</button>
-                                                <button class="btn btn-link" onclick="updatevegaChart_6M()">6M</button>
-                                                <button class="btn btn-link" onclick="updatevegaChart_ALL()">ALL</button>
-                                            </div>
+                                        <div class="col-md-12">
+                                            <canvas id="vegaChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="impliedchart">
-                                <div class="container bg-white text-dark d-flex flex-wrap overflow-auto">
+                                <div class="container bg-white text-dark" style="position: relative;">
+                                    <div class="row mx-3">
+                                        <button class="btn btn-link" onclick="updateimpliedChart_1M()"><small>1M</small></button>
+                                        <button class="btn btn-link" onclick="updateimpliedChart_3M()"><small>3M</small></button>
+                                        <button class="btn btn-link" onclick="updateimpliedChart_6M()"><small>6M</small></button>
+                                        <button class="btn btn-link" onclick="updateimpliedChart_ALL()"><small>ALL</small></button>
+                                    </div>
                                     <div class="row">
-                                        <div class="col-md-11">
-                                            <canvas id="impliedChart" width="400" height="150">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="btn-group-vertical mt-3">
-                                                <button class="btn btn-link" onclick="updateimpliedChart_1M()">1M</button>
-                                                <button class="btn btn-link" onclick="updateimpliedChart_3M()">3M</button>
-                                                <button class="btn btn-link" onclick="updateimpliedChart_6M()">6M</button>
-                                                <button class="btn btn-link" onclick="updateimpliedChart_ALL()">ALL</button>
-                                            </div>
+                                        <div class="col-md-12">
+                                            <canvas id="impliedChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -319,6 +311,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 <script> 
 
@@ -621,7 +614,7 @@
     data: {
         labels: deltastate.items23,
         datasets: [{
-            label: objId.concat(' Delta'),
+            label: objId.concat(' delta'),
             data: deltastate.values23,
             yAxisID: 'A',
             borderWidth: 1,

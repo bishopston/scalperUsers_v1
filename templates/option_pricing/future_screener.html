@@ -4,221 +4,225 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-<div class="container light-blue text-dark mb-3">
-	<div class="row mb-0">
-        <div class="col-md-12 mt-2 d-flex justify-content-start">
-            <p class="font-weight-bold text-center mt-2">{{asset}} Future Contract {{ expmonth }} {{ expyear }}</p>
-            <div id="myfuture-section" class="col-md-4 mt-1 ml-2">
-                {% include 'accounts/myfuturescreeners_section.html' %}
-            </div>
-        </div>
-        <!--<div id="like-section" class="col-md-4">
-            {% include 'accounts/like_section.html' %}
-        </div>
-        -->
-    </div>
-    <div class="pl-3 row align-items-stretch">
- 
-            <div>
-                <h3 class="font-weight-bold">
-					{% if asset == 'FTSE' %}
-					{{closing_price|floatformat:2}}
-				  {% else %}
-					  {{closing_price|floatformat:3}}
-				  {% endif %}
-				</h3>
-            </div>
-            <div class="p-2 my-auto">
-                <h5 class="vertical">
-                    {% if change < 0 %}
-                    <div class="change-negative"> 
-                    {% else %} 
-                    <div class="change-positive">
-                    {% endif %}
-                    {{ change }}%
-                </h5>
-            </div>
+<div class="container light-blue text-dark mb-3 d-flex flex-wrap overflow-auto">
+	<div class="container light-blue text-dark mb-3">
+		<div class="row mb-0">
+			<div class="col-md-12 mt-2 d-flex justify-content-start">
+				<p class="font-weight-bold text-center mt-2">{{asset}} Future Contract {{ expmonth }} {{ expyear }}</p>
+				<div id="myfuture-section" class="col-md-4 mt-1 ml-2">
+					{% include 'accounts/myfuturescreeners_section.html' %}
+				</div>
+			</div>
+			<!--<div id="like-section" class="col-md-4">
+				{% include 'accounts/like_section.html' %}
+			</div>
+			-->
+		</div>
+		<div class="pl-3 row align-items-stretch">
+	
+				<div>
+					<h3 class="font-weight-bold">
+						{% if asset == 'FTSE' %}
+						{{closing_price|floatformat:2}}
+					{% else %}
+						{{closing_price|floatformat:3}}
+					{% endif %}
+					</h3>
+				</div>
+				<div class="p-2 my-auto">
+					<h5 class="vertical">
+						{% if change < 0 %}
+						<div class="change-negative"> 
+						{% else %} 
+						<div class="change-positive">
+						{% endif %}
+						{{ change }}%
+					</h5>
+				</div>
 
-    </div>
-    <div class="row"><div class="col-md-2 align-text-top"><p class="subtext">At close: {{latest_trad_date}}</p></div></div>
-</div>
-<div class="container bg-white text-dark">
-	<div class="row">
-        <div class="col-md-12">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#chart" class="nav-link" role="tab" data-toggle="tab">Price Chart</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#spotchart" class="nav-link" role="tab" data-toggle="tab">Future vs Spot Chart</a>
-                </li>
-            </ul>
+		</div>
+		<div class="row"><div class="col-md-2 align-text-top"><p class="subtext"><strong>At close: {{latest_trad_date}}</strong></p></div></div>
+	</div>
+	<div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
+		<div class="w-100">
+			<div class="row">
+				<div class="col-md-12">
+					<ul class="nav nav-tabs">
+						<li class="nav-item">
+							<a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
+						</li>
+						<li class="nav-item">
+							<a href="#chart" class="nav-link" role="tab" data-toggle="tab">Price Chart</a>
+						</li>
+						<li class="nav-item">
+							<a href="#spotchart" class="nav-link" role="tab" data-toggle="tab">Future vs Spot Chart</a>
+						</li>
+					</ul>
 
-            <div class="my-3 tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="summary">
-						<div class="container bg-white">
-							<div class="row">
-								<div class="col-md-4">
-								    <div class="table-responsive">
-										<table class="table table-sm table-hover">
-											<tbody>
-												<tr>
-													<td><small>Asset:</small></td>
-													<td><small class="font-weight-bold">{{asset}}</small></td>												
-												</tr>
-												<tr>
-													<td><small>Expiration Date:</small></td>
-													<td><small class="font-weight-bold">{{expdate}}</small></td>												
-												</tr>
-												<tr>
-													<td><small>Latest Trading:</small></td>
-													<td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
-												</tr>
-												<tr>
-													<tr>
-														<td><small>Volume:</small></td>
-														<td><small class="font-weight-bold">{{volume}}</small></td>												
-													</tr>												
-												</tr>
-											</tbody>
-										</table>
+					<div class="my-3 tab-content">
+							<div role="tabpanel" class="tab-pane active" id="summary">
+								<div class="container bg-white">
+									<div class="row">
+										<div class="col-md-4">
+											<div class="table table-responsive">
+												<table class="table table-sm table-hover">
+													<tbody>
+														<tr>
+															<td><small>Asset:</small></td>
+															<td><small class="font-weight-bold">{{asset}}</small></td>												
+														</tr>
+														<tr>
+															<td><small>Expiration Date:</small></td>
+															<td><small class="font-weight-bold">{{expdate}}</small></td>												
+														</tr>
+														<tr>
+															<td><small>Latest Trading:</small></td>
+															<td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
+														</tr>
+														<tr>
+															<tr>
+																<td><small>Volume:</small></td>
+																<td><small class="font-weight-bold">{{volume}}</small></td>												
+															</tr>												
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="table table-responsive">
+												<table class="table table-sm table-hover">
+													<tbody>
+														<tr>
+															<td><small>Trades:</small></td>
+															<td><small class="font-weight-bold">{{trades}}</small></td>												
+														</tr>
+														<tr>
+															<td><small>Open Interest:</small></td>
+															<td><small class="font-weight-bold">{{open_interest}}</small></td>												
+														</tr>
+														<tr>
+															<td><small>Intraday High:</small></td>
+															<td><small class="font-weight-bold">
+																{% if max > 0 %}
+																	{% if asset == 'FTSE' %}
+																		{{max|floatformat:2}}
+																	{% else %}
+																		{{max|floatformat:3}}
+																	{% endif %}
+																{% else %}
+																	NA
+																{% endif %}
+															</small></td>												
+														</tr>
+														<tr>
+															<td><small>Intraday High:</small></td>
+															<td><small class="font-weight-bold">
+																{% if min > 0 %}
+																	{% if asset == 'FTSE' %}
+																		{{min|floatformat:2}}
+																	{% else %}
+																		{{min|floatformat:3}}
+																	{% endif %}
+																{% else %}
+																	NA
+																{% endif %}
+															</small></td>												
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="table table-responsive">
+												<table class="table table-sm table-hover">
+													<tbody>
+														<tr>
+															<td><small>Lifetime High:</small></td>
+															<td><small class="font-weight-bold">
+																{% if asset == 'FTSE' %}
+																	{{lifetime_high|floatformat:2}}
+																{% else %}
+																	{{lifetime_high|floatformat:3}}
+																{% endif %}
+															</small></td>												
+														</tr>
+														<tr>
+															<td><small>Lifetime Low:</small></td>
+															<td><small class="font-weight-bold">
+																{% if asset == 'FTSE' %}
+																	{{lifetime_low|floatformat:2}}
+																{% else %}
+																	{{lifetime_low|floatformat:3}}
+																{% endif %}
+															</small></td>												
+														</tr>
+														<tr>
+															<td><small>Spot Price:</small></td>
+															<td><small class="font-weight-bold">
+																{% if asset == 'FTSE' %}
+																	{{stock|floatformat:2}}
+																{% else %}
+																	{{stock|floatformat:3}}
+																{% endif %}
+															</small></td>												
+														</tr>
+														<tr>
+															<td><small>Basis:</small></td>
+															<td><small class="font-weight-bold">
+																{% if asset == 'FTSE' %}
+																	{{basis|floatformat:2}}
+																{% else %}
+																	{{basis|floatformat:3}}
+																{% endif %}
+															</small></td>												
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
 									</div>
-								</div>
-								<div class="col-md-4">
-								    <div class="table-responsive">
-										<table class="table table-sm table-hover">
-											<tbody>
-												<tr>
-													<td><small>Trades:</small></td>
-													<td><small class="font-weight-bold">{{trades}}</small></td>												
-												</tr>
-												<tr>
-													<td><small>Open Interest:</small></td>
-													<td><small class="font-weight-bold">{{open_interest}}</small></td>												
-												</tr>
-												<tr>
-													<td><small>Intraday High:</small></td>
-													<td><small class="font-weight-bold">
-														{% if max > 0 %}
-															{% if asset == 'FTSE' %}
-																{{max|floatformat:2}}
-															{% else %}
-																{{max|floatformat:3}}
-															{% endif %}
-														{% else %}
-															NA
-														{% endif %}
-													</small></td>												
-												</tr>
-												<tr>
-													<td><small>Intraday High:</small></td>
-													<td><small class="font-weight-bold">
-														{% if min > 0 %}
-															{% if asset == 'FTSE' %}
-																{{min|floatformat:2}}
-															{% else %}
-																{{min|floatformat:3}}
-															{% endif %}
-														{% else %}
-															NA
-														{% endif %}
-													</small></td>												
-												</tr>
-											</tbody>
-										</table>
+								</div>							
+							</div>
+
+							<div role="tabpanel" class="tab-pane" id="chart">
+								<div class="container bg-white text-dark" style="position: relative;">
+									<div class="row mx-3">
+										<button class="btn btn-link" onclick="updateChart_1M()"><small>1M</small></button>
+										<button class="btn btn-link" onclick="updateChart_3M()"><small>3M</small></button>
+										<button class="btn btn-link" onclick="updateChart_6M()"><small>6M</small></button>
+										<button class="btn btn-link" onclick="updateChart_ALL()"><small>ALL</small></button>
 									</div>
-								</div>
-								<div class="col-md-4">
-								    <div class="table-responsive">
-										<table class="table table-sm table-hover">
-											<tbody>
-												<tr>
-													<td><small>Lifetime High:</small></td>
-													<td><small class="font-weight-bold">
-														{% if asset == 'FTSE' %}
-															{{lifetime_high|floatformat:2}}
-													  	{% else %}
-														  	{{lifetime_high|floatformat:3}}
-													  	{% endif %}
-													</small></td>												
-												</tr>
-												<tr>
-													<td><small>Lifetime Low:</small></td>
-													<td><small class="font-weight-bold">
-														{% if asset == 'FTSE' %}
-															{{lifetime_low|floatformat:2}}
-													  	{% else %}
-														  	{{lifetime_low|floatformat:3}}
-													  	{% endif %}
-													</small></td>												
-												</tr>
-												<tr>
-													<td><small>Spot Price:</small></td>
-													<td><small class="font-weight-bold">
-														{% if asset == 'FTSE' %}
-															{{stock|floatformat:2}}
-													  	{% else %}
-														  	{{stock|floatformat:3}}
-													  	{% endif %}
-													</small></td>												
-												</tr>
-												<tr>
-													<td><small>Basis:</small></td>
-													<td><small class="font-weight-bold">
-														{% if asset == 'FTSE' %}
-															{{basis|floatformat:2}}
-													  	{% else %}
-														  	{{basis|floatformat:3}}
-													  	{% endif %}
-													</small></td>												
-												</tr>
-											</tbody>
-										</table>
+									<div class="row">
+										<div class="col-md-12">
+											<canvas id="futureChart"></canvas>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>							
-                    </div>
 
-					<div role="tabpanel" class="tab-pane" id="chart">
-						<div class="container bg-white text-dark">
-							<div class="row">
-								<div class="col-md-11">
-									<canvas id="futureChart" width="400" height="150">
+							<div role="tabpanel" class="tab-pane" id="spotchart">
+								<div class="container bg-white text-dark" style="position: relative;">
+									<div class="row mx-3">
+										<button class="btn btn-link" onclick="updatespotChart_1M()"><small>1M</small></button>
+										<button class="btn btn-link" onclick="updatespotChart_3M()"><small>3M</small></button>
+										<button class="btn btn-link" onclick="updatespotChart_6M()"><small>6M</small></button>
+										<button class="btn btn-link" onclick="updatespotChart_ALL()"><small>ALL</small></button>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<canvas id="spotChart"></canvas>
+										</div>
+									</div>
 								</div>
-                                <div class="col-md-1">
-                                    <div class="btn-group-vertical mt-3">
-                                        <button class="btn btn-link" onclick="updateChart_1M()">1M</button>
-                                        <button class="btn btn-link" onclick="updateChart_3M()">3M</button>
-                                        <button class="btn btn-link" onclick="updateChart_6M()">6M</button>
-                                        <button class="btn btn-link" onclick="updateChart_ALL()">ALL</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+							</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
-					<div role="tabpanel" class="tab-pane" id="spotchart">
-						<div class="container bg-white text-dark">
-							<div class="row">
-								<div class="col-md-11">
-									<canvas id="spotChart" width="400" height="150">
-								</div>
-                                <div class="col-md-1">
-                                    <div class="btn-group-vertical mt-3">
-                                        <button class="btn btn-link" onclick="updatespotChart_1M()">1M</button>
-                                        <button class="btn btn-link" onclick="updatespotChart_3M()">3M</button>
-                                        <button class="btn btn-link" onclick="updatespotChart_6M()">6M</button>
-                                        <button class="btn btn-link" onclick="updatespotChart_ALL()">ALL</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-					</div>
-					
 <script> 
 
 	$('.hidethis').hide();
