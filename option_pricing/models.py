@@ -180,6 +180,19 @@ class Optioncallputmonthlyratio(models.Model):
     sum_vol_puts = models.IntegerField()
     callputratio = models.DecimalField(max_digits=8, decimal_places=3)
 
+class Optioncsv(models.Model):
+
+    trading_symbol = models.CharField(max_length=15)
+    date = models.DateField()
+    closing_price = models.DecimalField(max_digits=8, decimal_places=3)
+    change = models.DecimalField(max_digits=10, decimal_places=2)
+    volume = models.IntegerField()
+    max = models.DecimalField(max_digits=8, decimal_places=3)
+    min = models.DecimalField(max_digits=8, decimal_places=3)
+    trades = models.IntegerField()
+    fixing_price = models.DecimalField(max_digits=8, decimal_places=3)
+    open_interest = models.IntegerField()
+
 class Futuresymbol(models.Model):
 
     FUTUREASSETS = [

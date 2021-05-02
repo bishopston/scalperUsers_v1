@@ -59,6 +59,7 @@ urlpatterns = [
     path('options/impliedchart/<str:tradesymbol>/', views.OptionJSImpliedChartView, name="option_implied_jschart"),
     path('options/', OptionScreenersListCBV.as_view(), name='myoptionscreenerlistcbv'),
     path('options/screenerdata/', views.OptionScreenersDataView, name='optionscreenerdata'),   
+    path('optionsymbol-export-csv/<str:optionsymbol>/', views.OptionSymbolExportCSV, name='optionsymbol-export-csv'),
     #iv screeners urls
     #path('impliedvolscreeners_a/', views.ImpliedperStrikeScreenerView, name="impliedvolscreeners_a"),
     #path('impliedvolscreeners/', views.ImpliedScreenerView, name="impliedvolscreeners"),
