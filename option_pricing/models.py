@@ -263,6 +263,19 @@ class Futurevolumeaggasset(models.Model):
     volume = models.IntegerField()
     open_interest = models.IntegerField()
 
+class Futurecsv(models.Model):
+
+    symbol = models.CharField(max_length=15)
+    date = models.DateField()
+    closing_price = models.DecimalField(max_digits=8, decimal_places=3)
+    change = models.DecimalField(max_digits=10, decimal_places=2)
+    volume = models.IntegerField()
+    max = models.DecimalField(max_digits=8, decimal_places=3)
+    min = models.DecimalField(max_digits=8, decimal_places=3)
+    trades = models.IntegerField()
+    fixing_price = models.DecimalField(max_digits=8, decimal_places=3)
+    open_interest = models.IntegerField()
+
 class Stocksymbol(models.Model):
 
     ASSETS = [

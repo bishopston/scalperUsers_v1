@@ -75,4 +75,5 @@ urlpatterns = [
     path('futures/chart/<str:tradesymbol>/', views.FutureJSChartView, name="future_jschart"),
     path('futures/chart_vol/<str:tradesymbol>/', views.FutureJSChartVolView, name="future_vol_jschart"),
     path('futures/spotchart/<str:tradesymbol>/', views.FutureJSSportChartView, name="future_spot_jschart"),
+    path('futuresymbol-export-csv/<str:futuresymbol>/', views.FutureSymbolExportCSV, name='futuresymbol-export-csv'),
 ]

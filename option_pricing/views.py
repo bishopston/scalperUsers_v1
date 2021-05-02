@@ -12,7 +12,7 @@ import calendar
 import json
 from decimal import Decimal
 
-from .models import Option, Optioncsv, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futuresymbol, Futurevolumeaggasset
+from .models import Option, Optioncsv, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futurecsv, Futuresymbol, Futurevolumeaggasset
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
 
@@ -2169,4 +2169,18 @@ def OptionSymbolExportCSV(request, optionsymbol):
         writer.writerow(i)
 
     response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(str(optionsymbol))
+    return response
+
+def FutureSymbolExportCSV(request, futuresymbol):
+    response = HttpResponse(content_type='text/csv')
+
+    writer = csv.writer(response)
+    writer.writerow(['Symbol', 'Date', 'Closing price', 'Change', 'Volume', 'Max', 'Min', 'Trades', 'Fixing price', 'Open interest'])
+
+    qs = Futurecsv.objects.filter(symbol=futuresymbol).order_by('date')
+
+    for i in qs.values_list('symbol', 'date', 'closing_price', 'change', 'volume', 'max', 'min', 'trades', 'fixing_price', 'open_interest'):
+        writer.writerow(i)
+
+    response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(str(futuresymbol))
     return response
