@@ -8,8 +8,8 @@ def future_bar(request):
 
     paginator = Paginator(queryset, 6)
     page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
+    page_obj_fut = paginator.get_page(page_number)
 
     return {
-        'page_obj': page_obj
+        'page_obj_fut': page_obj_fut
     }

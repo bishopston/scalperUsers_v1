@@ -31,11 +31,11 @@ ul{
 	display: inline-block
   }
 
-.container-fluid{
+/* .container-fluid{
 	margin-top: 20px;
-	padding-left: 80px;
+	padding: 0 !important;
 	overflow: hidden;
-}
+} */
 .front-text{
 	padding-left: 20px;
 }
@@ -58,7 +58,7 @@ ul{
 	-webkit-text-fill-color: transparent;
 }
 .intro-text p {
-	margin-top: 5px;
+	margin-top: 1px;
 	font-size: 22px;
 	color: #585772;
 }
@@ -96,7 +96,7 @@ ul{
 	font-size: 16px;
 	border: none;
 	color: white;
-	margin: 0px 0px 0px 30px;
+	margin: 0px 0px 0px 20px;
 }
 
 .cover {
@@ -142,7 +142,28 @@ ul{
 	right: 20%;
 }
 
+/*Call to Action*/
 
+.dark-background{
+    background-color: #222;
+    color: #fafaff;
+}
+
+.dark-background span{
+    color: #3AB5FE;
+}
+
+.btn-main{
+    background-color: #f05a0a;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.btn-main:hover{
+    background-color: #fafaff;
+    color: #3AB5FE;
+}
 
 .main-section{
 	overflow: hidden;
@@ -292,3 +313,86 @@ white-space: nowrap;
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%234c4c4c' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")!important;
 }
 
+li.borderless { border-top: 0 none!important; }
+
+/*Call to Action*/
+
+.dark-background{
+    background-color: #222;
+    color: #fafaff;
+}
+
+.dark-background span{
+    color: #3AB5FE;
+}
+
+.btn-main{
+    background-color: #f05a0a;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.btn-main:hover{
+    background-color: #fafaff;
+    color: #3AB5FE;
+}
+
+.curved {
+    background: #ff3c00;
+    color: #fff;
+    text-align: center;
+}
+
+.curved h1 {
+    font-size: 6rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 0;
+}
+
+.curved p {
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 5rem 0 5rem;
+}
+
+.curved svg {
+    display: block;
+}
+
+.curved_upper {
+    background: fff;
+}
+
+.curved_upper svg {
+    display: block;
+}
+
+.masthead {
+	padding-top: calc(6rem + 74px);
+	padding-bottom: 6rem;
+  }
+  .masthead .masthead-heading {
+	font-size: 2.75rem;
+	line-height: 2.75rem;
+  }
+  .masthead .masthead-subheading {
+	font-size: 1.25rem;
+  }
+  .masthead .masthead-avatar {
+	width: 15rem;
+  }
+  
+  @media (min-width: 992px) {
+	.masthead {
+	  padding-top: calc(6rem + 104px);
+	  padding-bottom: 6rem;
+	}
+	.masthead .masthead-heading {
+	  font-size: 4rem;
+	  line-height: 3.5rem;
+	}
+	.masthead .masthead-subheading {
+	  font-size: 1.5rem;
+	}
+  }

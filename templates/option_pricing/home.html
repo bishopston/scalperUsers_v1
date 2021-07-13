@@ -3,45 +3,109 @@
 {% block content %}
 
 		<main>
-			
+			<div class="d-flex flex-wrap">
 			<section class="presentation">
+				
 				<div class="introduction">
 					<div class="intro-text">
-						<h1>Laptop for the future</h1>
+						<h1>Unlimited upside payoff</h1>
 						<p class="font-weight-normal">
-							The new 14 inch bezeless display oferring a 4k
-							display with touch screen.
+							Your everyday companion at greek derivatives
+							market to boost investment success.
 						</p>
 					</div>
-					<div class="cta">
-						<button class="cta-select">14 Inch</button>
-						<button class="cta-add">Add To Cart</button>
+
+					<div class="d-flex flex-wrap">
+						<button class="cta-select">Options Daily</button>
+						<button class="cta-add">Futures Daily</button>
 					</div>
+					
 				</div>
 				<div class="cover">
-					<img src="{% static "img/finance_5418202.png" %}">
+					<img src="{% static "img/finance_5418202.png" %}" class="img-fluid">
 				</div>
 			</section>
-
+			
 			<img class="big-circle" src="{% static "img/big-eclipse.svg" %}"/>
 			<img class="medium-circle" src="{% static "img/mid-eclipse.svg" %}"/>
 			<img class="small-circle" src="{% static "img/small-eclipse.svg" %}"/>
+			</div>
 		</main>
 
-	<!-- Container (About Section) -->
-	<div id="about" class="container-fluid">
-		<div class="row px-md-5">
+		<section class="jumbotron text-center bg-white">
+			<div class="container">
+			  <h1 class="jumbotron-heading">Album example</h1>
+			  <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
+			  <p>
+				<a href="#" class="btn btn-primary my-2">Main call to action</a>
+				<a href="#" class="btn btn-secondary my-2">Secondary action</a>
+			  </p>
+			</div>
+		  </section>
 
-				<div class="front-text col-sm-8">
-					<h2>About Company Page</h2><br>
+		<section class="dark-background py-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8">
+						<h2 class="dark-title">Call To <span class="badge badge-primary">Action</span></h2>
+						<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo</p>
+					</div>
+					<div class="col-md-4">
+						<a class="btn btn-main mt-5" href=""><i class="mr-2 fa fa-bullhorn" aria-hidden="true"></i>Get Started</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+	<!-- Container (About Section) -->
+	<div id="about" class="container-fluid mb-2">
+		<div class="row px-md-5">
+			<div class="cover col-sm-4">
+				<img src="{% static "img/finance-with_4033429.png" %}">
+			</div>
+			<div class="front-text col-sm-8">
+				<div class="row">
+					<h2>Making stats work for you</h2>
+				</div>
+				<div class="row">
 					<p class="font-weight-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><br>
+				</div>
+				<div class="row">
+					<!-- <button type="button" class="btn btn-primary btn-lg">Primary</button> -->
+					<button class="cta-select">Get in Touch</button>
 					<button class="cta-add">Get in Touch</button>
 				</div>
-				<div class="cover col-sm-4">
-					<img src="{% static "img/finance-with_4033429.png" %}">
-				</div>
+			</div>
+
 
 		</div>
 	</div>
+
+	<div class="jumbotron">
+		<div class="container">
+		  <h1 class="display-4">Fluid jumbotron</h1>
+		  <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+		</div>
+	  </div>
+
+	  <section id="scroll">
+		<div class="container px-5">
+			<div class="row gx-5 align-items-center">
+				<div class="col-lg-6 order-lg-2">
+					<div class="p-5"><img class="img-fluid rounded-circle" src="assets/img/01.jpg" alt="..." /></div>
+				</div>
+				<div class="col-lg-6 order-lg-1">
+					<div class="p-5">
+						<h2 class="display-4">For those about to rock...</h2>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+
+
 
 {% endblock %}

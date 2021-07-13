@@ -19,7 +19,7 @@ from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScree
 import csv
 
 def home(request):
-    return render(request, 'option_pricing/home.html')
+    return render(request, 'option_pricing/index.html')
 """
 def OptionView(request):
     option = Option.objects.all()
