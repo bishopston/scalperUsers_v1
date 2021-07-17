@@ -18,115 +18,80 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a class="navbar-brand" href="{% url "option_pricing:home" %}">Navbar</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        
-          <div class="collapse navbar-collapse ml-3" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item dropdown">
-                <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Markets
-                </a>
-                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:optiondailystats" %}">Daily Options Statistics</a></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futuredailystats" %}">Daily Futures Statistics</a></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:optionhiststats" %}">Trending Options Statistics</a></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futurehiststats" %}">Trending Futures Statistics</a></li>
-                </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Screeners
-                </a>
-                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myoptionscreenerlistcbv" %}">Options Screeners</a></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myfuturescreenerlistcbv" %}">Futures Screeners</a></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:option_descendingOI" %}">Highest Open Interest Options</a></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:future_descendingOI" %}">Highest Open Interest Futures</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="#">My Screeners</a></li>
-                </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link active dropdown-toggle mr-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Volatility
-                </a>
-                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesscreenerlistcbv" %}">Implied Volatility Screeners</a></li>
-                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesatmscreenerlistcbv" %}">Implied Volatility At The Money</a></li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                {% if request.user.is_authenticated %}
-                  <a class="nav-link active" href="{% url "accounts:portfolio" %}">Portfolio</a>
-                {% else %}
-                  <a class="nav-link active" href="{% url "accounts:login" %}">Portfolio</a>
-                {% endif %}
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link active" href="#">Tools</a>
-              </li>
-            </ul>
-            {% if request.user.is_authenticated %}
-            <ul class="navbar-nav mr-2">
+          <div class="container px-3">
+            <a class="navbar-brand" href="{% url "option_pricing:home" %}">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse ml-3" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="align-self-center rounded rounded-circle mr-1 flex-shrink-0" style="width: 45px; height: 45px;" width="500" height="500" src="https://www.gravatar.com/avatar/6a393bb03869d2d08a861046dde093fc?s=500&amp;d=mp">
+                  <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Markets
                   </a>
-                  <ul class="dropdown-menu dropdown-menu-right bg-dark" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myoptionlist" %}">My Option Screeners</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myfuturelist" %}">My Future Screeners</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myimpliedlist" %}">My Implied Volatilities</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myimpliedatmlist" %}">My Implied ATM Volatilities</a></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="{% url "logout" %}">Sign Out</a></li>
+                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:optiondailystats" %}">Daily Options Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futuredailystats" %}">Daily Futures Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:optionhiststats" %}">Trending Options Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futurehiststats" %}">Trending Futures Statistics</a></li>
                   </ul>
                 </li>
-            </ul>          
-            {% else %}
-            <form class="form-inline my-2 mr-2 my-lg-0">
-              <a class="text-light text-decoration-none mr-2" href="{% url "accounts:login" %}">Sign-In</a>
-              <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url "accounts:register" %}" role="button">Join</a>
-            </form>
-            {% endif %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Screeners
+                  </a>
+                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myoptionscreenerlistcbv" %}">Options Screeners</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myfuturescreenerlistcbv" %}">Futures Screeners</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:option_descendingOI" %}">Highest Open Interest Options</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:future_descendingOI" %}">Highest Open Interest Futures</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="#">My Screeners</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Volatility
+                  </a>
+                  <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesscreenerlistcbv" %}">Implied Volatility Screeners</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesatmscreenerlistcbv" %}">Implied Volatility At The Money</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item">
+                  {% if request.user.is_authenticated %}
+                    <a class="nav-link active" href="{% url "accounts:portfolio" %}">Portfolio</a>
+                  {% else %}
+                    <a class="nav-link active" href="{% url "accounts:login" %}">Portfolio</a>
+                  {% endif %}
+                </li>
+              </ul>
+              {% if request.user.is_authenticated %}
+              <ul class="navbar-nav mr-2">
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <img class="align-self-center rounded rounded-circle mr-1 flex-shrink-0" style="width: 45px; height: 45px;" width="500" height="500" src="https://www.gravatar.com/avatar/6a393bb03869d2d08a861046dde093fc?s=500&amp;d=mp">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right bg-dark" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myoptionlist" %}">My Option Screeners</a></li>
+                      <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myfuturelist" %}">My Future Screeners</a></li>
+                      <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myimpliedlist" %}">My Implied Volatilities</a></li>
+                      <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:myimpliedatmlist" %}">My Implied ATM Volatilities</a></li>
+                      <li><a class="dropdown-item bg-dark text-white" href="{% url "logout" %}">Sign Out</a></li>
+                    </ul>
+                  </li>
+              </ul>          
+              {% else %}
+              <form class="form-inline my-2 mr-2 my-lg-0">
+                <a class="text-light text-decoration-none mr-2" href="{% url "accounts:login" %}">Sign-In</a>
+                <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url "accounts:register" %}" role="button">Join</a>
+              </form>
+              {% endif %}
+            </div>
           </div>
         </nav>
-
-<!--       <div class="container mt-2">
-        <div class="row">
-        <ul class="list-group list-group-horizontal">
-          {% for future in page_obj_fut %}
-          <li class="list-group-item border-top-0 border-bottom-0 border-left-0">
-            <div class="px-3 row d-flex flex-nowrap">
-              
-              <div class="flex-fill">
-                <p class="font-weight-bold">
-                  {% if asset == 'FTSE' %}
-                    {{future.closing_price|floatformat:2}}
-                  {% else %}
-                    {{future.closing_price|floatformat:3}}
-                  {% endif %}
-                </p>
-              </div>
-              <div class="ml-2 flex-fill">
-                <p class="vertical"><small><strong>
-                  {% if future.change < 0 %}
-                  <div class="change-negative"> 
-                  {% else %} 
-                  <div class="change-positive">
-                  {% endif %}
-                  {{ future.change }}%
-                </strong></small></p>
-              </div>
-      
-            </div>
-          </li>
-          {% endfor %}
-        </ul>
-        </div>
-      </div> -->
 
       <div class="container-fluid">
           {% block content %} 

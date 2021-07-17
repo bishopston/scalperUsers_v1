@@ -62,27 +62,28 @@
 					<div class="my-3 tab-content justify-content-start">
 							<div role="tabpanel" class="tab-pane active" id="summary">
 								<div class="d-flex justify-content-start">
-									
+									<div class="row w-100">
+										
 										<div class="col-md-4">
 											<div class="table table-responsive">
 												<table class="table table-sm table-hover">
 													<tbody>
 														<tr>
 															<td><small>Asset:</small></td>
-															<td><small class="font-weight-bold">{{asset}}</small></td>												
+															<td><small class="font-weight-bold"><span style="float: right;">{{asset}}</span></small></td>												
 														</tr>
 														<tr>
 															<td><small>Expiration Date:</small></td>
-															<td><small class="font-weight-bold">{{expdate}}</small></td>												
+															<td><small class="font-weight-bold"><span style="float: right;">{{expdate}}</span></small></td>												
 														</tr>
 														<tr>
 															<td><small>Latest Trading:</small></td>
-															<td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
+															<td><small class="font-weight-bold"><span style="float: right;">{{latest_trad_date}}</span></small></td>												
 														</tr>
 														<tr>
 															<tr>
 																<td><small>Volume:</small></td>
-																<td><small class="font-weight-bold">{{volume}}</small></td>												
+																<td><small class="font-weight-bold"><span style="float: right;">{{volume}}</span></small></td>												
 															</tr>												
 														</tr>
 													</tbody>
@@ -95,15 +96,15 @@
 													<tbody>
 														<tr>
 															<td><small>Trades:</small></td>
-															<td><small class="font-weight-bold">{{trades}}</small></td>												
+															<td><small class="font-weight-bold"><span style="float: right;">{{trades}}</span></small></td>												
 														</tr>
 														<tr>
 															<td><small>Open Interest:</small></td>
-															<td><small class="font-weight-bold">{{open_interest}}</small></td>												
+															<td><small class="font-weight-bold"><span style="float: right;">{{open_interest}}</span></small></td>												
 														</tr>
 														<tr>
 															<td><small>Intraday High:</small></td>
-															<td><small class="font-weight-bold">
+															<td><small class="font-weight-bold"><span style="float: right;">
 																{% if max > 0 %}
 																	{% if asset == 'FTSE' %}
 																		{{max|floatformat:2}}
@@ -112,12 +113,12 @@
 																	{% endif %}
 																{% else %}
 																	NA
-																{% endif %}
+																{% endif %}</span>
 															</small></td>												
 														</tr>
 														<tr>
 															<td><small>Intraday High:</small></td>
-															<td><small class="font-weight-bold">
+															<td><small class="font-weight-bold"><span style="float: right;">
 																{% if min > 0 %}
 																	{% if asset == 'FTSE' %}
 																		{{min|floatformat:2}}
@@ -126,7 +127,7 @@
 																	{% endif %}
 																{% else %}
 																	NA
-																{% endif %}
+																{% endif %}</span>
 															</small></td>												
 														</tr>
 													</tbody>
@@ -139,49 +140,50 @@
 													<tbody>
 														<tr>
 															<td><small>Lifetime High:</small></td>
-															<td><small class="font-weight-bold">
+															<td><small class="font-weight-bold"><span style="float: right;">
 																{% if asset == 'FTSE' %}
 																	{{lifetime_high|floatformat:2}}
 																{% else %}
 																	{{lifetime_high|floatformat:3}}
-																{% endif %}
+																{% endif %}</span>
 															</small></td>												
 														</tr>
 														<tr>
 															<td><small>Lifetime Low:</small></td>
-															<td><small class="font-weight-bold">
+															<td><small class="font-weight-bold"><span style="float: right;">
 																{% if asset == 'FTSE' %}
 																	{{lifetime_low|floatformat:2}}
 																{% else %}
 																	{{lifetime_low|floatformat:3}}
-																{% endif %}
+																{% endif %}</span>
 															</small></td>												
 														</tr>
 														<tr>
 															<td><small>Spot Price:</small></td>
-															<td><small class="font-weight-bold">
+															<td><small class="font-weight-bold"><span style="float: right;">
 																{% if asset == 'FTSE' %}
 																	{{stock|floatformat:2}}
 																{% else %}
 																	{{stock|floatformat:3}}
-																{% endif %}
+																{% endif %}</span>
 															</small></td>												
 														</tr>
 														<tr>
 															<td><small>Basis:</small></td>
-															<td><small class="font-weight-bold">
+															<td><small class="font-weight-bold"><span style="float: right;">
 																{% if asset == 'FTSE' %}
 																	{{basis|floatformat:2}}
 																{% else %}
 																	{{basis|floatformat:3}}
-																{% endif %}
+																{% endif %}</span>
 															</small></td>												
 														</tr>
 													</tbody>
 												</table>
 											</div>
 										</div>
-									
+										
+									</div>
 								</div>							
 							</div>
 
