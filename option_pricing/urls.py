@@ -49,6 +49,9 @@ urlpatterns = [
     path('options/descendingOI/', OptionDescendingOI.as_view(), name='option_descendingOI'),
     path('futures/descendingOI/', FutureDescendingOI.as_view(), name='future_descendingOI'),
     #options screeners urls
+    path('options/searchsymbol/', views.OptionSearchSymbolView, name='option_search_symbol'),
+    #path('options/searchsymbol2/', views.OptionSearchSymbolView2, name='option_search_symbol2'),
+    path('options/searchsymbolautocomplete/', views.OptionSearchSymbolAutoCompleteView, name='option_search_symbol_autocomplete'),
     path('options/<str:optionsymbol>/', views.OptionScreenerDetail, name='option_screener_detail'),
     path('options/chart/<str:tradesymbol>/', views.OptionJSChartView, name="option_jschart"),
     path('options/chart_vol/<str:tradesymbol>/', views.OptionJSChartVolView, name="option_vol_jschart"),

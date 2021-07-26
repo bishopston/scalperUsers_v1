@@ -1,0 +1,15 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+
+<div class="row">
+    {% for optionsymbol in results %}
+    <div class="col-md-4">
+        {{ optionsymbol.symbol }}
+        
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

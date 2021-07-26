@@ -842,3 +842,13 @@ hr {
 	border-top-right-radius: 0.2rem;
 	border-bottom-right-radius: 0.2rem;
   }
+
+  .navbar {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+  }

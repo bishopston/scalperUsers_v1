@@ -6,6 +6,7 @@ from django.views.generic import View
 from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
+from django.core import serializers
 
 from datetime import datetime, date
 import calendar
@@ -14,12 +15,13 @@ from decimal import Decimal
 
 from .models import Option, Optioncsv, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futurecsv, Futuresymbol, Futurevolumeaggasset
 from accounts.models import CustomUser
-from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm
+from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm, OptionSearchForm
 
 import csv
 
 def home(request):
-    return render(request, 'option_pricing/index.html')
+    form = OptionSearchForm()
+    return render(request, 'option_pricing/index.html', {'form': form})
 """
 def OptionView(request):
     option = Option.objects.all()
@@ -2184,3 +2186,39 @@ def FutureSymbolExportCSV(request, futuresymbol):
 
     response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(str(futuresymbol))
     return response
+
+def OptionSearchSymbolView(request):
+    form = OptionSearchForm()
+    q = ''
+    results = []
+
+    if 'q' in request.GET:
+        form = OptionSearchForm(request.GET)
+        if form.is_valid():
+            q = form.cleaned_data['q']
+            results = Optionsymbol.objects.filter(symbol__icontains=q)
+
+    return render(request, 'option_pricing/option_symbol_search.html',
+                  {'form': form,
+                   'q': q,
+                   'results': results}) 
+
+
+""" def OptionSearchSymbolView2(request):
+    form = OptionSearchForm2()
+    if request.is_ajax():
+        term = request.GET.get('term')
+        symbols = Optionsymbol.objects.all().filter(symbol__icontains=term)
+        symbols_json = JsonResponse(list(symbols.values()), safe=False)
+        return symbols_json
+    return render(request, 'option_pricing/option_symbol_search2.html', {'form': form}) """
+
+
+def OptionSearchSymbolAutoCompleteView(request):
+    if 'term' in request.GET:
+        qs = Optionsymbol.objects.filter(symbol__icontains=request.GET.get('term'))
+        symbols = list()
+        for item in qs:
+            symbols.append(item.symbol)
+        return JsonResponse(symbols, safe=False)
+    return render(request, 'option_pricing/option_symbol_search.html')

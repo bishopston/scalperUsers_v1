@@ -1,5 +1,5 @@
 from django import forms
-from . models import Option
+from . models import Option, Optionsymbol
 
 import datetime
 
@@ -131,3 +131,34 @@ class ImpliedperStrikeScreenerForm(forms.Form):
         'class': 'form-control form-control-sm'
     }
     ))
+
+class OptionSearchForm(forms.Form):
+    q = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['q'].widget.attrs.update(
+            {'class': 'form-control menudd'})
+        self.fields['q'].widget.attrs.update(
+            {'data-toggle': 'dropdown'})
+
+"""
+class OptionSearchForm2(forms.ModelForm):
+
+    class Meta:
+        model = Option
+        fields = ['optionsymbol']
+        widgets = {
+            
+            'optionsymbol':forms.TextInput(attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Search option symbol'
+                        }),}
+ 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['optionsymbol'].queryset = Optionsymbol.objects.none() 
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            }) """

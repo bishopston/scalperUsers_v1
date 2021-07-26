@@ -1,0 +1,56 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+{{ form.media.css }}
+<style>
+    #id_optionsymbol {
+        width: 100%;
+    }
+</style>
+<div class="mt-2 container bg-white text-dark">
+    <div class="d-flex flex-wrap align-content-center justify-content-center">
+      <div class="card">
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-row mb-2">
+                    <div class="form-group col-md-12">
+                    <label>search</label>
+                    {{ form.optionsymbol }}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Update</button>
+            </form>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#id_optionsymbol').select2({
+            language: {
+            inputTooShort: function(args) {
+                return "";
+            }
+        },
+            ajax: {
+                url: '{% url "option_pricing:option_search_symbol2" %}',
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {id: item.id, text: item.symbol};
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 3
+        });
+    });
+</script>
+
+{% endblock %}
