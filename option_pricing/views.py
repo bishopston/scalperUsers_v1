@@ -12,8 +12,9 @@ from datetime import datetime, date
 import calendar
 import json
 from decimal import Decimal
+from itertools import chain
 
-from .models import Option, Optioncsv, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futurecsv, Futuresymbol, Futurevolumeaggasset
+from .models import Option, Optioncsv, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futurecsv, Futuresymbol, Futurevolumeaggasset, Stocksymbol
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm, OptionSearchForm
 
@@ -2196,7 +2197,10 @@ def OptionSearchSymbolView(request):
         form = OptionSearchForm(request.GET)
         if form.is_valid():
             q = form.cleaned_data['q']
-            results = Optionsymbol.objects.filter(symbol__icontains=q)
+            option_results = Optionsymbol.objects.filter(symbol__icontains=q)
+            future_results = Futuresymbol.objects.filter(symbol__icontains=q)
+            stock_results = Stocksymbol.objects.filter(symbol__icontains=q)
+            results = chain(option_results, future_results, stock_results)
 
     return render(request, 'option_pricing/option_symbol_search.html',
                   {'form': form,
@@ -2216,7 +2220,10 @@ def OptionSearchSymbolView(request):
 
 def OptionSearchSymbolAutoCompleteView(request):
     if 'term' in request.GET:
-        qs = Optionsymbol.objects.filter(symbol__icontains=request.GET.get('term'))
+        qs_options = Optionsymbol.objects.filter(symbol__icontains=request.GET.get('term'))
+        qs_futures = Futuresymbol.objects.filter(symbol__icontains=request.GET.get('term'))
+        qs_stocks = Stocksymbol.objects.filter(symbol__icontains=request.GET.get('term'))
+        qs = chain(qs_options, qs_futures, qs_stocks)
         symbols = list()
         for item in qs:
             symbols.append(item.symbol)
