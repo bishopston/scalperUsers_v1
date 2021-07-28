@@ -316,6 +316,9 @@ class Stocksymbol(models.Model):
     def __str__(self):
 	    return self.symbol
 
+    def get_absolute_url(self):       
+        return reverse('option_pricing:stock_screener_detail', args=[str(self.symbol)])
+
 class Stock(models.Model):
     stocksymbol = models.ForeignKey(Stocksymbol, on_delete=models.CASCADE, default=0)
     date = models.DateTimeField()

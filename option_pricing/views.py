@@ -2192,20 +2192,43 @@ def OptionSearchSymbolView(request):
     form = OptionSearchForm()
     q = ''
     results = []
+    option_results = Optionsymbol.objects.all()
+    results_length = len(option_results)
+    future_results = Futuresymbol.objects.all()
+    stock_results = Stocksymbol.objects.all()
+
 
     if 'q' in request.GET:
         form = OptionSearchForm(request.GET)
         if form.is_valid():
             q = form.cleaned_data['q']
-            option_results = Optionsymbol.objects.filter(symbol__icontains=q)
+            option_results = Optionsymbol.objects.filter(symbol__icontains=q).order_by('expmonthdate', 'strike')
             future_results = Futuresymbol.objects.filter(symbol__icontains=q)
             stock_results = Stocksymbol.objects.filter(symbol__icontains=q)
             results = chain(option_results, future_results, stock_results)
+            results_length = len(option_results)
 
-    return render(request, 'option_pricing/option_symbol_search.html',
-                  {'form': form,
-                   'q': q,
-                   'results': results}) 
+            paginator = Paginator(option_results, 10)
+            page_number = request.GET.get('page', 1)
+            page_obj = paginator.get_page(page_number)
+
+            return render(request, 'option_pricing/option_symbol_search.html',
+                        {'form': form,
+                        'q': q,
+                        'results': results,                       
+                        'option_results': option_results,
+                        'results_length': results_length,
+                        'page_obj': page_obj,
+                        'future_results': future_results,
+                        'stock_results': stock_results,}) 
+
+    else:
+        return render(request, 'option_pricing/option_symbol_search.html',
+                    {'form': form,
+                    'q': q,
+                    'results': results,}) 
+
+
 
 
 """ def OptionSearchSymbolView2(request):
