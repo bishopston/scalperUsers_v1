@@ -2202,9 +2202,9 @@ def OptionSearchSymbolView(request):
         form = OptionSearchForm(request.GET)
         if form.is_valid():
             q = form.cleaned_data['q']
-            option_results = Optionsymbol.objects.filter(symbol__icontains=q).order_by('expmonthdate', 'strike')
-            future_results = Futuresymbol.objects.filter(symbol__icontains=q)
-            stock_results = Stocksymbol.objects.filter(symbol__icontains=q)
+            option_results = Optionsymbol.objects.filter(symbol__icontains=q).order_by('asset', 'expmonthdate', 'strike', 'optiontype')
+            future_results = Futuresymbol.objects.filter(symbol__icontains=q).order_by('asset', 'expmonthdate')
+            #stock_results = Stocksymbol.objects.filter(symbol__icontains=q)
             results = chain(option_results, future_results, stock_results)
             #results_length = len(results)
             option_results_length = len(option_results)
@@ -2229,9 +2229,7 @@ def OptionSearchSymbolView(request):
                         'page_obj': page_obj,
                         'future_results': future_results,
                         'future_results_length': future_results_length,
-                        'future_page_obj': future_page_obj,
-                        'stock_results': stock_results,
-                        'stock_results_length': stock_results_length,}) 
+                        'future_page_obj': future_page_obj,}) 
 
     else:
         return render(request, 'option_pricing/option_symbol_search.html',
