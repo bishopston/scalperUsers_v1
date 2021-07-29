@@ -2206,21 +2206,32 @@ def OptionSearchSymbolView(request):
             future_results = Futuresymbol.objects.filter(symbol__icontains=q)
             stock_results = Stocksymbol.objects.filter(symbol__icontains=q)
             results = chain(option_results, future_results, stock_results)
-            results_length = len(option_results)
+            #results_length = len(results)
+            option_results_length = len(option_results)
+            future_results_length = len(future_results)
+            stock_results_length = len(stock_results)
 
             paginator = Paginator(option_results, 10)
             page_number = request.GET.get('page', 1)
             page_obj = paginator.get_page(page_number)
 
+            future_paginator = Paginator(future_results, 10)
+            future_page_number = request.GET.get('page', 1)
+            future_page_obj = future_paginator.get_page(future_page_number)
+
             return render(request, 'option_pricing/option_symbol_search.html',
                         {'form': form,
                         'q': q,
-                        'results': results,                       
+                        'results': results, 
+                        #'results_length': results_length,                      
                         'option_results': option_results,
-                        'results_length': results_length,
+                        'option_results_length': option_results_length,
                         'page_obj': page_obj,
                         'future_results': future_results,
-                        'stock_results': stock_results,}) 
+                        'future_results_length': future_results_length,
+                        'future_page_obj': future_page_obj,
+                        'stock_results': stock_results,
+                        'stock_results_length': stock_results_length,}) 
 
     else:
         return render(request, 'option_pricing/option_symbol_search.html',
