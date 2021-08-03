@@ -90,23 +90,23 @@
                                                     <tbody>
                                                         <tr>
                                                             <td><small>Asset:</small></td>
-                                                            <td><small class="font-weight-bold">{{asset}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{asset}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Option Type:</small></td>
-                                                            <td><small class="font-weight-bold">{{optiontype}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{optiontype}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Expiration Date:</small></td>
-                                                            <td><small class="font-weight-bold">{{expdate}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{expdate}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Exercise Price:</small></td>
                                                             <td><small class="font-weight-bold">
                                                                 {% if asset == 'FTSE' %}
-                                                                    {{ strike|add:"0" }}
+                                                                    <span style="float: right;">{{ strike|add:"0" }}</span>
                                                                 {% else %}
-                                                                    {{ strike }}
+                                                                    <span style="float: right;">{{ strike }}</span>
                                                                 {% endif %}
                                                             </small></td>												
                                                         </tr>
@@ -120,19 +120,19 @@
                                                     <tbody>
                                                         <tr>
                                                             <td><small>Latest Trading:</small></td>
-                                                            <td><small class="font-weight-bold">{{latest_trad_date}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{latest_trad_date}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Volume:</small></td>
-                                                            <td><small class="font-weight-bold">{{volume}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{volume}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Trades:</small></td>
-                                                            <td><small class="font-weight-bold">{{trades}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{trades}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Open Interest:</small></td>
-                                                            <td><small class="font-weight-bold">{{open_interest}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{open_interest}}</span></small></td>												
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -144,7 +144,7 @@
                                                     <tbody>
                                                         <tr>
                                                             <td><small>Imp. Volatility:</small></td>
-                                                            <td><small class="font-weight-bold">{{imp_vol}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{imp_vol}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Moneyness:</small></td>
@@ -154,16 +154,16 @@
                                                                 {% else %} 
                                                                 <div class="change-positive">
                                                                 {% endif %}
-                                                                {{moneyness}}
+                                                                <span style="float: right;">{{moneyness}}</span>
                                                             </small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Lifetime High:</small></td>
                                                             <td><small class="font-weight-bold">
                                                                 {% if asset == 'FTSE' %}
-                                                                    {{lifetime_high|floatformat:2}}
+                                                                    <span style="float: right;">{{lifetime_high|floatformat:2}}</span>
                                                                 {% else %}
-                                                                    {{lifetime_high|floatformat:3}}
+                                                                    <span style="float: right;">{{lifetime_high|floatformat:3}}</span>
                                                                 {% endif %}
                                                             </small></td>													
                                                         </tr>
@@ -171,9 +171,9 @@
                                                             <td><small>Lifetime Low:</small></td>
                                                             <td><small class="font-weight-bold">
                                                                 {% if asset == 'FTSE' %}
-                                                                    {{lifetime_low|floatformat:2}}
+                                                                    <span style="float: right;">{{lifetime_low|floatformat:2}}</span>
                                                                 {% else %}
-                                                                    {{lifetime_low|floatformat:3}}
+                                                                    <span style="float: right;">{{lifetime_low|floatformat:3}}</span>
                                                                 {% endif %}
                                                             </small></td>												
                                                         </tr>
@@ -187,19 +187,19 @@
                                                     <tbody>
                                                         <tr>
                                                             <td><small>Delta:</small></td>
-                                                            <td><small class="font-weight-bold">{{delta|floatformat:2}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{delta|floatformat:2}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Gamma:</small></td>
-                                                            <td><small class="font-weight-bold">{{gamma|floatformat:2}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{gamma|floatformat:2}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Theta per day:</small></td>
-                                                            <td><small class="font-weight-bold">{{theta|floatformat:2}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{theta|floatformat:2}}</span></small></td>												
                                                         </tr>
                                                         <tr>
                                                             <td><small>Vega:</small></td>
-                                                            <td><small class="font-weight-bold">{{vega|floatformat:2}}</small></td>												
+                                                            <td><small class="font-weight-bold"><span style="float: right;">{{vega|floatformat:2}}</span></small></td>												
                                                         </tr>
                                                     </tbody>
                                                 </table>

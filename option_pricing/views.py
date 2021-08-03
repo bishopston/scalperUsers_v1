@@ -2209,7 +2209,7 @@ def OptionSearchSymbolView(request):
             #results_length = len(results)
             option_results_length = len(option_results)
             future_results_length = len(future_results)
-            stock_results_length = len(stock_results)
+            #stock_results_length = len(stock_results)
 
             paginator = Paginator(option_results, 10)
             page_number = request.GET.get('page', 1)
