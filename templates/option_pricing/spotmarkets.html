@@ -1,0 +1,328 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>-->
+
+<style>
+    .menu{
+        width: 100%;
+    }
+
+    #asset{
+        width: 100%;
+        padding-left: 15px;
+        padding-right: 60px;
+        font-size: 16px;
+
+        font-family: "Catamaran", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        border: none;
+        border-radius: 8px;
+        border: 2px solid #3f51b5;
+        box-shadow: 0 15px 15px #efefef;
+        
+        background: #e8eaf6;
+    }
+</style>
+
+<div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
+    <div class="container light-blue text-dark d-flex flex-wrap overflow-auto mt-3">
+        <div class="container">
+            <div class="row ml-1 mb-1 p-1 d-flex justify-content-between">
+                <h5>ATHEX Spot Market</h5>
+                <div class="wrapper mr-2">               
+                    <div class="menu">
+                        <select id="asset" onchange="location = this.value;"> 
+                            <option value="" disabled selected>Select Underlying</option>
+                            <!-- <option value="{% url 'option_pricing:futurehiststats' %}">ALL</option> -->
+                            {% for i in assets_ %}
+                                <option value="{% url 'option_pricing:stock_historical_asset' i %}">
+                                    {% if i == 'BELA' %}
+                                        JUMBO
+                                    {% elif i == 'CENER' %}
+                                        CENERGY
+                                    {% elif i == 'EEE' %}
+                                        COCA-COLA
+                                    {% elif i == 'ELLAK' %}
+                                        ELLAKTOR
+                                    {% elif i == 'EUROB' %}
+                                        EUROBANK
+                                    {% elif i == 'FOYRK' %}
+                                        FOURLIS
+                                    {% elif i == 'GEKTE' %}
+                                        GEKTERNA
+                                    {% elif i == 'HTO' %}
+                                        OTE
+                                    {% elif i == 'INLOT' %}
+                                        INTRALOT
+                                    {% elif i == 'INTRK' %}
+                                        INTRACOM
+                                    {% elif i == 'MOH' %}
+                                        MOTOR OIL
+                                    {% elif i == 'PPA' %}
+                                        OLP
+                                    {% elif i == 'PPC' %}
+                                        DEH
+                                    {% elif i == 'TATT' %}
+                                        ATTICA BANK
+                                    {% elif i == 'TENER' %}
+                                        TERNA ENERGY
+                                    {% elif i == 'TITC' %}
+                                        TITAN
+                                    {% elif i == 'TPEIR' %}
+                                        PEIRAIOS
+                                    {% elif i == 'VIO' %}
+                                        VIOHALCO
+                                    {% else %}
+                                        {{i}}                                   
+                                    {% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div id="gd" class="data">
+                    <div class="row d-flex justify-content-start">
+                        <div class="pages">
+                            <div class="col-md-12">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a href="#spotmarket" class="nav-link active" role="tab" data-toggle="tab">General Index</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="my-3 tab-content justify-content-center">
+                                <div role="tabpanel" class="tab-pane active" id="spotmarket">
+                                    <div class="container bg-white text-dark" style="position: relative;">
+                                        <div class="row mx-3">
+                                            <button class="btn btn-link" onclick="updateSpotMarketChart_1M()"><small>1M</small></button>
+                                            <button class="btn btn-link" onclick="updateSpotMarketChart_3M()"><small>3M</small></button>
+                                            <button class="btn btn-link" onclick="updateSpotMarketChart_6M()"><small>6M</small></button>
+                                            <button class="btn btn-link" onclick="updateSpotMarketChart_ALL()"><small>1Y</small></button>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <canvas id="spotMarketGDChart" width="400" height="150"></canvas>
+                                            </div>
+                                            <div class="btn-group-vertical mt-3 mx-2">
+    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script> 
+
+    //$('.hidethis').hide();
+
+    var objId = "GD.ATH"
+    var spotMarketGDChart;
+
+    var datacloseURL = `/stocks/chart/${objId}/`
+    var dataclosevolURL = `/stocks/chart_vol/${objId}/`
+
+    var state ={	
+		'itemsall':[],
+		'valuesall':[],
+        'items_vol':[],
+		'values_vol':[],
+        'itemsall23':[],
+		'valuesall23':[],
+        'items_vol23':[],
+		'values_vol23':[],
+        'itemsall68':[],
+		'valuesall68':[],
+        'items_vol68':[],
+		'values_vol68':[],
+        'itemsall135':[],
+		'valuesall135':[],
+        'items_vol135':[],
+		'values_vol135':[],
+        'itemsall255':[],
+		'valuesall255':[],
+        'items_vol255':[],
+		'values_vol255':[],
+	}
+
+    $.ajax({
+        method: "GET",
+        url: datacloseURL,
+        success: function(response){
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+                var key_stripped = key.replace('"', '')
+                var key_stripped_stripped = key_stripped.replace('"', '')
+				var value = Object.values(response[i])[0]
+           
+				state.itemsall.push(key_stripped_stripped)
+                state.valuesall.push(value)}
+
+            state.itemsall23 = state.itemsall.slice(-23)
+            state.valuesall23 = state.valuesall.slice(-23)
+
+            state.itemsall68 = state.itemsall.slice(-68)
+            state.valuesall68 = state.valuesall.slice(-68)   
+
+            state.itemsall135 = state.itemsall.slice(-135)
+            state.valuesall135 = state.valuesall.slice(-135)   
+
+            state.itemsall255 = state.itemsall.slice(-255)
+            state.valuesall255 = state.valuesall.slice(-255)   
+
+            console.log(state.itemsall23)
+            console.log(state.valuesall23)
+
+            setspotMarketGDGraph()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    $.ajax({
+        method: "GET",
+        url: dataclosevolURL,
+        success: function(response){
+
+            for (var i in response){
+                var key = Object.keys(response[i])[0]
+				var value = Object.values(response[i])[0]
+           
+				state.items_vol.push(key)
+                state.values_vol.push(value)}
+
+            state.items_vol23 = state.items_vol.slice(-23)
+            state.values_vol23 = state.values_vol.slice(-23)
+
+            state.items_vol68 = state.items_vol.slice(-68)
+            state.values_vol68 = state.values_vol.slice(-68)   
+
+            state.items_vol135 = state.items_vol.slice(-135)
+            state.values_vol135 = state.values_vol.slice(-135)   
+
+            state.items_vol255 = state.items_vol.slice(-255)
+            state.values_vol255 = state.values_vol.slice(-255)  
+
+            console.log(state.items_vol23)
+            console.log(state.values_vol23)
+
+            setspotMarketGDGraph()
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setspotMarketGDGraph(){
+        if (spotMarketGDChart) {
+            spotMarketGDChart.destroy();
+        }
+    var ctx = document.getElementById("spotMarketGDChart").getContext('2d');
+        
+    spotMarketGDChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: state.itemsall23,
+        datasets: [{
+            label: objId,
+            data: state.valuesall23,
+            yAxisID: 'A',
+            borderWidth: 1,
+            borderColor: 'rgba(66,139,202)',
+            fill: false,
+            order: 1
+        },{
+            type: 'bar',
+            label: 'Volume',
+            data: state.values_vol23,
+            yAxisID: 'B',
+            borderWidth: 1,
+            borderColor: 'rgba(244, 137, 244)',
+            order: 2
+        }
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                id: 'A',
+                position: 'left',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true
+                }
+            },{
+                id: 'B',
+                position: 'right',
+                type: 'linear',
+                ticks: {
+                    beginAtZero:true,
+                    display: false
+                },
+                gridLines: {
+                display:false
+                }
+            }
+            ],
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20,
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }]
+        },
+        legend: {
+            display: true,
+        }
+    }
+    })
+    }
+
+    function updateSpotMarketChart_1M(){
+        spotMarketGDChart.data.labels = state.itemsall23;
+        spotMarketGDChart.data.datasets[0].data = state.valuesall23;
+        spotMarketGDChart.data.datasets[1].data = state.values_vol23;
+        spotMarketGDChart.update();
+    };
+
+    function updateSpotMarketChart_3M(){
+        spotMarketGDChart.data.labels = state.itemsall68;
+        spotMarketGDChart.data.datasets[0].data = state.valuesall68;
+        spotMarketGDChart.data.datasets[1].data = state.values_vol68;
+        spotMarketGDChart.update();
+    };
+
+    function updateSpotMarketChart_6M(){
+        spotMarketGDChart.data.labels = state.itemsall135;
+        spotMarketGDChart.data.datasets[0].data = state.valuesall135;
+        spotMarketGDChart.data.datasets[1].data = state.values_vol135;
+        spotMarketGDChart.update();
+    };
+
+    function updateSpotMarketChart_ALL(){
+        spotMarketGDChart.data.labels = state.itemsall255;
+        spotMarketGDChart.data.datasets[0].data = state.valuesall255;
+        spotMarketGDChart.data.datasets[1].data = state.values_vol255;
+        spotMarketGDChart.update();
+    };
+
+</script>
+
+
+
+{% endblock %}

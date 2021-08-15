@@ -28,7 +28,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             
-                <div class="collapse navbar-collapse mx-3" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse mx-5" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -39,6 +39,7 @@
                             <li><a class="dropdown-item" href="{% url "option_pricing:futuredailystats" %}">Daily Futures Statistics</a></li>
                             <li><a class="dropdown-item" href="{% url "option_pricing:optionhiststats" %}">Trending Options Statistics</a></li>
                             <li><a class="dropdown-item" href="{% url "option_pricing:futurehiststats" %}">Trending Futures Statistics</a></li>
+                            <li><a class="dropdown-item" href="{% url "option_pricing:stock_historical" %}">Spot Markets</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -70,7 +71,7 @@
                         <a class="nav-link active" href="{% url "accounts:login" %}">Portfolio</a>
                     {% endif %}
                     </li>
-                    <form class="d-flex" action="{% url "option_pricing:option_search_symbol" %}" method="get">
+                    <form class="d-flex mx-2" action="{% url "option_pricing:option_search_symbol" %}" method="get">
                         <input class="form-control me-2" name="q" id="id_q" type="search" placeholder="Search symbol" aria-label="Search" required>
                     </form>
                 </ul>
@@ -124,7 +125,7 @@
                     <div class="col-lg-7 order-lg-1">
                         <div class="p-5">
                             <h2 class="display-4">Screening matters...</h2>
-                            <p>Gain insight to crucial info for all option and future contracts in ATHEX Markets, either active or expired ones. Monitor your greeks and get ready to exercise. Feel free to download your historical data.</p>
+                            <p>Gain insight to crucial info for all option and future contracts in ATHEX Markets, either active or expired ones. Monitor your greeks and get ready to exercise. Feel free to download historical data.</p>
                             <div class="d-flex justify-content-start flex-nowrap">
                                 <a class="btn btn-primary" href="{% url "option_pricing:myoptionscreenerlistcbv" %}">Options Screeners</a>
                                 <a class="mx-3 btn btn-primary" href="{% url "option_pricing:myfuturescreenerlistcbv" %}">Futures Screeners</a>

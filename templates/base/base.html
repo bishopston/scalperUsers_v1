@@ -20,13 +20,13 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <div class="container px-3">
+          <div class="container px-2 py-2">
             <a class="navbar-brand" href="{% url "option_pricing:home" %}">Navbar</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
           
-            <div class="collapse navbar-collapse ml-3" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse ml-5" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                   <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -37,6 +37,7 @@
                     <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futuredailystats" %}">Daily Futures Statistics</a></li>
                     <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:optionhiststats" %}">Trending Options Statistics</a></li>
                     <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futurehiststats" %}">Trending Futures Statistics</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:stock_historical" %}">Spot Markets</a></li>
                   </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -68,7 +69,7 @@
                     <a class="nav-link active" href="{% url "accounts:login" %}">Portfolio</a>
                   {% endif %}
                 </li>
-                <form class="form-inline my-2 mr-2 my-lg-0" action="{% url "option_pricing:option_search_symbol" %}" method="get">
+                <form class="form-inline my-2 mx-2 my-lg-0" action="{% url "option_pricing:option_search_symbol" %}" method="get">
                   <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search symbol" aria-label="Search" required>
                 </form>
               </ul>

@@ -151,7 +151,7 @@
                                     <button class="btn btn-link" onclick="updatemonthlyCallPutChart_6M()"><small>6M</small></button>
                                     <button class="btn btn-link" onclick="updatemonthlyCallPutChart_1Y()"><small>1Y</small></button>
                                     <button class="btn btn-link" onclick="updatemonthlyCallPutChart_18M()"><small>18M</small></button>
-                                    <button class="btn btn-link" onclick="updatemonthlyCallPutChart_ALL()"><small>2Y</small></button>
+                                    <button class="btn btn-link" onclick="updatemonthlyCallPutChart_24()"><small>2Y</small></button>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -1582,6 +1582,8 @@ var histOpenIntAssetChart;
 		'valuescallput12':[],
         'itemscallput18':[],
 		'valuescallput18':[],
+        'itemscallput24':[],
+		'valuescallput24':[],
 	}
 
     $.ajax({
@@ -1606,6 +1608,9 @@ var histOpenIntAssetChart;
 
             statecallput.itemscallput18 = statecallput.itemscallput.slice(-18)
             statecallput.valuescallput18 = statecallput.valuescallput.slice(-18)   
+
+            statecallput.itemscallput24 = statecallput.itemscallput.slice(-24)
+            statecallput.valuescallput24 = statecallput.valuescallput.slice(-24)
 
             console.log(statecallput.itemscallput)
             console.log(statecallput.valuescallput)
@@ -1659,9 +1664,9 @@ var histOpenIntAssetChart;
         monthlyCallPutChart.update();
     };
 
-    function updatemonthlyCallPutChart_ALL(){
-        monthlyCallPutChart.data.labels = statecallput.itemscallput;
-        monthlyCallPutChart.data.datasets[0].data = statecallput.valuescallput;
+    function updatemonthlyCallPutChart_24(){
+        monthlyCallPutChart.data.labels = statecallput.itemscallput24;
+        monthlyCallPutChart.data.datasets[0].data = statecallput.valuescallput24;
         monthlyCallPutChart.update();
     };
 

@@ -14,7 +14,7 @@ import json
 from decimal import Decimal
 from itertools import chain
 
-from .models import Option, Optioncsv, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futurecsv, Futuresymbol, Futurevolumeaggasset, Stocksymbol
+from .models import Option, Optioncsv, Optionsymbol, Optionseries, Optionvolume, Optionvolumeaggseries, Optionvolumeaggseriesasset, Optioncallputmonthlyratio, Future, Futurecsv, Futuresymbol, Futurevolumeaggasset, Stock, Stocksymbol
 from accounts.models import CustomUser
 from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScreenerForm, OptionSearchForm
 
@@ -71,6 +71,7 @@ def OptionScreenerDetail(request, optionsymbol):
     trade_symbol = optionsymbol
     option_count = option_strikespan.count()
     closing_price = option_strikespan[0].closing_price
+    fixing_price = option_strikespan[0].fixing_price
     change = option_strikespan[0].change
     asset = option_strikespan[0].optionsymbol.get_asset_display()
     optiontype = option_strikespan[0].optionsymbol.get_optiontype_display()
@@ -125,6 +126,7 @@ def OptionScreenerDetail(request, optionsymbol):
         'trade_symbol' : trade_symbol,
         'option_count' : option_count,
         'closing_price' : round(closing_price,3),
+        'fixing_price' : round(fixing_price,3),
         'change' : change,
         'asset' : asset,
         'optiontype' : optiontype,
@@ -2261,3 +2263,81 @@ def OptionSearchSymbolAutoCompleteView(request):
             symbols.append(item.symbol)
         return JsonResponse(symbols, safe=False)
     return render(request, 'option_pricing/option_symbol_search.html')
+
+
+def StockHistoricalView(request):
+    
+    q = Stock.objects.all()
+    max_date = q.aggregate(Max('date'))
+    queryset = q.filter(date=max_date['date__max'])
+
+    _assets=[]
+    for i in range(len(queryset)):
+        _assets.append(queryset[i].stocksymbol.asset)
+
+    assets_=[]
+    assets_ = sorted(unique(_assets))
+
+    context = {
+        'assets_': assets_,
+    }
+
+    return render(request, 'option_pricing/spotmarkets.html', context)
+
+def StockHistoricalAssetView(request, asset):
+    underlying = asset
+    underlying_ATH = underlying + ".ATH"
+
+    stock_latest = Stock.objects.filter(stocksymbol__symbol=underlying_ATH).order_by('-date')
+    trad_date_latest = stock_latest[0].date.strftime("%#d-%#m-%Y")
+    stock_price_latest = stock_latest[0].close
+    stock_price_2_latest = stock_latest[1].close
+    change = 100*(stock_price_latest-stock_price_2_latest)/stock_price_2_latest
+    volume_latest = stock_latest[0].volume
+
+    q = Stock.objects.all()
+    max_date = q.aggregate(Max('date'))
+    queryset = q.filter(date=max_date['date__max'])
+
+    #assets=[]
+    _assets=[]
+    for i in range(len(queryset)):
+        #assets.append(queryset[i].futuresymbol.get_asset_display())
+        _assets.append(queryset[i].stocksymbol.asset)
+
+    assets_=[]
+    assets_ = sorted(unique(_assets))
+
+    context = {
+        'assets_': assets_,
+        #'_assets': _assets,
+        'underlying': underlying,
+        'trad_date_latest':trad_date_latest,
+        'stock_price_latest':stock_price_latest,
+        'change':change,
+        'volume_latest':volume_latest,
+    }
+
+    return render(request, 'option_pricing/spotmarketsasset.html', context)
+
+def StockJSChartView(request, tradesymbol):
+    stockdata = []
+
+    stock = Stock.objects.filter(stocksymbol__symbol=tradesymbol).order_by('date')
+
+    for i in stock:
+        stockdata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.close})
+
+    #print(optiondata)
+    return JsonResponse(stockdata, safe=False)
+
+def StockJSChartVolView(request, tradesymbol):
+    voldata = []
+
+    vol = Stock.objects.filter(stocksymbol__symbol=tradesymbol).order_by('date')
+
+    for i in vol:
+        voldata.append({json.dumps(i.date.strftime("%#d-%#m-%Y")):i.volume})
+    
+    #print(voldata)
+    return JsonResponse(voldata, safe=False)
