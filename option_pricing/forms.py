@@ -36,7 +36,6 @@ OPTION_TYPE = [
     ('p', 'Put'),
 ]
 
-
 class OptionScreenerForm(forms.Form):
     asset = forms.CharField(
         label="Underlying Asset",
@@ -48,7 +47,7 @@ class OptionScreenerForm(forms.Form):
     ))
 
     option_type = forms.ChoiceField(
-        label="Option Type",
+        label='Option Type',
         widget=forms.RadioSelect(attrs={
         'class': 'form-check-label'
         }),

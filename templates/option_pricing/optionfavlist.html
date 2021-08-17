@@ -5,9 +5,34 @@
 <div class="container bg-light text-dark">
   <div class="row">
     <div class="col-sm-7 mb-2">
-      <h3>Options Screeners</h3>
+      <h3 class="mt-1">Options Screeners</h3>
       <form method="GET">
-        {{ optionscreenerform.as_p }}
+        <div class="form-row mb-1">
+          <div class="form-group col-md-12">
+            <div>{{ optionscreenerform.asset.label_tag }}</div>
+            <div>{{ optionscreenerform.asset }}</div>
+          </div>
+        </div>
+        <div class="form-row mb-1">
+          <div class="form-group">
+            <div class="ml-1">{{ optionscreenerform.option_type.label_tag }}</div>
+            <div class="ml-1">{% for radio in optionscreenerform.option_type %}
+              {{ radio }}
+            {% endfor %}</div>
+          </div>
+        </div>
+        <div class="form-row mb-1">
+          <div class="form-group col-md-12">
+            <div>{{ optionscreenerform.exp_month.label_tag }}</div>
+            <div>{{ optionscreenerform.exp_month }}</div>
+          </div>
+        </div>
+        <div class="form-row mb-1">
+          <div class="form-group col-md-12">
+            <div>{{ optionscreenerform.exp_year.label_tag }}</div>
+            <div>{{ optionscreenerform.exp_year}}</div>
+          </div>
+        </div>
         <input class="btn btn-primary" type="submit" value="Submit" id="submit-button" onclick="return updateTable();"> 
       </form>
     </div>
@@ -25,6 +50,23 @@
     </div>
   </div>
 </div>
+
+{% if not asset_query or callputflag_query or exp_month_query or exp_year_query %}
+  <div class="mt-5 container">
+    <div class="card mt-2">
+      <div class="card-header text-white bg-primary">
+        Info
+      </div>
+      <div class="card-body">
+        <blockquote class="blockquote mb-0">
+          <p><small>Access analytical info for all option contracts in ATHEX Market, either active or expired ones.
+            Add option symbols to your dashboard to build a personalized experience.
+          </small></p>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+{% endif %}
 
 <div id="myoption-section">
   {% include 'option_pricing/option_screeners_data.html' %}
