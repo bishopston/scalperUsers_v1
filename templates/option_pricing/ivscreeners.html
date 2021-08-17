@@ -1,10 +1,18 @@
 {%  extends "../base/base.html" %}
 {% block content %}
 
+<style>
+    td {
+       white-space: nowrap;
+    }
+ </style>
+
     <nav aria-label="breadcrumb">
         <div class="container">
             <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page"><h5>Implied Volatility - Active Expiration Series</h5></li>
+            <li class="breadcrumb-item active" aria-current="page"><h5>Implied Volatility Smile - Active Options</h5></li>
+
+              
             </ol>
         </div>
     </nav>
@@ -20,7 +28,7 @@
 
     <div class="row w-100">
         <div class="col-md-12">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs d-flex flex-nowrap">
                 <li class="nav-item">
                     <a href="#ftse" class="nav-link active" role="tab" data-toggle="tab">FTSE</a>
                 </li>
@@ -52,6 +60,7 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
@@ -78,6 +87,7 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_ftse_count}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -102,6 +112,7 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
@@ -128,6 +139,7 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_alpha_count}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -152,6 +164,7 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
@@ -178,6 +191,7 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_ote_count}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -202,6 +216,7 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
@@ -228,6 +243,7 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_ete_count}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -252,6 +268,7 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
@@ -278,6 +295,7 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_opap_count}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -302,6 +320,7 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
@@ -328,6 +347,7 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_deh_count}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -352,6 +372,7 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
@@ -378,6 +399,7 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                                         <td><small>{{qs_peiraios_count}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -394,6 +416,27 @@
                         {% endif %}
                     </div>
                 </div>
+                <div class="d-flex justify-content-center py-4">
+                    <div class="row w-100">
+                        <div class="col-md-12">
+                            <div class="card text-white bg-info mb-3" style="max-width: 100%;">
+                                <div class="card-body">
+                                    <div class="row mx-1">
+                                        <div class="col-md-1">
+                                        <i class="fa fa-info-circle fa-3x" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="col-md-11">
+                                        <p class="card-text ml-1"><small>For all active option contracts you may track implied volatility across all exercise prices
+                                            of this particular series (implied volatility smile).
+                                        </small>
+                                        </p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div>
         </div>
     </div>
@@ -409,7 +452,7 @@
                     id[i]=$(this).val()
                 })
                 if(id.length===0){
-                    alert("Please select at least one expiration series to add to my screeners")
+                    alert("Please select at least one option series to add to my screeners")
                 }else{
                     console.log(id)
                     $.ajax({
@@ -420,7 +463,7 @@
                             csrfmiddlewaretoken:csrf
                         },
                         success:function(response){
-                            alert("Expiration series successfully added to my screeners");
+                            alert("Option series successfully added to my screeners");
                             
                         }
                     })
@@ -435,7 +478,7 @@
                 id[i]=$(this).val()
             })
             if(id.length===0){
-                alert("Please select at least one expiration series to add to my screeners")
+                alert("Please select at least one option series to add to my screeners")
             }else{
                 console.log(id)
                 $.ajax({
@@ -446,7 +489,7 @@
                         csrfmiddlewaretoken:csrf
                     },
                     success:function(response){
-                        alert("Expiration series successfully added to my screeners");
+                        alert("Option series successfully added to my screeners");
                         
                     }
                 })
@@ -461,7 +504,7 @@
                 id[i]=$(this).val()
             })
             if(id.length===0){
-                alert("Please select at least one expiration series to add to my screeners")
+                alert("Please select at least one option series to add to my screeners")
             }else{
                 console.log(id)
                 $.ajax({
@@ -472,7 +515,7 @@
                         csrfmiddlewaretoken:csrf
                     },
                     success:function(response){
-                        alert("Expiration series successfully added to my screeners");
+                        alert("Option series successfully added to my screeners");
                         
                     }
                 })
@@ -487,7 +530,7 @@
                 id[i]=$(this).val()
             })
             if(id.length===0){
-                alert("Please select at least one expiration series to add to my screeners")
+                alert("Please select at least one option series to add to my screeners")
             }else{
                 console.log(id)
                 $.ajax({
@@ -498,7 +541,7 @@
                         csrfmiddlewaretoken:csrf
                     },
                     success:function(response){
-                        alert("Expiration series successfully added to my screeners");
+                        alert("Option series successfully added to my screeners");
                         
                     }
                 })
@@ -513,7 +556,7 @@
                 id[i]=$(this).val()
             })
             if(id.length===0){
-                alert("Please select at least one expiration series to add to my screeners")
+                alert("Please select at least one option series to add to my screeners")
             }else{
                 console.log(id)
                 $.ajax({
@@ -524,7 +567,7 @@
                         csrfmiddlewaretoken:csrf
                     },
                     success:function(response){
-                        alert("Expiration series successfully added to my screeners");
+                        alert("Option series successfully added to my screeners");
                         
                     }
                 })
@@ -539,7 +582,7 @@
                 id[i]=$(this).val()
             })
             if(id.length===0){
-                alert("Please select at least one expiration series to add to my screeners")
+                alert("Please select at least one option series to add to my screeners")
             }else{
                 console.log(id)
                 $.ajax({
@@ -550,7 +593,7 @@
                         csrfmiddlewaretoken:csrf
                     },
                     success:function(response){
-                        alert("Expiration series successfully added to my screeners");
+                        alert("Option series successfully added to my screeners");
                         
                     }
                 })
@@ -565,7 +608,7 @@
                 id[i]=$(this).val()
             })
             if(id.length===0){
-                alert("Please select at least one expiration series to add to my screeners")
+                alert("Please select at least one option series to add to my screeners")
             }else{
                 console.log(id)
                 $.ajax({
@@ -576,7 +619,7 @@
                         csrfmiddlewaretoken:csrf
                     },
                     success:function(response){
-                        alert("Expiration series successfully added to my screeners");
+                        alert("Option series successfully added to my screeners");
                         
                     }
                 })
@@ -586,5 +629,7 @@
 
     })
 </script>
+
+
 
 {% endblock %}

@@ -124,12 +124,21 @@
           <div class="card-body">
               <h5 class="card-title">Search results</h5>
               <p class="card-text">Your search did not return any results. Please try again.</p>
-              <form class="form-inline my-2 mr-2 my-lg-0" action="/options/searchsymbol/" method="get">
-                  <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search symbol" aria-label="Search" required>           
+              <form class="form-inline my-2 mr-2 my-lg-0" action="{% url "option_pricing:option_search_symbol" %}" method="get">
+                  <input class="form-control mr-sm-2" name="q" id="id_query" type="search" placeholder="Search symbol" aria-label="Search" required>           
               </form>
           </div>
       </div>
   </div>
 {% endif %}
+
+<script>
+  $(function () {
+      $("#id_query").autocomplete({
+          source: '{% url "option_pricing:option_search_symbol_autocomplete" %}',
+          minLength: 3
+      });
+  });
+</script>
 
 {% endblock %}

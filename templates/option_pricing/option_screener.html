@@ -48,13 +48,13 @@
                 </div>
 
         </div>
-        <div class="row"><div class="col-md-2 align-text-top"><p class="subtext"><strong>Latest trading: {{latest_trad_date}}</strong></p></div></div>
+        <div class="row pl-3"><p><small><strong>Latest trading: {{latest_trad_date}}</strong></small></p></div>
     </div>
     <div class="container bg-white text-dark d-flex flex-wrap overflow-auto justify-content-start">
         <div class="w-100">
             <div class="row">
                 <div class="col-md-12">
-                    <ul class="nav nav-tabs">
+                    <ul class="nav nav-tabs d-flex flex-nowrap">
                         <li class="nav-item">
                             <a href="#summary" class="nav-link active" role="tab" data-toggle="tab">Summary</a>
                         </li>
@@ -216,16 +216,17 @@
                                                         <i class="fa fa-info-circle fa-3x" aria-hidden="true"></i>
                                                         </div>
                                                         <div class="col-md-11">
-                                                        <p class="card-text ml-3">Some quick example text to build on the card title and make up the bulk of the card's content. 
-                                                            Some quick example text to build on the card title and make up the bulk of the card's content
+                                                        <p class="card-text ml-1"><small>Implied volatility and greeks are calculated from Black-Scholes formulas on the basis
+                                                            of zero risk-free interest rate. Theta is calculated per trading day. Moneyness can be "in the money" or "out of the money".
+                                                        </small>
                                                         </p>
                                                         </div>
                                                     </div>    
                                                 </div>
                                             </div>
                                         </div>
-                                     </div>
-                                 </div>      
+                                    </div>
+                                </div>      
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="chart">
@@ -1196,7 +1197,7 @@
     data: {
         labels: impliedstate.items23,
         datasets: [{
-            label: objId.concat(' implied'),
+            label: objId.concat(' Implied Volatility %'),
             data: impliedstate.values23,
             yAxisID: 'A',
             borderWidth: 1,

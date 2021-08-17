@@ -5,9 +5,9 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
-<div class="container text-dark mb-3 d-flex flex-wrap overflow-auto">
+<div class="container light-blue text-dark mb-3 d-flex flex-wrap overflow-auto">
     <div class="container light-blue text-dark mb-3">
-        <div class="row ml-1">
+        <div class="row ml-1 mt-1">
             <div class="col-md-12 d-flex justify-content-start">
                 <h4>Implied Volatility Smile</h4>
             </div>
@@ -39,12 +39,12 @@
             </div>
         </div>
         <div class="row ml-1">
-            <div class="col-md-2 align-text-top">
-                <p class="font-weight-bold subtext">At close: {{latest_trad_date}}</p>
+            <div class="col-md-12 align-text-top">
+                <p><small><strong>Latest trading: {{latest_trad_date}}</strong></small></p>
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container bg-white text-dark">
         <div class="chart-container" style="position: relative;">
         <div class="row">
             <div class="col-md-12">

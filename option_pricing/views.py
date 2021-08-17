@@ -280,6 +280,7 @@ def FutureScreenerDetail(request, futuresymbol):
     volume = future_strikespan[0].volume
     trades = future_strikespan[0].trades
     open_interest = future_strikespan[0].open_interest
+    fixing_price = future_strikespan[0].fixing_price
 
     stock = future_strikespan[0].stock 
     basis = stock - closing_price
@@ -300,6 +301,7 @@ def FutureScreenerDetail(request, futuresymbol):
         'trade_symbol' : trade_symbol,
         'future_count' : future_count,
         'closing_price' : round(closing_price,3),
+        'fixing_price': fixing_price,
         'change' : change,
         'asset' : asset,
         'expmonth' : expmonth,
@@ -725,6 +727,10 @@ class ImpliedScreenerListCBV(View):
         qs_opap_count = qs_alpha.count()
         qs_deh_count = qs_alpha.count()
         qs_peiraios_count = qs_alpha.count()
+
+        series = Option.objects.filter(optionsymbol__optionseries=qs_ftse[0])
+        max_date = series.aggregate(Max('date'))
+
         context = {
             'qs_ftse' : qs_ftse,
             'qs_alpha' : qs_alpha,
@@ -740,6 +746,7 @@ class ImpliedScreenerListCBV(View):
             'qs_opap_count' : qs_opap_count,
             'qs_deh_count' : qs_deh_count,
             'qs_peiraios_count': qs_peiraios_count,
+            'latest_trad_date':max_date['date__max'].strftime("%d/%m/%Y"),
         }
 
         return render(request, 'option_pricing/ivscreeners.html', context)
@@ -882,6 +889,7 @@ class ImpliedScreenerATMListCBV(View):
             'expmonth_atm_impvols_deh':expmonth_atm_impvols_deh,
             'atm_strikes_peiraios': atm_strikes_peiraios,
             'expmonth_atm_impvols_peiraios':expmonth_atm_impvols_peiraios,
+            'latest_trad_date':max_date['date__max'].strftime("%d/%m/%Y"),
         }
         #print(expmonth_atm_impvols)
 
@@ -2267,6 +2275,12 @@ def OptionSearchSymbolAutoCompleteView(request):
 
 def StockHistoricalView(request):
     
+    stock_latest = Stock.objects.filter(stocksymbol__symbol="GD.ATH").order_by('-date')
+    trad_date_latest = stock_latest[0].date.strftime("%#d-%#m-%Y")
+    stock_price_latest = stock_latest[0].close
+    stock_price_2_latest = stock_latest[1].close
+    change = 100*(stock_price_latest-stock_price_2_latest)/stock_price_2_latest
+
     q = Stock.objects.all()
     max_date = q.aggregate(Max('date'))
     queryset = q.filter(date=max_date['date__max'])
@@ -2280,6 +2294,9 @@ def StockHistoricalView(request):
 
     context = {
         'assets_': assets_,
+        'trad_date_latest':trad_date_latest,
+        'stock_price_latest':stock_price_latest,
+        'change':change,
     }
 
     return render(request, 'option_pricing/spotmarkets.html', context)
@@ -2293,7 +2310,6 @@ def StockHistoricalAssetView(request, asset):
     stock_price_latest = stock_latest[0].close
     stock_price_2_latest = stock_latest[1].close
     change = 100*(stock_price_latest-stock_price_2_latest)/stock_price_2_latest
-    volume_latest = stock_latest[0].volume
 
     q = Stock.objects.all()
     max_date = q.aggregate(Max('date'))
@@ -2315,7 +2331,6 @@ def StockHistoricalAssetView(request, asset):
         'trad_date_latest':trad_date_latest,
         'stock_price_latest':stock_price_latest,
         'change':change,
-        'volume_latest':volume_latest,
     }
 
     return render(request, 'option_pricing/spotmarketsasset.html', context)

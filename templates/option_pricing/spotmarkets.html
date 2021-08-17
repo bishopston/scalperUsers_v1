@@ -96,6 +96,26 @@
                             <div class="my-3 tab-content justify-content-center">
                                 <div role="tabpanel" class="tab-pane active" id="spotmarket">
                                     <div class="container bg-white text-dark" style="position: relative;">
+                                        <div class="pl-3 row">
+    
+                                            <div>
+                                                <h3 class="font-weight-bold">
+                                                    {{stock_price_latest|floatformat:2}}
+                                                </h3>
+                                            </div>
+                                            <div class="p-2 my-auto">
+                                                <h5 class="vertical">
+                                                    {% if change < 0 %}
+                                                    <div class="change-negative"> 
+                                                    {% else %} 
+                                                    <div class="change-positive">
+                                                    {% endif %}
+                                                    {{ change|floatformat:3 }}%
+                                                </h5>
+                                            </div>
+                            
+                                        </div>
+                                        <div class="row"><div class="col-md-2"><p class="subtext"><strong>Latest trading: {{trad_date_latest}}</strong></p></div></div>
                                         <div class="row mx-3">
                                             <button class="btn btn-link" onclick="updateSpotMarketChart_1M()"><small>1M</small></button>
                                             <button class="btn btn-link" onclick="updateSpotMarketChart_3M()"><small>3M</small></button>

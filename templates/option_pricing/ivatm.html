@@ -7,7 +7,7 @@
 
 <div class="container light-blue text-dark mb-3 d-flex flex-wrap overflow-auto">
     <div class="container light-blue text-dark mb-3">
-        <div class="row ml-1">
+        <div class="row ml-1 mt-1">
             <div class="col-md-12 d-flex justify-content-start">
                 <h4>At The Money Implied Volatility</h4>
             </div>
@@ -33,14 +33,14 @@
                     {% endif %}
                 </p>&nbsp;
                 <p class="font-weight-bold text-center my-0">{{qs_month_name}}&nbsp;{{qs_year}}</p>
-                <div id="myimpliedatm-section" class="ml-3 d-flex align-items-start">
+                <div id="myimpliedatm-section" class="ml-3 d-flex flex-nowrap align-items-start">
                     {% include 'accounts/myimpliedatmscreeners_section.html' %}
                 </div>
             </div>
         </div>
         <div class="row ml-1">
-            <div class="col-md-2 align-text-top">
-                <p class="font-weight-bold subtext">At close: {{latest_trad_date}}</p>
+            <div class="col-md-12 align-text-top">
+                <p><small><strong>Latest trading: {{latest_trad_date}}</strong></small></p>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
                                 <div class="col-md-12">
                                     <canvas id="ivseriesChart"></canvas>
                                 </div>
-                                <div class="btn-group-vertical mt-3 mx-2">
+                                <div class="btn-group-vertical mt-1 mx-2">
 
                                 </div>
                             </div>
@@ -185,7 +185,7 @@
     data: {
         labels: state.items23,
         datasets: [{
-            label: 'Implied Volatility ATM',
+            label: 'Implied Volatility % ATM',
             data: state.values23,
             yAxisID: 'A',
             borderWidth: 1,

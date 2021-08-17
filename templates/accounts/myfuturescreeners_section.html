@@ -2,11 +2,11 @@
     <form action='{% url "accounts:myfuturescreeners" %}' method="POST">
         {% csrf_token %}
         {% if is_fav %}
-            <button type="submit" id="fav" name="futuresymbol_id" value={{futuresymbol_id}} class="btn btn-outline-danger">Remove from My Screeners</button>
+            <button type="submit" id="fav" name="futuresymbol_id" value={{futuresymbol_id}} class="btn btn-outline-danger text-nowrap">Remove from My Screeners</button>
         {% else %}
-            <button type="submit" id="fav" name="futuresymbol_id" value={{futuresymbol_id}} class="btn btn-outline-primary">Add to My Screeners</button>
+            <button type="submit" id="fav" name="futuresymbol_id" value={{futuresymbol_id}} class="btn btn-outline-primary text-nowrap">Add to My Screeners</button>
         {% endif %}
     </form>
 {% else %}
-    <a class="btn btn-outline-primary" href='{% url "accounts:login" %}' role="button">Add to My Screeners</a>
+    <a class="btn btn-outline-primary text-nowrap" href='{% url "accounts:login" %}' role="button">Add to My Screeners</a>
 {% endif %}
