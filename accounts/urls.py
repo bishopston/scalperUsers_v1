@@ -46,4 +46,6 @@ urlpatterns = [
      path('portfolio-valuation-pdf/<int:portfolio_id>/', views.PortfolioValuationPDFView, name='portfolio-valuation-pdf'),
      # path('myportfolio-pdf/', views.MyPortfolioPDFView, name='myportfolio-pdf'),
      path('test-pdf/', views.render_pdf_view, name='test-pdf'),
+     path('dashboard/', views.DashBoardView, name='dashboard'),
+     path('optscreener-remove/', views.RemoveOptionScreenerView, name='option-screener-remove'),
 ]

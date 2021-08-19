@@ -2,79 +2,86 @@
 {% block content %}
 
 
-<div class="container bg-light text-dark">
-    <div class="row">
-        <div class="col-sm-7 mb-2">
-        <h4>Highest Open Interest Futures</h4>
-        </div>
+<nav aria-label="breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><h5>Highest Open Interest Futures</h5></li>
+        </ol>
     </div>
-</div>
+</nav>
 
 <div class="mt-2 container bg-white text-dark">
-    <div class="row">
-        <div class="table-responsive">
-        <table class="table table-striped table-sm">
-            <tr>
-                <th><small><strong></strong></small></th>
-                <th><small><strong>Symbol</strong></small></th>
-                <th><small><strong>Asset</strong></small></th>
-                <th><small><strong>Latest Trading Date</strong></small></th>
-                <th><small><strong>Closing Price</strong></small></th>
-                <th><small><strong>Change</strong></small></th>
-                <th><small><strong>Volume</strong></small></th>
-                <th><small><strong>Trades</strong></small></th>
-                <th><small><strong>Open Interest</strong></small></th>
-                <th><small><strong>Expiration Date</strong></small></th>
-            </tr>
-            {%csrf_token%}
-            {% for future in page_obj %}
-            <tr>
-                <td><input type="checkbox" name="future_id[]" value="{{future.id}}" id="fav_future"></td>
-                <td><small><a href="{% url 'option_pricing:future_screener_detail' future.futuresymbol.symbol %}">{{ future.futuresymbol.symbol }}</a></small></td>
-                <td><small>{{ future.futuresymbol.get_asset_display}}</small></td>
-                <td><small>{{ future.date|date:"SHORT_DATE_FORMAT" }}</small></td>
-                <td><small>{{ future.closing_price|floatformat:2 }}</small></td>
-                <td><small>
-                {% if future.change < 0 %}
-                    <div class="change-negative"> 
-                {% else %} 
-                    <div class="change-positive">
-                {% endif %}
-                    {{ future.change }}%
-                </div>
-                </small></td>
-                <td><small>{{ future.volume }}</small></td>
-                <td><small>{{ future.trades }}</small></td>
-                <td><small>{{ future.open_interest }}</small></td>
-                <td><small>{{ future.futuresymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-            {% endfor %}
-        </table>
+    <div class="row w-100">
+        <div class="container">
+            <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <tr>
+                    <th><small><strong></strong></small></th>
+                    <th><small><strong>Symbol</strong></small></th>
+                    <th><small><strong>Asset</strong></small></th>
+                    <th><small><strong>Expiration Date</strong></small></th>
+                    <th><small><strong>Closing Price</strong></small></th>
+                    <th><small><strong>Change</strong></small></th>
+                    <th><small><strong>Volume</strong></small></th>
+                    <th><small><strong>Trades</strong></small></th>
+                    <th><small><strong>Open Interest</strong></small></th>
+                    <th><small><strong>Latest Trading Date</strong></small></th>
+                </tr>
+                {%csrf_token%}
+                {% for future in page_obj %}
+                <tr>
+                    <td><input type="checkbox" name="future_id[]" value="{{future.id}}" id="fav_future"></td>
+                    <td><small><a href="{% url 'option_pricing:future_screener_detail' future.futuresymbol.symbol %}">{{ future.futuresymbol.symbol }}</a></small></td>
+                    <td><small>{{ future.futuresymbol.get_asset_display}}</small></td>
+                    <td><small>{{ future.futuresymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                    <td><small>{{ future.closing_price|floatformat:2 }}</small></td>
+                    <td><small>
+                    {% if future.change < 0 %}
+                        <div class="change-negative"> 
+                    {% else %} 
+                        <div class="change-positive">
+                    {% endif %}
+                        {{ future.change }}%
+                    </div>
+                    </small></td>
+                    <td><small>{{ future.volume }}</small></td>
+                    <td><small>{{ future.trades }}</small></td>
+                    <td><small>{{ future.open_interest }}</small></td>
+                    <td><small>{{ future.date|date:"SHORT_DATE_FORMAT" }}</small></td>
+                {% endfor %}
+            </table>
 
+            </div>
         </div>
     </div>
-    <div class="mt-2 row d-flex justify-content-between">
-        {% if request.user.is_authenticated %}
-            <button id="fav_btn" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My Screeners</button>
-        {% else %}
-            <a class="btn btn-sm btn-primary h-25 d-inline-block" href='{% url "accounts:register" %}' role="button">Add to My Screeners</a>
-        {% endif %}
-        <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-end">
-            {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a></li>
-            {% endif %}
-            {% for n in page_obj.paginator.page_range %}
-            {% if page_obj.number == n %}
-                <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ n }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ n }}<span class="sr-only">(current)</span></a></li>
-            {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ n }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ n }}</a></li>
-            {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a></li>
-            {% endif %}
-        </ul>
-        </nav>
+
+    <div class="container">
+        <div class="mt-2 row d-flex justify-content-between">
+            
+                {% if request.user.is_authenticated %}
+                    <button id="fav_btn" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My Screeners</button>
+                {% else %}
+                    <a class="btn btn-sm btn-primary h-25 d-inline-block" href='{% url "accounts:register" %}' role="button">Add to My Screeners</a>
+                {% endif %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a></li>
+                        {% endif %}
+                        {% for n in page_obj.paginator.page_range %}
+                        {% if page_obj.number == n %}
+                            <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ n }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ n }}<span class="sr-only">(current)</span></a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ n }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ n }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            
+        </div>
     </div>
 </div>
 
@@ -89,7 +96,7 @@
                     id[i]=$(this).val()
                 })
                 if(id.length===0){
-                    alert("Please select at least one option to add to my screeners")
+                    alert("Please select at least one future to add to my screeners")
                 }else{
                     console.log(id)
                     $.ajax({
@@ -100,7 +107,7 @@
                             csrfmiddlewaretoken:csrf
                         },
                         success:function(response){
-                            alert("Options successfully added to my screeners");
+                            alert("Futures successfully added to my screeners");
                             
                         }
                     })

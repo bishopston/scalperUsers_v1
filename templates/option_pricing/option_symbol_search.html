@@ -90,17 +90,17 @@
           <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
               {% if future_page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a></li>
+                <li class="page-item"><a class="page-link" href="?fpage=1{% for key, value in request.GET.items %}{% if key != 'fpage' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a></li>
               {% endif %}
               {% if future_page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ future_page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="?fpage={{ future_page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'fpage' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a></li>
               {% endif %}
               <li class="page-item active" aria-current="page"><a class="page-link">Page {{ future_page_obj.number }} of {{ future_page_obj.paginator.num_pages }}</a></li>
               {% if future_page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ future_page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?fpage={{ future_page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'fpage' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a></li>
               {% endif %}
               {% if future_page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ future_page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a></li>
+                <li class="page-item"><a class="page-link" href="?fpage={{ future_page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'fpage' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a></li>
               {% endif %}
             </ul>
           </nav>

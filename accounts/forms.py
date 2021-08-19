@@ -61,6 +61,7 @@ FUTUREASSETS = [
     ('EUROB', 'EUROBANK'),
     ('EXAE', 'EXAE'),
     ('EYDAP', 'EYDAP'),
+    ('FDTR', 'FDTR'),
     ('FOYRK', 'FOURLIS'),
     ('FTSE', 'FTSE'),
     ('GEKTE', 'GEKTERNA'),
@@ -232,7 +233,7 @@ class PortfolioOptionForm(forms.Form):
         widget=forms.TextInput(
         attrs={
         'class': 'form-control form-control-sm',
-        'placeholder': 'Enter Strike'
+        'placeholder': 'Enter Exercise Price'
     }
     ))
 

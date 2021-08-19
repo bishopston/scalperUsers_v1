@@ -51,23 +51,6 @@
   </div>
 </div>
 
-{% if not asset_query or callputflag_query or exp_month_query or exp_year_query %}
-  <div class="mt-5 container">
-    <div class="card mt-2">
-      <div class="card-header text-white bg-primary">
-        Info
-      </div>
-      <div class="card-body">
-        <blockquote class="blockquote mb-0">
-          <p><small>Access analytical info for all option contracts in ATHEX Market, either active or expired ones.
-            Add option symbols to your dashboard to build a personalized experience.
-          </small></p>
-        </blockquote>
-      </div>
-    </div>
-  </div>
-{% endif %}
-
 <div id="myoption-section">
   {% include 'option_pricing/option_screeners_data.html' %}
 </div>

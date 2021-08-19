@@ -2226,7 +2226,7 @@ def OptionSearchSymbolView(request):
             page_obj = paginator.get_page(page_number)
 
             future_paginator = Paginator(future_results, 10)
-            future_page_number = request.GET.get('page', 1)
+            future_page_number = request.GET.get('fpage', 1)
             future_page_obj = future_paginator.get_page(future_page_number)
 
             return render(request, 'option_pricing/option_symbol_search.html',

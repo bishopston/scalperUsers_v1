@@ -88,12 +88,14 @@ ul{
 }
 
 .change-negative {
+	display: inline;
 	color: #FF0000;
 	font-weight: bold;
 	align-content: end;
   }
   
 .change-positive {
+	display: inline;
 	color: #33FF3C;
 	font-weight: bold;
 	align-content: end;

@@ -8,14 +8,14 @@
             <th><small><strong>Symbol</strong></small></th>
             <th><small><strong>Asset</strong></small></th>
             <th><small><strong>Option Type</strong></small></th>
-            <th><small><strong>Latest Trading Date</strong></small></th>
+            <th><small><strong>Expiration Date</strong></small></th>
             <th><small><strong>Strike</strong></small></th>
             <th><small><strong>Closing Price</strong></small></th>
             <th><small><strong>Change</strong></small></th>
             <th><small><strong>Volume</strong></small></th>
             <th><small><strong>Trades</strong></small></th>
             <th><small><strong>Open Interest</strong></small></th>
-            <th><small><strong>Expiration Date</strong></small></th>
+            <th><small><strong>Latest Trading Date</strong></small></th>
           </tr>
           {%csrf_token%}
           {% for option in page_obj %}
@@ -24,7 +24,7 @@
                 <td><small><a href="{% url 'option_pricing:option_screener_detail' option.optionsymbol.symbol %}">{{ option.optionsymbol.symbol }}</a></small></td>
                 <td><small>{{ option.optionsymbol.get_asset_display}}</small></td>
                 <td><small>{{ option.optionsymbol.get_optiontype_display}}</small></td>
-                <td><small>{{ option.date|date:"SHORT_DATE_FORMAT" }}</small></td>
+                <td><small>{{ option.optionsymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
                 <td><small>
                     {% if asset_query == 'FTSE' %}
                       {{ option.optionsymbol.strike|add:"0" }}
@@ -45,7 +45,7 @@
                 <td><small>{{ option.volume }}</small></td>
                 <td><small>{{ option.trades }}</small></td>
                 <td><small>{{ option.open_interest }}</small></td>
-                <td><small>{{ option.optionsymbol.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
+                <td><small>{{ option.date|date:"SHORT_DATE_FORMAT" }}</small></td>
             </tr>
           {% endfor %}
         </table>
@@ -77,6 +77,24 @@
       </nav>
     </div>
   </div>
+
+{% else %}
+
+  <div class="mt-3 container">
+    <div class="card mt-2">
+      <div class="card-header text-white bg-primary">
+        Info
+      </div>
+      <div class="card-body">
+        <blockquote class="blockquote mb-0">
+          <p><small>Access analytical info for all option contracts in ATHEX Market, either active or expired ones.
+            Add option symbols to your screeners to build a personalized experience through your customized dashboard.
+          </small></p>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+
 {% endif %}
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>

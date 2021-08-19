@@ -16,6 +16,7 @@ from validate_email import validate_email
 from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 from django.db.models import Max, Min, Avg, Sum, F
+from django.core.paginator import Paginator
 
 from accounts.forms import UserAdminCreationForm, CreatePortfolioForm, PortfolioOptionForm, PortfolioFutureForm, PortfolioStockForm, PortfolioOptionUpdateForm, PortfolioOptionUpdateModelForm, PortfolioFutureUpdateModelForm, PortfolioStockUpdateModelForm
 from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFuture, PortfolioStock
@@ -1694,3 +1695,47 @@ def PortfolioValuationPDFView(request, portfolio_id):
     if pisa_status.err:
        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response """
+
+@ login_required
+def DashBoardView(request):
+    myoptionlist = Optionsymbol.objects.filter(optionscreeners=request.user).order_by('asset', '-expmonthdate', 'optiontype', 'strike')
+    myoptionlist_count = myoptionlist.count()
+
+    opt_latest_trad_date, opt_closing_prices, opt_changes, opt_volumes, opt_trades, opt_open_interests = ([] for i in range(6))
+
+    for i in myoptionlist:
+        opt = Option.objects.filter(optionsymbol__symbol = i)
+        max_date = opt.aggregate(Max('date'))
+        queryset = opt.filter(date=max_date['date__max'])
+        opt_latest_trad_date.append(queryset[0].date.strftime("%d-%m-%Y"))
+        opt_closing_prices.append(queryset[0].closing_price)
+        opt_changes.append(queryset[0].change)
+        opt_volumes.append(queryset[0].volume)
+        opt_trades.append(queryset[0].trades)
+        opt_open_interests.append(queryset[0].open_interest)
+
+    paginator = Paginator(myoptionlist, 10)
+    page_number = request.GET.get('page', 1)
+    option_page_obj = paginator.get_page(page_number)
+
+    context = {
+        'option_page_obj': option_page_obj,
+        'myoptionlist_count': myoptionlist_count,
+        'opt_latest_trad_date': opt_latest_trad_date,
+        'opt_closing_prices': opt_closing_prices,
+        'opt_changes': opt_changes,
+        'opt_volumes': opt_volumes,
+        'opt_trades': opt_trades,
+        'opt_open_interests': opt_open_interests,
+    }
+
+    return render(request, 'accounts/mydashboard.html', context)
+
+@ login_required
+def RemoveOptionScreenerView(request):
+    if request.method == "POST":
+        option_ids = request.POST.getlist('id[]')
+        for id in option_ids:
+            opt = Optionsymbol.objects.get(pk=id)
+            opt.optionscreeners.remove(request.user)
+        return redirect(reverse('accounts:dashboard'))
