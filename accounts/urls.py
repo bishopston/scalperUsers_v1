@@ -48,4 +48,5 @@ urlpatterns = [
      path('test-pdf/', views.render_pdf_view, name='test-pdf'),
      path('dashboard/', views.DashBoardView, name='dashboard'),
      path('optscreener-remove/', views.RemoveOptionScreenerView, name='option-screener-remove'),
+     path('futscreener-remove/', views.RemoveFutureScreenerView, name='future-screener-remove'),
 ]

@@ -212,10 +212,40 @@ def myOptionScreeners(request):
 
 @ login_required
 def myOptionList(request):
-    myoptionlist = Optionsymbol.objects.filter(optionscreeners=request.user)
+    myoptionlist = Optionsymbol.objects.filter(optionscreeners=request.user).order_by('asset', '-expmonthdate', 'optiontype', 'strike')
+    myoptionlist_count = myoptionlist.count()
+
+    opt_latest_trad_date, opt_closing_prices, opt_changes, opt_volumes, opt_trades, opt_open_interests = ([] for i in range(6))
+
+    for i in myoptionlist:
+        opt = Option.objects.filter(optionsymbol__symbol = i)
+        max_date = opt.aggregate(Max('date'))
+        queryset = opt.filter(date=max_date['date__max'])
+        opt_latest_trad_date.append(queryset[0].date.strftime("%d-%m-%Y"))
+        opt_closing_prices.append(queryset[0].closing_price)
+        opt_changes.append(queryset[0].change)
+        opt_volumes.append(queryset[0].volume)
+        opt_trades.append(queryset[0].trades)
+        opt_open_interests.append(queryset[0].open_interest)
+
+    paginator = Paginator(myoptionlist, 10)
+    page_number = request.GET.get('page', 1)
+    option_page_obj = paginator.get_page(page_number)
+
+    context = {
+        'option_page_obj': option_page_obj,
+        'myoptionlist_count': myoptionlist_count,
+        'opt_latest_trad_date': opt_latest_trad_date,
+        'opt_closing_prices': opt_closing_prices,
+        'opt_changes': opt_changes,
+        'opt_volumes': opt_volumes,
+        'opt_trades': opt_trades,
+        'opt_open_interests': opt_open_interests,
+    }
+
     return render(request,
                   'accounts/myoptionlist.html',
-                  {'myoptionlist': myoptionlist})
+                  context)
 
 @ login_required
 def myFutureScreeners(request):
@@ -1696,10 +1726,13 @@ def PortfolioValuationPDFView(request, portfolio_id):
        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response """
 
+"""
 @ login_required
 def DashBoardView(request):
     myoptionlist = Optionsymbol.objects.filter(optionscreeners=request.user).order_by('asset', '-expmonthdate', 'optiontype', 'strike')
+    myfuturelist = Futuresymbol.objects.filter(futurescreeners=request.user).order_by('asset', '-expmonthdate')
     myoptionlist_count = myoptionlist.count()
+    myfuturelist_count = myfuturelist.count()
 
     opt_latest_trad_date, opt_closing_prices, opt_changes, opt_volumes, opt_trades, opt_open_interests = ([] for i in range(6))
 
@@ -1718,6 +1751,23 @@ def DashBoardView(request):
     page_number = request.GET.get('page', 1)
     option_page_obj = paginator.get_page(page_number)
 
+    fut_latest_trad_date, fut_closing_prices, fut_changes, fut_volumes, fut_trades, fut_open_interests = ([] for i in range(6))
+
+    for i in myfuturelist:
+        fut = Future.objects.filter(futuresymbol__symbol = i)
+        max_date = fut.aggregate(Max('date'))
+        queryset = fut.filter(date=max_date['date__max'])
+        fut_latest_trad_date.append(queryset[0].date.strftime("%d-%m-%Y"))
+        fut_closing_prices.append(queryset[0].closing_price)
+        fut_changes.append(queryset[0].change)
+        fut_volumes.append(queryset[0].volume)
+        fut_trades.append(queryset[0].trades)
+        fut_open_interests.append(queryset[0].open_interest)
+
+    future_paginator = Paginator(myfuturelist, 10)
+    future_page_number = request.GET.get('fpage', 1)
+    future_page_obj = future_paginator.get_page(future_page_number)
+
     context = {
         'option_page_obj': option_page_obj,
         'myoptionlist_count': myoptionlist_count,
@@ -1727,9 +1777,18 @@ def DashBoardView(request):
         'opt_volumes': opt_volumes,
         'opt_trades': opt_trades,
         'opt_open_interests': opt_open_interests,
+        'future_page_obj': future_page_obj,
+        'myfuturelist_count': myfuturelist_count,
+        'fut_latest_trad_date': fut_latest_trad_date,
+        'fut_closing_prices': fut_closing_prices,
+        'fut_changes': fut_changes,
+        'fut_volumes': fut_volumes,
+        'fut_trades': fut_trades,
+        'fut_open_interests': fut_open_interests,
     }
 
     return render(request, 'accounts/mydashboard.html', context)
+"""
 
 @ login_required
 def RemoveOptionScreenerView(request):
@@ -1739,3 +1798,33 @@ def RemoveOptionScreenerView(request):
             opt = Optionsymbol.objects.get(pk=id)
             opt.optionscreeners.remove(request.user)
         return redirect(reverse('accounts:dashboard'))
+
+@ login_required
+def RemoveFutureScreenerView(request):
+    if request.method == "POST":
+        future_ids = request.POST.getlist('id[]')
+        for id in future_ids:
+            fut = Futuresymbol.objects.get(pk=id)
+            fut.futurescreeners.remove(request.user)
+        return redirect(reverse('accounts:dashboard'))
+
+
+@ login_required
+def DashBoardView(request):
+    myoptionlist = Optionsymbol.objects.filter(optionscreeners=request.user).order_by('asset', '-expmonthdate', 'optiontype', 'strike')
+    myfuturelist = Futuresymbol.objects.filter(futurescreeners=request.user).order_by('asset', '-expmonthdate')
+    myimpliedlist = Optionseries.objects.filter(seriesscreeners=request.user)
+    myimpliedATMlist = Optionseries.objects.filter(seriesatmscreeners=request.user)
+    myoptionlist_count = myoptionlist.count()
+    myfuturelist_count = myfuturelist.count()
+    myimpliedlist_count = myimpliedlist.count()
+    myimpliedATMlist_count = myimpliedATMlist.count()
+
+    context = {
+        'myoptionlist_count': myoptionlist_count,
+        'myfuturelist_count': myfuturelist_count,
+        'myimpliedlist_count': myimpliedlist_count,
+        'myimpliedATMlist_count': myimpliedATMlist_count,
+    }
+
+    return render(request, 'accounts/mydashboard2.html', context)

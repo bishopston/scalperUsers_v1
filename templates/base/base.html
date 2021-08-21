@@ -49,7 +49,7 @@
                     <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:option_descendingOI" %}">Highest Open Interest Options</a></li>
                     <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:future_descendingOI" %}">Highest Open Interest Futures</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item bg-dark text-white" href="#">My Screeners</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:dashboard" %}">My Screeners</a></li>
                   </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -59,6 +59,8 @@
                   <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesscreenerlistcbv" %}">Implied Volatility Screeners</a></li>
                     <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesatmscreenerlistcbv" %}">Implied Volatility At The Money</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:dashboard" %}">My Implied Volatility</a></li>
                   </ul>
                 </li>
                 <li class="nav-item">

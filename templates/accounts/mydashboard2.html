@@ -1,0 +1,81 @@
+{%  extends "../base/base.html" %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><h5>Dashboard</h5></li>
+        </ol>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-header text-center"><h5>My Option Screeners</h5></div>
+                {% if myoptionlist_count %}
+                <div class="card-footer text-center">
+                    <p>You have {{myoptionlist_count}} option{{myoptionlist_count|pluralize}} in your dashboard.</p>
+                    <a href="{% url "accounts:myoptionlist" %}" class="btn btn-primary">My Options Screeners</a>
+                </div>
+                {% else %}
+                <div class="card-footer text-center">
+                    <p>Your option screeners list is empty.</p>
+                    <a href="{% url "option_pricing:myoptionscreenerlistcbv" %}" class="btn btn-primary">Options Screeners</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-header text-center"><h5>My Future Screeners</h5></div>
+                {% if myfuturelist_count %}
+                <div class="card-footer text-center">
+                    <p>You have {{myfuturelist_count}} future{{myfuturelist_count|pluralize}} in your dashboard.</p>
+                    <a href="{% url "option_pricing:myfuturescreenerlistcbv" %}" class="btn btn-primary">Futures Screeners</a>
+                </div>
+                {% else %}
+                <div class="card-footer text-center">
+                    <p>Your future screeners list is empty. Add futures to your dashboard to gain crucial insight at the products you need to maintain close monitoring.</p>
+                    <a href="{% url "option_pricing:myfuturescreenerlistcbv" %}" class="btn btn-primary">Futures Screeners</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-header text-center"><h5>My Implied Volatility Screeners</h5></div>
+                {% if myimpliedlist_count %}
+                <div class="card-footer text-center">
+                    <p>You have {{myimpliedlist_count}} IV smile{{myimpliedlist_count|pluralize}} in your dashboard.</p>
+                    <a href="{% url "option_pricing:myseriesscreenerlistcbv" %}" class="btn btn-primary">IV Screeners</a>
+                </div>
+                {% else %}
+                <div class="card-footer text-center">
+                    <p>Your IV screeners list is empty.</p>
+                    <a href="{% url "option_pricing:myseriesscreenerlistcbv" %}" class="btn btn-primary">IV Screeners</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header text-center"><h5>My ATM Implied Volatility Screeners</h5></div>
+                {% if myimpliedATMlist_count %}
+                <div class="card-footer text-center">
+                    <p>You have {{myimpliedATMlist_count}} ATM option{{myimpliedATMlist_count|pluralize}} in your dashboard.</p>
+                    <a href="{% url "option_pricing:myseriesatmscreenerlistcbv" %}" class="btn btn-primary">ATM IV Screeners</a>
+                </div>
+                {% else %}
+                <div class="card-footer text-center">
+                    <p>Your ATM IV screeners list is empty.</p>
+                    <a href="{% url "option_pricing:myseriesatmscreenerlistcbv" %}" class="btn btn-primary">ATM IV Screeners</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
