@@ -33,7 +33,7 @@
                 {% if myfuturelist_count %}
                 <div class="card-footer text-center">
                     <p>You have {{myfuturelist_count}} future{{myfuturelist_count|pluralize}} in your dashboard.</p>
-                    <a href="{% url "option_pricing:myfuturescreenerlistcbv" %}" class="btn btn-primary">Futures Screeners</a>
+                    <a href="{% url "accounts:myfuturelist" %}" class="btn btn-primary">My Futures Screeners</a>
                 </div>
                 {% else %}
                 <div class="card-footer text-center">

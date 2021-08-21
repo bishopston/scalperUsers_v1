@@ -21,14 +21,14 @@
         <div class="row w-100">
             {% if option_page_obj %}
             <div class="container">
-            <div class="card">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <p class="card-text">You have {{myoptionlist_count}} option{{myoptionlist_count|pluralize}} in your dashboard.</p>
-                        <a href="{% url "option_pricing:myoptionscreenerlistcbv" %}" class="btn btn-primary">Options Screeners</a>
+                <div class="card">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <p class="card-text">You have {{myoptionlist_count}} option{{myoptionlist_count|pluralize}} in your dashboard.</p>
+                            <a href="{% url "option_pricing:myoptionscreenerlistcbv" %}" class="btn btn-primary">Options Screeners</a>
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
             <div class="mt-3 container bg-white text-dark">
                 <div class="row">

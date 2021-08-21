@@ -269,10 +269,40 @@ def myFutureScreeners(request):
 
 @ login_required
 def myFutureList(request):
-    myfuturelist = Futuresymbol.objects.filter(futurescreeners=request.user)
+    myfuturelist = Futuresymbol.objects.filter(futurescreeners=request.user).order_by('asset', '-expmonthdate')
+    myfuturelist_count = myfuturelist.count()
+
+    fut_latest_trad_date, fut_closing_prices, fut_changes, fut_volumes, fut_trades, fut_open_interests = ([] for i in range(6))
+
+    for i in myfuturelist:
+        fut = Future.objects.filter(futuresymbol__symbol = i)
+        max_date = fut.aggregate(Max('date'))
+        queryset = fut.filter(date=max_date['date__max'])
+        fut_latest_trad_date.append(queryset[0].date.strftime("%d-%m-%Y"))
+        fut_closing_prices.append(queryset[0].closing_price)
+        fut_changes.append(queryset[0].change)
+        fut_volumes.append(queryset[0].volume)
+        fut_trades.append(queryset[0].trades)
+        fut_open_interests.append(queryset[0].open_interest)
+
+    future_paginator = Paginator(myfuturelist, 10)
+    future_page_number = request.GET.get('fpage', 1)
+    future_page_obj = future_paginator.get_page(future_page_number)
+
+    context = {
+        'future_page_obj': future_page_obj,
+        'myfuturelist_count': myfuturelist_count,
+        'fut_latest_trad_date': fut_latest_trad_date,
+        'fut_closing_prices': fut_closing_prices,
+        'fut_changes': fut_changes,
+        'fut_volumes': fut_volumes,
+        'fut_trades': fut_trades,
+        'fut_open_interests': fut_open_interests,
+    }
+
     return render(request,
                   'accounts/myfuturelist.html',
-                  {'myfuturelist': myfuturelist})
+                  context)
 
 @ login_required
 def myImpliedList(request):
