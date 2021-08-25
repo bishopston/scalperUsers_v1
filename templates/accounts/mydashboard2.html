@@ -49,7 +49,7 @@
                 {% if myimpliedlist_count %}
                 <div class="card-footer text-center">
                     <p>You have {{myimpliedlist_count}} IV smile{{myimpliedlist_count|pluralize}} in your dashboard.</p>
-                    <a href="{% url "option_pricing:myseriesscreenerlistcbv" %}" class="btn btn-primary">IV Screeners</a>
+                    <a href="{% url "accounts:myimpliedlist" %}" class="btn btn-primary">My IV Screeners</a>
                 </div>
                 {% else %}
                 <div class="card-footer text-center">

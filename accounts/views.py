@@ -17,6 +17,7 @@ from django.contrib.auth.password_validation import *
 from django.template.loader import render_to_string
 from django.db.models import Max, Min, Avg, Sum, F
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from accounts.forms import UserAdminCreationForm, CreatePortfolioForm, PortfolioOptionForm, PortfolioFutureForm, PortfolioStockForm, PortfolioOptionUpdateForm, PortfolioOptionUpdateModelForm, PortfolioFutureUpdateModelForm, PortfolioStockUpdateModelForm
 from accounts.models import CustomUser, Portfolio, PortfolioOption, PortfolioFuture, PortfolioStock
@@ -228,12 +229,9 @@ def myOptionList(request):
         opt_trades.append(queryset[0].trades)
         opt_open_interests.append(queryset[0].open_interest)
 
-    paginator = Paginator(myoptionlist, 10)
-    page_number = request.GET.get('page', 1)
-    option_page_obj = paginator.get_page(page_number)
 
     context = {
-        'option_page_obj': option_page_obj,
+        'myoptionlist': myoptionlist,
         'myoptionlist_count': myoptionlist_count,
         'opt_latest_trad_date': opt_latest_trad_date,
         'opt_closing_prices': opt_closing_prices,
@@ -244,7 +242,7 @@ def myOptionList(request):
     }
 
     return render(request,
-                  'accounts/myoptionlist.html',
+                  'accounts/myoptionlist2.html',
                   context)
 
 @ login_required
@@ -285,12 +283,9 @@ def myFutureList(request):
         fut_trades.append(queryset[0].trades)
         fut_open_interests.append(queryset[0].open_interest)
 
-    future_paginator = Paginator(myfuturelist, 10)
-    future_page_number = request.GET.get('fpage', 1)
-    future_page_obj = future_paginator.get_page(future_page_number)
 
     context = {
-        'future_page_obj': future_page_obj,
+        'myfuturelist': myfuturelist,
         'myfuturelist_count': myfuturelist_count,
         'fut_latest_trad_date': fut_latest_trad_date,
         'fut_closing_prices': fut_closing_prices,
@@ -301,15 +296,33 @@ def myFutureList(request):
     }
 
     return render(request,
-                  'accounts/myfuturelist.html',
+                  'accounts/myfuturelist2.html',
                   context)
 
 @ login_required
 def myImpliedList(request):
-    myimpliedlist = Optionseries.objects.filter(seriesscreeners=request.user)
+    myimpliedlist = Optionseries.objects.filter(seriesscreeners=request.user).order_by('asset', '-expmonthdate', 'optiontype')
+    myimpliedlist_count = myimpliedlist.count()
+
+    iv_latest_trad_date, iv_strike_number = ([] for i in range(2))
+
+    for i in myimpliedlist:
+        iv = Option.objects.filter(optionsymbol__optionseries = i)
+        max_date = iv.aggregate(Max('date'))
+        queryset = iv.filter(date=max_date['date__max'])
+        iv_strike_number.append(len(queryset))
+        iv_latest_trad_date.append(queryset[0].date.strftime("%d-%m-%Y"))
+
+    context = {
+        'myimpliedlist_count': myimpliedlist_count,
+        'iv_latest_trad_date': iv_latest_trad_date,
+        'iv_strike_number': iv_strike_number,
+        'myimpliedlist': myimpliedlist
+    }
+
     return render(request,
-                  'accounts/myimplied.html',
-                  {'myimpliedlist': myimpliedlist})
+                  'accounts/myimplied2.html',
+                  context)
 
 @ login_required
 def myImpliedScreeners(request):
@@ -333,10 +346,31 @@ def myImpliedScreeners(request):
 
 @ login_required
 def myImpliedATMList(request):
-    myimpliedATMlist = Optionseries.objects.filter(seriesatmscreeners=request.user)
+    myimpliedatmlist = Optionseries.objects.filter(seriesatmscreeners=request.user).order_by('asset', '-expmonthdate', 'optiontype')
+    myimpliedatmlist_count = myimpliedatmlist.count()
+
+    atm_iv_latest_trad_date, atm_iv_strike_number, atm_strikes, atm_iv = ([] for i in range(4))
+
+    for i in myimpliedatmlist:
+        atm_iv = Option.objects.filter(optionsymbol__optionseries = i)
+        max_date = atm_iv.aggregate(Max('date'))
+        queryset = atm_iv.filter(date=max_date['date__max'])
+        atm_iv_strike_number.append(len(queryset))
+        atm_iv_latest_trad_date.append(queryset[0].date.strftime("%d-%m-%Y"))
+        atm_strikes.append(queryset[0].atm_strike)
+        atm_iv.append(float(100*(queryset[0].expmonth_atm_impvol)))
+
+    context = {
+        'myimpliedatmlist_count': myimpliedatmlist_count,
+        'atm_iv_latest_trad_date': atm_iv_latest_trad_date,
+        'atm_iv_strike_number': atm_iv_strike_number,
+        'atm_strikes': atm_strikes,
+        'atm_iv': atm_iv,
+        'myimpliedatmlist': myimpliedatmlist
+    }
     return render(request,
                   'accounts/myimpliedatm.html',
-                  {'myimpliedATMlist': myimpliedATMlist})
+                  context)
 
 @ login_required
 def myImpliedATMScreeners(request):
@@ -1821,6 +1855,7 @@ def DashBoardView(request):
 """
 
 @ login_required
+@ csrf_exempt
 def RemoveOptionScreenerView(request):
     if request.method == "POST":
         option_ids = request.POST.getlist('id[]')
@@ -1830,6 +1865,7 @@ def RemoveOptionScreenerView(request):
         return redirect(reverse('accounts:dashboard'))
 
 @ login_required
+@ csrf_exempt
 def RemoveFutureScreenerView(request):
     if request.method == "POST":
         future_ids = request.POST.getlist('id[]')
@@ -1838,6 +1874,25 @@ def RemoveFutureScreenerView(request):
             fut.futurescreeners.remove(request.user)
         return redirect(reverse('accounts:dashboard'))
 
+@ login_required
+@ csrf_exempt
+def RemoveIVScreenerView(request):
+    if request.method == "POST":
+        iv_ids = request.POST.getlist('id[]')
+        for id in iv_ids:
+            iv = Optionseries.objects.get(pk=id)
+            iv.seriesscreeners.remove(request.user)
+        return redirect(reverse('accounts:dashboard'))
+
+@ login_required
+@ csrf_exempt
+def RemoveATMIVScreenerView(request):
+    if request.method == "POST":
+        atm_iv_ids = request.POST.getlist('id[]')
+        for id in atm_iv_ids:
+            iv = Optionseries.objects.get(pk=id)
+            iv.seriesatmscreeners.remove(request.user)
+        return redirect(reverse('accounts:dashboard'))
 
 @ login_required
 def DashBoardView(request):

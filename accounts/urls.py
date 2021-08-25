@@ -49,4 +49,6 @@ urlpatterns = [
      path('dashboard/', views.DashBoardView, name='dashboard'),
      path('optscreener-remove/', views.RemoveOptionScreenerView, name='option-screener-remove'),
      path('futscreener-remove/', views.RemoveFutureScreenerView, name='future-screener-remove'),
+     path('ivscreener-remove/', views.RemoveIVScreenerView, name='iv-screener-remove'),
+     path('atmivscreener-remove/', views.RemoveATMIVScreenerView, name='atmiv-screener-remove'),
 ]
