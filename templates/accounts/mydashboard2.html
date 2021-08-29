@@ -17,12 +17,12 @@
                 {% if myoptionlist_count %}
                 <div class="card-footer text-center">
                     <p>You have {{myoptionlist_count}} option{{myoptionlist_count|pluralize}} in your dashboard.</p>
-                    <a href="{% url "accounts:myoptionlist" %}" class="btn btn-primary">My Options Screeners</a>
+                    <a href="{% url "accounts:myoptionlist" %}" class="btn btn-primary">My Option Screeners</a>
                 </div>
                 {% else %}
                 <div class="card-footer text-center">
                     <p>Your option screeners list is empty.</p>
-                    <a href="{% url "option_pricing:myoptionscreenerlistcbv" %}" class="btn btn-primary">Options Screeners</a>
+                    <a href="{% url "option_pricing:myoptionscreenerlistcbv" %}" class="btn btn-primary">Option Screeners</a>
                 </div>
                 {% endif %}
             </div>
@@ -33,12 +33,12 @@
                 {% if myfuturelist_count %}
                 <div class="card-footer text-center">
                     <p>You have {{myfuturelist_count}} future{{myfuturelist_count|pluralize}} in your dashboard.</p>
-                    <a href="{% url "accounts:myfuturelist" %}" class="btn btn-primary">My Futures Screeners</a>
+                    <a href="{% url "accounts:myfuturelist" %}" class="btn btn-primary">My Future Screeners</a>
                 </div>
                 {% else %}
                 <div class="card-footer text-center">
                     <p>Your future screeners list is empty. Add futures to your dashboard to gain crucial insight at the products you need to maintain close monitoring.</p>
-                    <a href="{% url "option_pricing:myfuturescreenerlistcbv" %}" class="btn btn-primary">Futures Screeners</a>
+                    <a href="{% url "option_pricing:myfuturescreenerlistcbv" %}" class="btn btn-primary">Future Screeners</a>
                 </div>
                 {% endif %}
             </div>
@@ -65,7 +65,7 @@
                 {% if myimpliedATMlist_count %}
                 <div class="card-footer text-center">
                     <p>You have {{myimpliedATMlist_count}} ATM option{{myimpliedATMlist_count|pluralize}} in your dashboard.</p>
-                    <a href="{% url "option_pricing:myseriesatmscreenerlistcbv" %}" class="btn btn-primary">ATM IV Screeners</a>
+                    <a href="{% url "accounts:myimpliedatmlist" %}" class="btn btn-primary">My ATM IV Screeners</a>
                 </div>
                 {% else %}
                 <div class="card-footer text-center">

@@ -349,7 +349,7 @@ def myImpliedATMList(request):
     myimpliedatmlist = Optionseries.objects.filter(seriesatmscreeners=request.user).order_by('asset', '-expmonthdate', 'optiontype')
     myimpliedatmlist_count = myimpliedatmlist.count()
 
-    atm_iv_latest_trad_date, atm_iv_strike_number, atm_strikes, atm_iv = ([] for i in range(4))
+    atm_iv_latest_trad_date, atm_iv_strike_number, atm_strikes, atm_ivs = ([] for i in range(4))
 
     for i in myimpliedatmlist:
         atm_iv = Option.objects.filter(optionsymbol__optionseries = i)
@@ -358,14 +358,14 @@ def myImpliedATMList(request):
         atm_iv_strike_number.append(len(queryset))
         atm_iv_latest_trad_date.append(queryset[0].date.strftime("%d-%m-%Y"))
         atm_strikes.append(queryset[0].atm_strike)
-        atm_iv.append(float(100*(queryset[0].expmonth_atm_impvol)))
+        atm_ivs.append(float(100*(queryset[0].expmonth_atm_impvol)))
 
     context = {
         'myimpliedatmlist_count': myimpliedatmlist_count,
         'atm_iv_latest_trad_date': atm_iv_latest_trad_date,
         'atm_iv_strike_number': atm_iv_strike_number,
         'atm_strikes': atm_strikes,
-        'atm_iv': atm_iv,
+        'atm_ivs': atm_ivs,
         'myimpliedatmlist': myimpliedatmlist
     }
     return render(request,
@@ -1892,7 +1892,7 @@ def RemoveATMIVScreenerView(request):
         for id in atm_iv_ids:
             iv = Optionseries.objects.get(pk=id)
             iv.seriesatmscreeners.remove(request.user)
-        return redirect(reverse('accounts:dashboard'))
+        return redirect(reverse('accounts:myimpliedatmlist'))
 
 @ login_required
 def DashBoardView(request):
