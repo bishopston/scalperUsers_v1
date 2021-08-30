@@ -97,6 +97,10 @@
                         </div>
                     </div>
                     <div class="ml-1 mt-2 row">
+                        <div class="form-group form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="ftseselectall">
+                            <label class="form-check-label" for="ftseselectall">Select All</label>
+                        </div>
                         {% if request.user.is_authenticated %}
                             <button id="fav_btn_ftse" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My IV Screeners</button>
                         {% else %}
@@ -149,6 +153,10 @@
                         </div>
                     </div>
                     <div class="ml-1 mt-2 row">
+                        <div class="form-group form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="alphaselectall">
+                            <label class="form-check-label" for="alphaselectall">Select All</label>
+                        </div>
                         {% if request.user.is_authenticated %}
                             <button id="fav_btn_alpha" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My IV Screeners</button>
                         {% else %}
@@ -201,6 +209,10 @@
                         </div>
                     </div>
                     <div class="ml-1 mt-2 row">
+                        <div class="form-group form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="oteselectall">
+                            <label class="form-check-label" for="oteselectall">Select All</label>
+                        </div>
                         {% if request.user.is_authenticated %}
                             <button id="fav_btn_ote" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My IV Screeners</button>
                         {% else %}
@@ -253,6 +265,10 @@
                         </div>
                     </div>
                     <div class="ml-1 mt-2 row">
+                        <div class="form-group form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="eteselectall">
+                            <label class="form-check-label" for="eteselectall">Select All</label>
+                        </div>
                         {% if request.user.is_authenticated %}
                             <button id="fav_btn_ete" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My IV Screeners</button>
                         {% else %}
@@ -305,6 +321,10 @@
                         </div>
                     </div>
                     <div class="ml-1 mt-2 row">
+                        <div class="form-group form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="opapselectall">
+                            <label class="form-check-label" for="opapselectall">Select All</label>
+                        </div>
                         {% if request.user.is_authenticated %}
                             <button id="fav_btn_opap" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My IV Screeners</button>
                         {% else %}
@@ -357,6 +377,10 @@
                         </div>
                     </div>
                     <div class="ml-1 mt-2 row">
+                        <div class="form-group form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="dehselectall">
+                            <label class="form-check-label" for="dehselectall">Select All</label>
+                        </div>
                         {% if request.user.is_authenticated %}
                             <button id="fav_btn_deh" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My IV Screeners</button>
                         {% else %}
@@ -409,6 +433,10 @@
                         </div>
                     </div>
                     <div class="ml-1 mt-2 row">
+                        <div class="form-group form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="peiraiosselectall">
+                            <label class="form-check-label" for="peiraiosselectall">Select All</label>
+                        </div>
                         {% if request.user.is_authenticated %}
                             <button id="fav_btn_peiraios" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My IV Screeners</button>
                         {% else %}
@@ -448,7 +476,7 @@
         $('#fav_btn_ftse').click(function(){
                 var id=[];
                 var csrf=$('input[name=csrfmiddlewaretoken]').val();
-                $(':checkbox:checked').each(function(i){
+                $(':checkbox:checked').not('#ftseselectall').each(function(i){
                     id[i]=$(this).val()
                 })
                 if(id.length===0){
@@ -474,7 +502,7 @@
         $('#fav_btn_alpha').click(function(){
             var id=[];
             var csrf=$('input[name=csrfmiddlewaretoken]').val();
-            $(':checkbox:checked').each(function(i){
+            $(':checkbox:checked').not('#alphaselectall').each(function(i){
                 id[i]=$(this).val()
             })
             if(id.length===0){
@@ -500,7 +528,7 @@
         $('#fav_btn_ote').click(function(){
             var id=[];
             var csrf=$('input[name=csrfmiddlewaretoken]').val();
-            $(':checkbox:checked').each(function(i){
+            $(':checkbox:checked').not('#oteselectall').each(function(i){
                 id[i]=$(this).val()
             })
             if(id.length===0){
@@ -526,7 +554,7 @@
         $('#fav_btn_ete').click(function(){
             var id=[];
             var csrf=$('input[name=csrfmiddlewaretoken]').val();
-            $(':checkbox:checked').each(function(i){
+            $(':checkbox:checked').not('#eteselectall').each(function(i){
                 id[i]=$(this).val()
             })
             if(id.length===0){
@@ -552,7 +580,7 @@
         $('#fav_btn_opap').click(function(){
             var id=[];
             var csrf=$('input[name=csrfmiddlewaretoken]').val();
-            $(':checkbox:checked').each(function(i){
+            $(':checkbox:checked').not('#opapselectall').each(function(i){
                 id[i]=$(this).val()
             })
             if(id.length===0){
@@ -578,7 +606,7 @@
         $('#fav_btn_deh').click(function(){
             var id=[];
             var csrf=$('input[name=csrfmiddlewaretoken]').val();
-            $(':checkbox:checked').each(function(i){
+            $(':checkbox:checked').not('#dehselectall').each(function(i){
                 id[i]=$(this).val()
             })
             if(id.length===0){
@@ -604,7 +632,7 @@
         $('#fav_btn_peiraios').click(function(){
             var id=[];
             var csrf=$('input[name=csrfmiddlewaretoken]').val();
-            $(':checkbox:checked').each(function(i){
+            $(':checkbox:checked').not('#peiraiosselectall').each(function(i){
                 id[i]=$(this).val()
             })
             if(id.length===0){
@@ -630,6 +658,92 @@
     })
 </script>
 
+<script>
 
+    $('#ftseselectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
+    $('#alphaselectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
+    $('#oteselectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
+    $('#eteselectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
+    $('#opapselectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
+    $('#dehselectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
+    $('#peiraiosselectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $('.tab-pane.active').find('input[type="checkbox"]').each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
+</script>
 
 {% endblock %}
