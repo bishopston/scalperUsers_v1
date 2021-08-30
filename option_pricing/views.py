@@ -731,6 +731,49 @@ class ImpliedScreenerListCBV(View):
         series = Option.objects.filter(optionsymbol__optionseries=qs_ftse[0])
         max_date = series.aggregate(Max('date'))
 
+        iv_strike_number_ftse = []
+        for i in qs_ftse:
+            opt = Option.objects.filter(optionsymbol__optionseries = i)
+            max_date = opt.aggregate(Max('date'))
+            queryset = opt.filter(date=max_date['date__max'])
+            iv_strike_number_ftse.append(len(queryset))
+        iv_strike_number_alpha = []
+        for i in qs_alpha:
+            opt = Option.objects.filter(optionsymbol__optionseries = i)
+            max_date = opt.aggregate(Max('date'))
+            queryset = opt.filter(date=max_date['date__max'])
+            iv_strike_number_alpha.append(len(queryset))
+        iv_strike_number_ote = []
+        for i in qs_ote:
+            opt = Option.objects.filter(optionsymbol__optionseries = i)
+            max_date = opt.aggregate(Max('date'))
+            queryset = opt.filter(date=max_date['date__max'])
+            iv_strike_number_ote.append(len(queryset))
+        iv_strike_number_ete = []
+        for i in qs_ete:
+            opt = Option.objects.filter(optionsymbol__optionseries = i)
+            max_date = opt.aggregate(Max('date'))
+            queryset = opt.filter(date=max_date['date__max'])
+            iv_strike_number_ete.append(len(queryset))
+        iv_strike_number_opap = []
+        for i in qs_opap:
+            opt = Option.objects.filter(optionsymbol__optionseries = i)
+            max_date = opt.aggregate(Max('date'))
+            queryset = opt.filter(date=max_date['date__max'])
+            iv_strike_number_opap.append(len(queryset))
+        iv_strike_number_deh = []
+        for i in qs_deh:
+            opt = Option.objects.filter(optionsymbol__optionseries = i)
+            max_date = opt.aggregate(Max('date'))
+            queryset = opt.filter(date=max_date['date__max'])
+            iv_strike_number_deh.append(len(queryset))
+        iv_strike_number_peiraios = []
+        for i in qs_peiraios:
+            opt = Option.objects.filter(optionsymbol__optionseries = i)
+            max_date = opt.aggregate(Max('date'))
+            queryset = opt.filter(date=max_date['date__max'])
+            iv_strike_number_peiraios.append(len(queryset))
+
         context = {
             'qs_ftse' : qs_ftse,
             'qs_alpha' : qs_alpha,
@@ -747,6 +790,13 @@ class ImpliedScreenerListCBV(View):
             'qs_deh_count' : qs_deh_count,
             'qs_peiraios_count': qs_peiraios_count,
             'latest_trad_date':max_date['date__max'].strftime("%d/%m/%Y"),
+            'iv_strike_number_ftse': iv_strike_number_ftse,
+            'iv_strike_number_alpha': iv_strike_number_alpha,
+            'iv_strike_number_ote': iv_strike_number_ote,
+            'iv_strike_number_ete': iv_strike_number_ete,
+            'iv_strike_number_opap': iv_strike_number_opap,
+            'iv_strike_number_deh': iv_strike_number_deh,
+            'iv_strike_number_peiraios': iv_strike_number_peiraios,
         }
 
         return render(request, 'option_pricing/ivscreeners.html', context)
@@ -782,77 +832,84 @@ class ImpliedScreenerATMListCBV(View):
         qs_deh_count = qs_alpha.count()
         qs_peiraios_count = qs_alpha.count()
         
-        atm_strikes_ftse, expmonth_atm_impvols_ftse = ([] for i in range(2))
+        atm_strikes_ftse, expmonth_atm_impvols_ftse, atm_iv_strike_number_ftse = ([] for i in range(3))
         for i in qs_ftse:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
+            atm_iv_strike_number_ftse.append(len(queryset))
             atm_strikes_ftse.append(queryset[0].atm_strike)
         for i in qs_ftse:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
             expmonth_atm_impvols_ftse.append(float(100*(queryset[0].expmonth_atm_impvol)))
-        atm_strikes_alpha, expmonth_atm_impvols_alpha = ([] for i in range(2))
+        atm_strikes_alpha, expmonth_atm_impvols_alpha, atm_iv_strike_number_alpha = ([] for i in range(3))
         for i in qs_alpha:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
+            atm_iv_strike_number_alpha.append(len(queryset))
             atm_strikes_alpha.append(queryset[0].atm_strike)
         for i in qs_alpha:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
             expmonth_atm_impvols_alpha.append(float(100*(queryset[0].expmonth_atm_impvol)))
-        atm_strikes_ote, expmonth_atm_impvols_ote = ([] for i in range(2))
+        atm_strikes_ote, expmonth_atm_impvols_ote, atm_iv_strike_number_ote = ([] for i in range(3))
         for i in qs_ote:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
+            atm_iv_strike_number_ote.append(len(queryset))
             atm_strikes_ote.append(queryset[0].atm_strike)
         for i in qs_ote:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
             expmonth_atm_impvols_ote.append(float(100*(queryset[0].expmonth_atm_impvol)))
-        atm_strikes_ete, expmonth_atm_impvols_ete = ([] for i in range(2))
+        atm_strikes_ete, expmonth_atm_impvols_ete, atm_iv_strike_number_ete = ([] for i in range(3))
         for i in qs_ete:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
+            atm_iv_strike_number_ete.append(len(queryset))
             atm_strikes_ete.append(queryset[0].atm_strike)
         for i in qs_ete:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
             expmonth_atm_impvols_ete.append(float(100*(queryset[0].expmonth_atm_impvol)))
-        atm_strikes_opap, expmonth_atm_impvols_opap = ([] for i in range(2))
+        atm_strikes_opap, expmonth_atm_impvols_opap, atm_iv_strike_number_opap = ([] for i in range(3))
         for i in qs_opap:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
+            atm_iv_strike_number_opap.append(len(queryset))
             atm_strikes_opap.append(queryset[0].atm_strike)
         for i in qs_opap:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
             expmonth_atm_impvols_opap.append(float(100*(queryset[0].expmonth_atm_impvol)))
-        atm_strikes_deh, expmonth_atm_impvols_deh = ([] for i in range(2))
+        atm_strikes_deh, expmonth_atm_impvols_deh, atm_iv_strike_number_deh = ([] for i in range(3))
         for i in qs_deh:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
+            atm_iv_strike_number_deh.append(len(queryset))
             atm_strikes_deh.append(queryset[0].atm_strike)
         for i in qs_deh:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
             expmonth_atm_impvols_deh.append(float(100*(queryset[0].expmonth_atm_impvol)))
-        atm_strikes_peiraios, expmonth_atm_impvols_peiraios = ([] for i in range(2))
+        atm_strikes_peiraios, expmonth_atm_impvols_peiraios, atm_iv_strike_number_peiraios = ([] for i in range(3))
         for i in qs_peiraios:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
             max_date = opt.aggregate(Max('date'))
             queryset = opt.filter(date=max_date['date__max'])
+            atm_iv_strike_number_peiraios.append(len(queryset))
             atm_strikes_peiraios.append(queryset[0].atm_strike)
         for i in qs_peiraios:
             opt = Option.objects.filter(optionsymbol__optionseries = i)
@@ -877,18 +934,25 @@ class ImpliedScreenerATMListCBV(View):
             'qs_peiraios_count': qs_peiraios_count,
             'atm_strikes_ftse': atm_strikes_ftse,
             'expmonth_atm_impvols_ftse':expmonth_atm_impvols_ftse,
+            'atm_iv_strike_number_ftse': atm_iv_strike_number_ftse,
             'atm_strikes_alpha': atm_strikes_alpha,
             'expmonth_atm_impvols_alpha':expmonth_atm_impvols_alpha,
+            'atm_iv_strike_number_alpha': atm_iv_strike_number_alpha,
             'atm_strikes_ote': atm_strikes_ote,
             'expmonth_atm_impvols_ote':expmonth_atm_impvols_ote,
+            'atm_iv_strike_number_ote': atm_iv_strike_number_ote,
             'atm_strikes_ete': atm_strikes_ete,
             'expmonth_atm_impvols_ete':expmonth_atm_impvols_ete,
+            'atm_iv_strike_number_ete': atm_iv_strike_number_ete,
             'atm_strikes_opap': atm_strikes_opap,
             'expmonth_atm_impvols_opap':expmonth_atm_impvols_opap,
+            'atm_iv_strike_number_opap': atm_iv_strike_number_opap,
             'atm_strikes_deh': atm_strikes_deh,
             'expmonth_atm_impvols_deh':expmonth_atm_impvols_deh,
+            'atm_iv_strike_number_deh': atm_iv_strike_number_deh,
             'atm_strikes_peiraios': atm_strikes_peiraios,
             'expmonth_atm_impvols_peiraios':expmonth_atm_impvols_peiraios,
+            'atm_iv_strike_number_peiraios': atm_iv_strike_number_peiraios,
             'latest_trad_date':max_date['date__max'].strftime("%d/%m/%Y"),
         }
         #print(expmonth_atm_impvols)

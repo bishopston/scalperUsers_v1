@@ -59,8 +59,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong>ATM Exercise Price</strong></small></th>
                                     <th><small><strong>ATM Implied Volatility</strong></small></th>
@@ -88,9 +88,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_ftse_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{atm_iv_strike_number_ftse|index:forloop.counter0}}</small></td>
                                         <td><small>{{atm_strikes_ftse.0|add:"0"}}</small></td>
                                         <td><small>{{expmonth_atm_impvols_ftse|index:forloop.counter0}}&nbsp;%</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolatm' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
@@ -115,8 +115,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong>ATM Exercise Price</strong></small></th>
                                     <th><small><strong>ATM Implied Volatility</strong></small></th>
@@ -144,9 +144,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_alpha_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{atm_iv_strike_number_alpha|index:forloop.counter0}}</small></td>
                                         <td><small>
                                             {% if atm_strikes_alpha.0 > 1 %}
                                                 {{atm_strikes_alpha.0|floatformat:2}}
@@ -177,8 +177,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong>ATM Exercise Price</strong></small></th>
                                     <th><small><strong>ATM Implied Volatility</strong></small></th>
@@ -206,9 +206,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_ote_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{atm_iv_strike_number_ote|index:forloop.counter0}}</small></td>
                                         <td><small>
                                             {% if atm_strikes_ote.0 > 1 %}
                                                 {{atm_strikes_ote.0|floatformat:2}}
@@ -239,8 +239,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong>ATM Exercise Price</strong></small></th>
                                     <th><small><strong>ATM Implied Volatility</strong></small></th>
@@ -268,9 +268,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_ete_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{atm_iv_strike_number_ete|index:forloop.counter0}}</small></td>
                                         <td><small>
                                             {% if atm_strikes_ete.0 > 1 %}
                                                 {{atm_strikes_ete.0|floatformat:2}}
@@ -301,8 +301,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong>ATM Exercise Price</strong></small></th>
                                     <th><small><strong>ATM Implied Volatility</strong></small></th>
@@ -330,9 +330,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_opap_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{atm_iv_strike_number_opap|index:forloop.counter0}}</small></td>
                                         <td><small>
                                             {% if atm_strikes_opap.0 > 1 %}
                                                 {{atm_strikes_opap.0|floatformat:2}}
@@ -363,8 +363,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong>ATM Exercise Price</strong></small></th>
                                     <th><small><strong>ATM Implied Volatility</strong></small></th>
@@ -392,9 +392,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_deh_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{atm_iv_strike_number_deh|index:forloop.counter0}}</small></td>
                                         <td><small>
                                             {% if atm_strikes_deh.0 > 1 %}
                                                 {{atm_strikes_deh.0|floatformat:2}}
@@ -425,8 +425,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong>ATM Exercise Price</strong></small></th>
                                     <th><small><strong>ATM Implied Volatility</strong></small></th>
@@ -454,9 +454,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_peiraios_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{atm_iv_strike_number_peiraios|index:forloop.counter0}}</small></td>
                                         <td><small>
                                             {% if atm_strikes_peiraios.0 > 1 %}
                                                 {{atm_strikes_peiraios.0|floatformat:2}}

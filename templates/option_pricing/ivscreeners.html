@@ -1,6 +1,8 @@
 {%  extends "../base/base.html" %}
 {% block content %}
 
+{% load index %}
+
 <style>
     td {
        white-space: nowrap;
@@ -58,8 +60,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
                                 </tr>
@@ -85,9 +87,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_ftse_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{iv_strike_number_ftse|index:forloop.counter0}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
@@ -110,8 +112,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
                                 </tr>
@@ -137,9 +139,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_alpha_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{iv_strike_number_alpha|index:forloop.counter0}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
@@ -162,8 +164,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
                                 </tr>
@@ -189,9 +191,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_ote_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{iv_strike_number_ote|index:forloop.counter0}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
@@ -214,8 +216,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
                                 </tr>
@@ -241,9 +243,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_ete_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{iv_strike_number_ete|index:forloop.counter0}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
@@ -266,8 +268,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
                                 </tr>
@@ -293,9 +295,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_opap_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{iv_strike_number_opap|index:forloop.counter0}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
@@ -318,8 +320,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
                                 </tr>
@@ -345,9 +347,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_deh_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{iv_strike_number_deh|index:forloop.counter0}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}
@@ -370,8 +372,8 @@
                                     <th><small><strong></strong></small></th>
                                     <th><small><strong>Asset</strong></small></th>
                                     <th><small><strong>Option Type</strong></small></th>
-                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Expiration Date</strong></small></th>
+                                    <th><small><strong>Latest Trading</strong></small></th>
                                     <th><small><strong>Exercise Prices</strong></small></th>
                                     <th><small><strong></strong></small></th>
                                 </tr>
@@ -397,9 +399,9 @@
                                                 Put
                                             {% endif %}
                                         </small></td>
-                                        <td><small>{{latest_trad_date}}</small></td>
                                         <td><small>{{ series.expmonthdate|date:"SHORT_DATE_FORMAT" }}</small></td>
-                                        <td><small>{{qs_peiraios_count}}</small></td>
+                                        <td><small>{{latest_trad_date}}</small></td>
+                                        <td><small>{{iv_strike_number_peiraios|index:forloop.counter0}}</small></td>
                                         <td><a class="btn btn-sm btn-primary h-25 d-inline-block" href="{% url 'option_pricing:impliedvolsmile' series.asset series.optiontype series.expmonthdate.month series.expmonthdate.year %}" role="button"><small>Get Chart</small></a></td>
                                     </tr>
                                 {% endfor %}

@@ -128,7 +128,7 @@
             {% if myoptionlist %}
             <div class="container">
                 <div class="card">
-                    <div class="card text-center">
+                    <div class="card text-center" id="info">
                         <div class="card-body">
                             <p class="card-text">You have {{myoptionlist_count}} option{{myoptionlist_count|pluralize}} in your dashboard.</p>
                             <a href="{% url "option_pricing:myoptionscreenerlistcbv" %}" class="btn btn-primary">Options Screeners</a>
@@ -142,7 +142,7 @@
                         <table class="table table-striped table-sm" id="optTable">
                         <thead>
                         <tr>
-                            <th><small><strong></strong></small></th>
+                            <th></th>
                             <th><small><strong>Symbol</strong></small></th>
                             <th><small><strong>Asset</strong></small></th>
                             <th><small><strong>Option Type</strong></small></th>
@@ -192,7 +192,11 @@
                         </table>
                     </div>
                 </div>
-                <div class="mt-2 row d-flex justify-content-between">
+                <div class="row d-flex justify-content-start">
+                    <div class="form-group form-check mr-4">
+                        <input type="checkbox" class="form-check-input" id="selectall">
+                        <label class="form-check-label" for="selectall">Select All</label>
+                    </div>
                     {% if request.user.is_authenticated %}
                         <button id="opt_del_btn" class="btn btn-sm btn-primary h-25 d-inline-block">Delete From My Screeners</button>
                     {% else %}
@@ -250,7 +254,7 @@
     
                     var id=[];
                     var csrf=$('input[name=csrfmiddlewaretoken]').val();
-                    $(':checkbox:checked').each(function(i){
+                    $(':checkbox:checked').not('#selectall').each(function(i){
                         id[i]=$(this).val()
                     })
                     if(id.length===0){
@@ -265,17 +269,32 @@
                                 csrfmiddlewaretoken:csrf
                             },
                             success:function(response){
-                                for (var i=0; i < id.length; i++){
-                                    $('tr#'+id[i]+'').css('background-color', '#ccc');
-                                    $('tr#'+id[i]+'').fadeOut('slow');
-                                }
                                 alert("Options successfully removed from my screeners");
+                                $('#optTable').DataTable().clear().destroy();
+                                window.location.reload();
+                                $("#optTable").load(window.location + " #optTable");
+                                $("#info").load(window.location + " #info");
                             }
                         })
                     }
                     $( 'input[type="checkbox"]' ).prop('checked', false);
             })
         })
+    </script>
+
+    <script>
+        $('#selectall').click(function(event) {   
+            if(this.checked) {
+                // Iterate each checkbox
+                $( 'input[type="checkbox"]' ).each(function() {
+                    this.checked = true;                
+                });
+            } else {
+                $( 'input[type="checkbox"]' ).each(function() {
+                    this.checked = false;                       
+                });
+            }
+        });
     </script>
 
 </body>
