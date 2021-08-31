@@ -83,14 +83,10 @@
                         <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img class="align-self-center rounded rounded-circle mr-1 flex-shrink-0" style="width: 45px; height: 45px;" width="500" height="500" src="https://www.gravatar.com/avatar/6a393bb03869d2d08a861046dde093fc?s=500&amp;d=mp">
                         </a>
-
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{% url "accounts:myoptionlist" %}">My Option Screeners</a></li>
-                        <li><a class="dropdown-item" href="{% url "accounts:myfuturelist" %}">My Future Screeners</a></li>
-                        <li><a class="dropdown-item" href="{% url "accounts:myimpliedlist" %}">My Implied Volatilities</a></li>
-                        <li><a class="dropdown-item" href="{% url "accounts:myimpliedatmlist" %}">My Implied ATM Volatilities</a></li>
-                        <li><a class="dropdown-item" href="{% url "accounts:dashboard" %}">My Dashboard</a></li>
-                        <li><a class="dropdown-item" href="{% url "logout" %}">Sign Out</a></li>
+                            <li><a class="dropdown-item" href="{% url "accounts:portfolio" %}">My Portfolio</a></li>
+                            <li><a class="dropdown-item" href="{% url "accounts:dashboard" %}">My Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{% url "logout" %}">Sign Out</a></li>
                         </ul>
                     </li>
                 </ul>          

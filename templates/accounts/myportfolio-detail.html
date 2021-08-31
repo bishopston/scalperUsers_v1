@@ -823,13 +823,13 @@
                                               <th scope="col"><small><strong>{{total_option_debit_credit|floatformat:2}}</strong></small></th>
                                               <th scope="col"><small><strong>{{total_option_valuation|floatformat:2}}</strong></small></th>
                                               {% if total_option_payoff < 0 %}
-                                                <th scope="col" class="change-negative"><small><strong>
+                                                <th scope="col"><div class="change-negative"><small><strong>
                                                   {{total_option_payoff|floatformat:2}}
-                                                </strong></small></th>
+                                                </strong></small></div></th>
                                               {% else %} 
-                                                <th scope="col" class="change-positive"><small><strong>
+                                                <th scope="col"><div class="change-positive"><small><strong>
                                                   {{total_option_payoff|floatformat:2}}
-                                                </strong></small></th>
+                                                </strong></small></div></th>
                                               {% endif %}
                                               <th scope="col"><small><strong>{{total_option_delta|floatformat:2}}</strong></small></th>
                                             </tr>
@@ -884,13 +884,13 @@
                                               <th scope="col"><small><strong>{{total_future_debit_credit|floatformat:2}}</strong></small></th>
                                               <th scope="col"><small><strong>{{total_future_valuation|floatformat:2}}</strong></small></th>
                                               {% if total_future_payoff < 0 %}
-                                                <th scope="col" class="change-negative"><small><strong>
+                                                <th scope="col"><div class="change-negative"><small><strong>
                                                   {{total_future_payoff|floatformat:2}}
-                                                </strong></small></th>
+                                                </strong></small></div></th>
                                               {% else %} 
-                                                <th scope="col" class="change-positive"><small><strong>
+                                                <th scope="col"><div class="change-positive"><small><strong>
                                                   {{total_future_payoff|floatformat:2}}
-                                                </strong></small></th>
+                                                </strong></small></div></th>
                                               {% endif %}
                                             </tr>
                                           </tbody>
@@ -944,13 +944,13 @@
                                               <th scope="col"><small><strong>{{total_stock_debit_credit|floatformat:2}}</strong></small></th>
                                               <th scope="col"><small><strong>{{total_stock_valuation|floatformat:2}}</strong></small></th>
                                               {% if total_stock_payoff < 0 %}
-                                                <th scope="col" class="change-negative"><small><strong>
+                                                <th scope="col"><div class="change-negative"><small><strong>
                                                   {{total_stock_payoff|floatformat:2}}
-                                                </strong></small></th>
+                                                </strong></small></div></th>
                                               {% else %} 
-                                                <th scope="col" class="change-positive"><small><strong>
+                                                <th scope="col"><div class="change-positive"><small><strong>
                                                   {{total_stock_payoff|floatformat:2}}
-                                                </strong></small></th>
+                                                </strong></small></div></th>
                                               {% endif %}
                                             </tr>
                                           </tbody>

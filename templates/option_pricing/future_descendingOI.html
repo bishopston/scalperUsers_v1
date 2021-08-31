@@ -57,12 +57,20 @@
 
     <div class="container">
         <div class="mt-2 row d-flex justify-content-between">
-            
+            <div class="d-flex justify-content-center">
+                <div class="form-group form-check mr-4">
+                    <input type="checkbox" class="form-check-input" id="selectall">
+                    <label class="form-check-label" for="selectall">Select All</label>
+                </div>
+                <div>
                 {% if request.user.is_authenticated %}
-                    <button id="fav_btn" class="btn btn-sm btn-primary h-25 d-inline-block">Add to My Screeners</button>
+                    <button id="fav_btn" class="btn btn-sm btn-primary d-inline-block">Add to My Screeners</button>
                 {% else %}
-                    <a class="btn btn-sm btn-primary h-25 d-inline-block" href='{% url "accounts:register" %}' role="button">Add to My Screeners</a>
+                    <a class="btn btn-sm btn-primary d-inline-block" href='{% url "accounts:login" %}' role="button">Add to My Screeners</a>
                 {% endif %}
+                </div>    
+            </div>
+            <div>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-end">
                         {% if page_obj.has_previous %}
@@ -80,7 +88,7 @@
                         {% endif %}
                     </ul>
                 </nav>
-            
+            </div>
         </div>
     </div>
 </div>
@@ -92,7 +100,7 @@
 
                 var id=[];
                 var csrf=$('input[name=csrfmiddlewaretoken]').val();
-                $(':checkbox:checked').each(function(i){
+                $(':checkbox:checked').not('#selectall').each(function(i){
                     id[i]=$(this).val()
                 })
                 if(id.length===0){
@@ -115,6 +123,21 @@
                 $( 'input[type="checkbox"]' ).prop('checked', false);
         })
     })
+</script>
+
+<script>
+    $('#selectall').click(function(event) {   
+        if(this.checked) {
+            // Iterate each checkbox
+            $( 'input[type="checkbox"]' ).each(function() {
+                this.checked = true;                
+            });
+        } else {
+            $( 'input[type="checkbox"]' ).each(function() {
+                this.checked = false;                       
+            });
+        }
+    });
 </script>
 
 {% endblock content %}
