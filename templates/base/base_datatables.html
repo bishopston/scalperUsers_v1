@@ -1,0 +1,175 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Martingale</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <script
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" ></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body>
+
+    <style>
+        td {
+           white-space: nowrap;
+        }
+     </style>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container px-2 py-2">
+          <a class="navbar-brand" href="{% url "option_pricing:home" %}">Navbar</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse ml-5" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Markets
+                </a>
+                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:optiondailystats" %}">Daily Options Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futuredailystats" %}">Daily Futures Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:optionhiststats" %}">Trending Options Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:futurehiststats" %}">Trending Futures Statistics</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:stock_historical" %}">Spot Markets</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Screeners
+                </a>
+                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myoptionscreenerlistcbv" %}">Options Screeners</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myfuturescreenerlistcbv" %}">Futures Screeners</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:option_descendingOI" %}">Highest Open Interest Options</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:future_descendingOI" %}">Highest Open Interest Futures</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:dashboard" %}">My Screeners</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Volatility
+                </a>
+                <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesscreenerlistcbv" %}">Implied Volatility Screeners</a></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "option_pricing:myseriesatmscreenerlistcbv" %}">Implied Volatility At The Money</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:dashboard" %}">My Implied Volatility</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                {% if request.user.is_authenticated %}
+                  <a class="nav-link active" href="{% url "accounts:portfolio" %}">Portfolio</a>
+                {% else %}
+                  <a class="nav-link active" href="{% url "accounts:login" %}">Portfolio</a>
+                {% endif %}
+              </li>
+              <form class="form-inline my-2 mx-2 my-lg-0" action="{% url "option_pricing:option_search_symbol" %}" method="get">
+                <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search symbol" aria-label="Search" required>
+              </form>
+            </ul>
+    
+            {% if request.user.is_authenticated %}
+            <ul class="navbar-nav mr-2">
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="align-self-center rounded rounded-circle mr-1 flex-shrink-0" style="width: 45px; height: 45px;" width="500" height="500" src="https://www.gravatar.com/avatar/6a393bb03869d2d08a861046dde093fc?s=500&amp;d=mp">
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-right bg-dark" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:portfolio" %}">My Portfolio</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "accounts:dashboard" %}">My Dashboard</a></li>
+                    <li><a class="dropdown-item bg-dark text-white" href="{% url "logout" %}">Sign Out</a></li>
+                  </ul>
+                </li>
+            </ul>          
+            {% else %}
+            <form class="form-inline my-2 mr-2 my-lg-0">
+              <a class="text-light text-decoration-none mr-2" href="{% url "accounts:login" %}">Sign-In</a>
+              <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url "accounts:register" %}" role="button">Join</a>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-3 mb-3">
+        {% block content %} 
+
+        {% endblock %}
+    </div>
+
+    <footer class="text-center text-white" style="background-color: #21081a;">
+        <!-- Grid container -->
+        <div class="container p-4">
+          <div class="container">
+            <div class="row d-flex justify-content-between">
+                <div class="h-100 text-center my-auto">
+                    <ul class="list-inline mb-2">
+                        <li class="list-inline-item"><a href="{% url "option_pricing:terms-of-use" %}" style="color:	#428bca; text-decoration: none;">Terms of Use</a></li>
+                        <li class="list-inline-item">⋅</li>
+                        <li class="list-inline-item"><a href="{% url "option_pricing:privacy-policy" %}" style="color:	#428bca; text-decoration: none;">Privacy Policy</a></li>
+                        <li class="list-inline-item">⋅</li>
+                        <li class="list-inline-item"><a href="{% url "option_pricing:cookie-policy" %}" style="color:	#428bca; text-decoration: none;">Cookie Policy</a></li>
+                        <li class="list-inline-item">⋅</li>
+                        <li class="list-inline-item"><a href="#!" style="color:	#428bca; text-decoration: none;">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="h-100 text-center my-auto">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <a href="#!" style="color:	#428bca; text-decoration: none;"><i class="fab fa-facebook-f"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!" style="color:	#428bca; text-decoration: none;"><i class="fab fa-twitter"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!" style="color:	#428bca; text-decoration: none;"><i class="fab fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+          </div>
+        </div>
+        <!-- Grid container -->
+      
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+          © 2021 Copyright:
+          <a class="text-white" href="https://mdbootstrap.com/" style="text-decoration: none;">martingale.finance</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function () {
+          $("#id_q").autocomplete({
+              source: '{% url "option_pricing:option_search_symbol_autocomplete" %}',
+              minLength: 3
+          });
+      });
+    </script>
+
+</html>
+</body>

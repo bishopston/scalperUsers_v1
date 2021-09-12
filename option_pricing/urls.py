@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from . import views
 from option_pricing.views import OptionScreenersListCBV, FutureScreenersListCBV, ImpliedScreenerListCBV, ImpliedScreenerATMListCBV, OptionDescendingOI, FutureDescendingOI, OptionDailyStatsView
 app_name = 'option_pricing'
@@ -84,4 +85,8 @@ urlpatterns = [
     path('stocks/chart/<str:tradesymbol>/', views.StockJSChartView, name="stock_jschart"),
     path('stocks/chart_vol/<str:tradesymbol>/', views.StockJSChartVolView, name="stock_vol_jschart"),
     path('spotmarkets/<str:asset>/', views.StockHistoricalAssetView, name='stock_historical_asset'),
+    #footer urls
+    path('privacy-policy/', TemplateView.as_view(template_name="option_pricing/privacy_policy.html"), name='privacy-policy'),
+    path('terms-of-use/', TemplateView.as_view(template_name="option_pricing/terms_of_use.html"), name='terms-of-use'),
+    path('cookie-policy/', TemplateView.as_view(template_name="option_pricing/cookie_policy.html"), name='cookie-policy'),
 ]

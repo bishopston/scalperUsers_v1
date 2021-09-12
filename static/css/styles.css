@@ -3405,7 +3405,7 @@ textarea.form-control-lg {
 .btn-link {
   font-weight: 400;
   color: #ee0979;
-  text-decoration: underline;
+  /* text-decoration: underline; */
 }
 .btn-link:hover {
   color: #be0761;
@@ -7315,9 +7315,9 @@ textarea.form-control-lg {
   text-decoration: none !important;
 }
 
-.text-decoration-underline {
+/* .text-decoration-underline {
   text-decoration: underline !important;
-}
+} */
 
 .text-decoration-line-through {
   text-decoration: line-through !important;

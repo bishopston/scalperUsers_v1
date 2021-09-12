@@ -242,7 +242,7 @@ def myOptionList(request):
     }
 
     return render(request,
-                  'accounts/myoptionlist2.html',
+                  'accounts/myoptionlist3.html',
                   context)
 
 @ login_required
@@ -296,7 +296,7 @@ def myFutureList(request):
     }
 
     return render(request,
-                  'accounts/myfuturelist2.html',
+                  'accounts/myfuturelist3.html',
                   context)
 
 @ login_required
@@ -321,7 +321,7 @@ def myImpliedList(request):
     }
 
     return render(request,
-                  'accounts/myimplied2.html',
+                  'accounts/myimplied3.html',
                   context)
 
 @ login_required
@@ -369,7 +369,7 @@ def myImpliedATMList(request):
         'myimpliedatmlist': myimpliedatmlist
     }
     return render(request,
-                  'accounts/myimpliedatm.html',
+                  'accounts/myimpliedatm3.html',
                   context)
 
 @ login_required

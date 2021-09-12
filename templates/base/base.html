@@ -99,11 +99,56 @@
           </div>
         </nav>
 
-      <div class="mt-3 container-fluid">
+      <div class="container-fluid mt-3 mb-3">
           {% block content %} 
 
           {% endblock %}
       </div>
+
+      
+        <footer class="text-center text-white" style="background-color: #21081a;">
+          <!-- Grid container -->
+          <div class="container p-4">
+            <div class="container">
+              <div class="row d-flex justify-content-between">
+                  <div class="h-100 text-center my-auto">
+                      <ul class="list-inline mb-2">
+                          <li class="list-inline-item"><a href="{% url "option_pricing:terms-of-use" %}" style="color:	#428bca; text-decoration: none;">Terms of Use</a></li>
+                          <li class="list-inline-item">⋅</li>
+                          <li class="list-inline-item"><a href="{% url "option_pricing:privacy-policy" %}" style="color:	#428bca; text-decoration: none;">Privacy Policy</a></li>
+                          <li class="list-inline-item">⋅</li>
+                          <li class="list-inline-item"><a href="{% url "option_pricing:cookie-policy" %}" style="color:	#428bca; text-decoration: none;">Cookie Policy</a></li>
+                          <li class="list-inline-item">⋅</li>
+                          <li class="list-inline-item"><a href="#!" style="color:	#428bca; text-decoration: none;">Contact</a></li>
+                      </ul>
+                  </div>
+                  <div class="h-100 text-center my-auto">
+                      <ul class="list-inline mb-0">
+                          <li class="list-inline-item">
+                              <a href="#!" style="color:	#428bca; text-decoration: none;"><i class="fab fa-facebook-f"></i></a>
+                          </li>
+                          <li class="list-inline-item">
+                              <a href="#!" style="color:	#428bca; text-decoration: none;"><i class="fab fa-twitter"></i></a>
+                          </li>
+                          <li class="list-inline-item">
+                              <a href="#!" style="color:	#428bca; text-decoration: none;"><i class="fab fa-linkedin"></i></a>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <!-- Grid container -->
+        
+          <!-- Copyright -->
+          <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/" style="text-decoration: none;">martingale.finance</a>
+          </div>
+          <!-- Copyright -->
+        </footer>
+      
+
       <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
