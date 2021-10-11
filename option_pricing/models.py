@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 #from accounts.models import CustomUser
+from datetime import datetime, date
 
 class Optionseries(models.Model):
 
@@ -27,7 +28,8 @@ class Optionseries(models.Model):
 	    settings.AUTH_USER_MODEL, related_name='seriesscreeners', default=None, blank=True)
     seriesatmscreeners = models.ManyToManyField(
 	    settings.AUTH_USER_MODEL, related_name='seriesatmscreeners', default=None, blank=True)
-    
+    created_at = models.DateField()
+
 class Optionsymbol(models.Model):
 
     ASSETS = [
@@ -60,6 +62,7 @@ class Optionsymbol(models.Model):
     likes = models.ManyToManyField(
 	    settings.AUTH_USER_MODEL, related_name='likes', default=None, blank=True)
     #like_count = models.BigIntegerField(default='0')
+    created_at = models.DateField()
 
     def __str__(self):
         return self.symbol
@@ -235,6 +238,7 @@ class Futuresymbol(models.Model):
 	    settings.AUTH_USER_MODEL, related_name='favourite_future', default=None, blank=True)
     futurescreeners = models.ManyToManyField(
 	    settings.AUTH_USER_MODEL, related_name='futurescreeners', default=None, blank=True)
+    created_at = models.DateField()
 
     def __str__(self):
         return self.symbol
@@ -312,6 +316,7 @@ class Stocksymbol(models.Model):
     symbol = models.CharField(max_length=15)
     asset = models.CharField(max_length=10,
         choices=ASSETS,)
+    created_at = models.DateField()
 
     def __str__(self):
 	    return self.symbol
