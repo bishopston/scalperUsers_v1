@@ -151,3 +151,5 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True  
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+import django_heroku
+django_heroku.settings(locals())
