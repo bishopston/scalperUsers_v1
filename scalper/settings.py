@@ -91,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'scalperusers_v1',
         'USER': 'postgres',
-        'PASSWORD': env('DATABASE_PASS'),
+        'PASSWORD': os.environ.get('DATABASE_PASS'),
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -139,7 +139,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
