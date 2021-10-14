@@ -115,9 +115,9 @@ STOCKASSETS = [
     ]
 
 DATES = Optionsymbol.objects.filter(expmonthdate__gte=date.today()).order_by('expmonthdate').values_list('expmonthdate', flat=True).distinct()
-DATES_=[]
+""" DATES_=[]
 for i in range(len(DATES)):
-    DATES_.append(DATES[i].strftime("%#d-%#m-%Y"))
+    DATES_.append(DATES[i].strftime("%#d-%#m-%Y")) """
 #_DATES = DATES_.insert(0, float('Select expiration date...'))
 #_DATES_ = _DATES[-1:] + _DATES[:-1]
 
