@@ -21,8 +21,8 @@ from .forms import OptionScreenerForm, FutureScreenerForm, ImpliedperStrikeScree
 import csv
 
 def home(request):
-    form = OptionSearchForm()
-    return render(request, 'option_pricing/index.html', {'form': form})
+    #form = OptionSearchForm()
+    return render(request, 'option_pricing/index.html')
 """
 def OptionView(request):
     option = Option.objects.all()
