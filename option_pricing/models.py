@@ -322,7 +322,7 @@ class Stocksymbol(models.Model):
 	    return self.symbol
 
     def get_absolute_url(self):       
-        return reverse('option_pricing:stock_screener_detail', args=[str(self.symbol)])
+        return reverse('option_pricing:stock_historical_asset', args=[str(self.symbol)])
 
 class Stock(models.Model):
     stocksymbol = models.ForeignKey(Stocksymbol, on_delete=models.CASCADE, default=0)

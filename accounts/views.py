@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -444,205 +444,265 @@ class DecimalEncoder(json.JSONEncoder):
 
 @ login_required
 def PortfolioDetailView(request, portfolio_id):
+
+    
     portfolio = Portfolio.objects.get(pk=portfolio_id)
-    options = PortfolioOption.objects.filter(portfolio=portfolio_id)
-    futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
-    stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
-    portfolioOptionForm = PortfolioOptionForm()
-    portfolioFutureForm = PortfolioFutureForm()
-    portfolioStockForm = PortfolioStockForm()
 
-    active_options=[]
-    for i in range(len(options)):
-        if options[i].active_option():
-            active_options.append(options[i])
+    if portfolio.creator == request.user:
 
-    active_futures=[]
-    for i in range(len(futures)):
-        if futures[i].active_future():
-            active_futures.append(futures[i])
+        options = PortfolioOption.objects.filter(portfolio=portfolio_id)
+        futures = PortfolioFuture.objects.filter(portfolio=portfolio_id)
+        stocks = PortfolioStock.objects.filter(portfolio=portfolio_id)
+        portfolioOptionForm = PortfolioOptionForm()
+        portfolioFutureForm = PortfolioFutureForm()
+        portfolioStockForm = PortfolioStockForm()
 
-    max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff, option_delta, option_contracts = ([] for i in range(9))
+        active_options=[]
+        for i in range(len(options)):
+            if options[i].active_option():
+                active_options.append(options[i])
 
-    for i in active_options:
-        qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
-        max_options_date = qs_options.aggregate(Max('date'))
-        option_strike = json.dumps(qs_options[0].optionsymbol.strike, cls=DecimalEncoder)
-        option_type = qs_options[0].optionsymbol.optiontype
+        active_futures=[]
+        for i in range(len(futures)):
+            if futures[i].active_future():
+                active_futures.append(futures[i])
 
-        max_options_dates.append(max_options_date['date__max'].strftime("%#d/%#m/%Y"))
+        max_options_dates, options_clos_prices, stock_prices, profits, option_debit_credit, option_valuation, option_payoff, option_delta, option_contracts = ([] for i in range(9))
 
-        latest_clos = qs_options.filter(date=max_options_date['date__max']).values('closing_price')[0]['closing_price']
-        options_clos_prices.append(json.dumps(latest_clos, cls=DecimalEncoder))
+        for i in active_options:
+            qs_options = Option.objects.filter(optionsymbol=PortfolioOption.objects.get(id=i.id).optionsymbol.id)
+            max_options_date = qs_options.aggregate(Max('date'))
+            option_strike = json.dumps(qs_options[0].optionsymbol.strike, cls=DecimalEncoder)
+            option_type = qs_options[0].optionsymbol.optiontype
 
-        latest_stock = qs_options.filter(date=max_options_date['date__max']).values('stock')[0]['stock']
-        stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+            max_options_dates.append(max_options_date['date__max'].strftime("%#d/%#m/%Y"))
 
-        latest_delta = qs_options.filter(date=max_options_date['date__max']).values('delta')[0]['delta']    
+            latest_clos = qs_options.filter(date=max_options_date['date__max']).values('closing_price')[0]['closing_price']
+            options_clos_prices.append(json.dumps(latest_clos, cls=DecimalEncoder))
 
-        if i.optionsymbol.asset == 'FTSE':
-            if option_type == 'c':
+            latest_stock = qs_options.filter(date=max_options_date['date__max']).values('stock')[0]['stock']
+            stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+            latest_delta = qs_options.filter(date=max_options_date['date__max']).values('delta')[0]['delta']    
+
+            if i.optionsymbol.asset == 'FTSE':
+                if option_type == 'c':
+                    if i.position == 'Long':
+                        profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))
+                        option_payoff.append(float(2*i.contracts*(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))))
+                    else:
+                        profits.append(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))
+                        option_payoff.append(float(2*i.contracts*(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))))
+
+                if option_type == 'p':
+                    if i.position == 'Long':                
+                        profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))
+                        option_payoff.append(float(2*i.contracts*(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))))
+                    else:
+                        profits.append(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))
+                        option_payoff.append(float(2*i.contracts*(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))))
+
+            else:
+                if option_type == 'c':
+                    if i.position == 'Long':
+                        profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))
+                        option_payoff.append(float(100*i.contracts*(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))))
+                    else:
+                        profits.append(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))
+                        option_payoff.append(float(100*i.contracts*(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))))
+                        
+
+                if option_type == 'p':
+                    if i.position == 'Long':                
+                        profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))
+                        option_payoff.append(float(100*i.contracts*(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))))
+                    else:
+                        profits.append(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))
+                        option_payoff.append(float(100*i.contracts*(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))))
+
+            if i.optionsymbol.asset == 'FTSE':
                 if i.position == 'Long':
-                    profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))
-                    option_payoff.append(float(2*i.contracts*(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))))
+                    option_debit_credit.append(-float(2*i.contracts*i.buysellprice))
                 else:
-                    profits.append(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))
-                    option_payoff.append(float(2*i.contracts*(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))))
-
-            if option_type == 'p':
-                if i.position == 'Long':                
-                    profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))
-                    option_payoff.append(float(2*i.contracts*(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))))
-                else:
-                    profits.append(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))
-                    option_payoff.append(float(2*i.contracts*(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))))
-
-        else:
-            if option_type == 'c':
+                    option_debit_credit.append(float(2*i.contracts*i.buysellprice))
+                option_valuation.append(float(2*i.contracts*latest_clos))
+                option_delta.append(float(i.contracts*latest_delta))
+                option_contracts.append(float(i.contracts))
+            else:
                 if i.position == 'Long':
-                    profits.append(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))
-                    option_payoff.append(float(100*i.contracts*(float(latest_stock) - float(qs_options[0].optionsymbol.strike) - float(i.buysellprice))))
+                    option_debit_credit.append(-float(100*i.contracts*i.buysellprice))
                 else:
-                    profits.append(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))
-                    option_payoff.append(float(100*i.contracts*(float(qs_options[0].optionsymbol.strike) + float(i.buysellprice) - float(latest_stock))))
+                    option_debit_credit.append(float(100*i.contracts*i.buysellprice))
+                option_valuation.append(float(100*i.contracts*latest_clos))      
+                option_delta.append(float(i.contracts*latest_delta))
+                option_contracts.append(float(i.contracts))      
+
+        max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits, future_debit_credit, future_valuation, future_payoff, future_contracts = ([] for i in range(9))
+
+        for i in active_futures:
+            qs_futures = Future.objects.filter(futuresymbol=PortfolioFuture.objects.get(id=i.id).futuresymbol.id)
+            max_futures_date = qs_futures.aggregate(Max('date'))
+
+            max_futures_dates.append(max_futures_date['date__max'].strftime("%#d/%#m/%Y"))
+
+            latest_clos = qs_futures.filter(date=max_futures_date['date__max']).values('closing_price')[0]['closing_price']
+            futures_clos_prices.append(json.dumps(latest_clos, cls=DecimalEncoder))
+
+            latest_stock = qs_futures.filter(date=max_futures_date['date__max']).values('stock')[0]['stock']
+            futures_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+
+            latest_fixing_price = qs_futures.filter(date=max_futures_date['date__max']).values('fixing_price')[0]['fixing_price']
+            fixing_prices.append(json.dumps(latest_fixing_price, cls=DecimalEncoder))
+
+            if i.futuresymbol.asset == 'FTSE':
+                if i.position == 'Long':
+                    if latest_fixing_price > 0:
+                        futures_profits.append(float(latest_fixing_price) - float(i.buysellprice))
+                        future_payoff.append(float(2*i.contracts*(float(latest_fixing_price) - float(i.buysellprice))))
+                    else:
+                        futures_profits.append(float(latest_clos) - float(i.buysellprice))
+                        future_payoff.append(float(2*i.contracts*(float(latest_clos) - float(i.buysellprice))))
+
+                if i.position == 'Short':
+                    if latest_fixing_price > 0:
+                        futures_profits.append(float(i.buysellprice) - float(latest_fixing_price))
+                        future_payoff.append(float(2*i.contracts*(float(i.buysellprice) - float(latest_fixing_price))))
+                    else:
+                        futures_profits.append(float(i.buysellprice) - float(latest_clos))
+                        future_payoff.append(float(2*i.contracts*(float(i.buysellprice) - float(latest_clos))))
+                        
+            else:
+                if i.position == 'Long':
+                    if latest_fixing_price > 0:
+                        futures_profits.append(float(latest_fixing_price) - float(i.buysellprice))
+                        future_payoff.append(float(100*i.contracts*(float(latest_fixing_price) - float(i.buysellprice))))
+                    else:
+                        futures_profits.append(float(latest_clos) - float(i.buysellprice))
+                        future_payoff.append(float(100*i.contracts*(float(latest_clos) - float(i.buysellprice))))
+
+                if i.position == 'Short':
+                    if latest_fixing_price > 0:
+                        futures_profits.append(float(i.buysellprice) - float(latest_fixing_price))
+                        future_payoff.append(float(100*i.contracts*(float(i.buysellprice) - float(latest_fixing_price))))
+                    else:
+                        futures_profits.append(float(i.buysellprice) - float(latest_clos))
+                        future_payoff.append(float(100*i.contracts*(float(i.buysellprice) - float(latest_clos))))
+
+            if i.futuresymbol.asset == 'FTSE':
+                if i.position == 'Long':
+                    future_debit_credit.append(-float(2*i.contracts*i.buysellprice))
+                else:
+                    future_debit_credit.append(float(2*i.contracts*i.buysellprice))
+                future_valuation.append(float(2*i.contracts*latest_clos))
+                future_contracts.append(float(i.contracts))
+            else:
+                if i.position == 'Long':
+                    future_debit_credit.append(-float(100*i.contracts*i.buysellprice))
+                else:
+                    future_debit_credit.append(float(100*i.contracts*i.buysellprice))
+                future_valuation.append(float(100*i.contracts*latest_clos)) 
+                future_contracts.append(float(i.contracts))
+
+        max_stocks_dates, stock_stock_prices, stock_debit_credit, stocks_profits, stocks_valuation, stocks_total_payoff, stocks_quantity = ([] for i in range(7))
+
+        for i in stocks:
+            qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
+            max_stocks_date = qs_stocks.aggregate(Max('date'))
+            
+            max_stocks_dates.append(max_stocks_date['date__max'].strftime("%#d/%#m/%Y"))
+            
+            latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
+            stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
+            stock_debit_credit.append(float(i.quantity*float(i.buyprice)))
+            stocks_quantity.append(float(i.quantity))
+            
+            stocks_profits.append(float(latest_stock)-float(i.buyprice))
+            stocks_valuation.append(float(i.quantity*latest_stock))
+            stocks_total_payoff.append(float(i.quantity*(float(latest_stock)-float(i.buyprice))))
+
+        if request.method == "POST":
+            portfolioOptionForm = PortfolioOptionForm(request.POST)
+            
+            if portfolioOptionForm.is_valid():
+                asset_ = request.POST.get('asset')
+                optiontype_ = request.POST.get('option_type')
+                expmonth_ = request.POST.get('exp_month')
+                expyear_ = request.POST.get('exp_year')
+                strike_ = request.POST.get('strike')
+                expdate_ = request.POST.get('exp_date')
+                try:
+                    qs = Optionsymbol.objects.filter(expmonthdate__gte=date.today()).filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
+                    optionsymbol_ = qs[0]
+                    portfolioOption = PortfolioOption(
+                        optionsymbol = optionsymbol_,
+                        position = portfolioOptionForm.cleaned_data["position_type"],
+                        contracts = portfolioOptionForm.cleaned_data["contracts"],
+                        buysellprice = portfolioOptionForm.cleaned_data["buysellprice"],
+                    )
                     
+                    portfolioOption.save()
+                    portfolioOption.portfolio.add(portfolio)
 
-            if option_type == 'p':
-                if i.position == 'Long':                
-                    profits.append(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))
-                    option_payoff.append(float(100*i.contracts*(float(qs_options[0].optionsymbol.strike) - float(latest_stock) - float(i.buysellprice))))
-                else:
-                    profits.append(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))
-                    option_payoff.append(float(100*i.contracts*(float(latest_stock) + float(i.buysellprice) - float(qs_options[0].optionsymbol.strike))))
+                    return HttpResponseRedirect(request.path_info)            
 
-        if i.optionsymbol.asset == 'FTSE':
-            if i.position == 'Long':
-                option_debit_credit.append(-float(2*i.contracts*i.buysellprice))
-            else:
-                option_debit_credit.append(float(2*i.contracts*i.buysellprice))
-            option_valuation.append(float(2*i.contracts*latest_clos))
-            option_delta.append(float(i.contracts*latest_delta))
-            option_contracts.append(float(i.contracts))
-        else:
-            if i.position == 'Long':
-                option_debit_credit.append(-float(100*i.contracts*i.buysellprice))
-            else:
-                option_debit_credit.append(float(100*i.contracts*i.buysellprice))
-            option_valuation.append(float(100*i.contracts*latest_clos))      
-            option_delta.append(float(i.contracts*latest_delta))
-            option_contracts.append(float(i.contracts))      
+                except (IndexError, Optionsymbol.DoesNotExist):
+                    return render(request, 'accounts/myportfolio-detail.html', {
+                        'portfolio': portfolio,
+                        'options': options,
+                        'futures': futures,
+                        'stocks': stocks,
+                        'active_options': active_options,
+                        'active_options_count': len(active_options),
+                        'active_futures': active_futures,
+                        'active_futures_count': len(active_futures),
+                        'portfolioOptionForm': portfolioOptionForm,
+                        'portfolioFutureForm': portfolioFutureForm,
+                        'portfolioStockForm': portfolioStockForm,
+                        'max_options_dates': max_options_dates,   
+                        'options_clos_prices': options_clos_prices,     
+                        'stock_prices': stock_prices,       
+                        'profits': profits,  
+                        'option_debit_credit': option_debit_credit,
+                        'option_valuation': option_valuation,
+                        'option_payoff': option_payoff,
+                        'option_delta': option_delta,
+                        'max_futures_dates': max_futures_dates, 
+                        'futures_clos_prices': futures_clos_prices,
+                        'futures_stock_prices': futures_stock_prices,
+                        'max_stocks_dates': max_stocks_dates,
+                        'fixing_prices': fixing_prices,
+                        'futures_profits': futures_profits,
+                        'future_debit_credit': future_debit_credit,
+                        'future_valuation': future_valuation,
+                        'future_payoff': future_payoff,
+                        'max_stocks_dates': max_stocks_dates,
+                        'stock_stock_prices': stock_stock_prices,
+                        'stock_debit_credit': stock_debit_credit,
+                        'stocks_profits': stocks_profits,
+                        'stocks_valuation': stocks_valuation,
+                        'stocks_total_payoff': stocks_total_payoff,
+                        'stocks_count': len(stocks),
+                        'stocks_quantity': sum(stocks_quantity),
+                        'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
+                        'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
+                        'total_option_contracts': sum(option_contracts),
+                        'total_option_debit_credit': sum(option_debit_credit),
+                        'total_option_valuation': sum(option_valuation),
+                        'total_option_payoff': sum(option_payoff),
+                        'total_option_delta': sum(option_delta),
+                        'total_future_contracts': sum(future_contracts),
+                        'total_future_debit_credit': sum(future_debit_credit),
+                        'total_future_valuation': sum(future_valuation),
+                        'total_future_payoff': sum(future_payoff),
+                        'total_stock_debit_credit': sum(stock_debit_credit),
+                        'total_stock_valuation': sum(stocks_valuation),
+                        'total_stock_payoff': sum(stocks_total_payoff),
+                        'today': date.today(),
+                        'error_message': 'Please select a valid not expired option',
+                        })
 
-    max_futures_dates, futures_clos_prices, futures_stock_prices, fixing_prices, futures_profits, future_debit_credit, future_valuation, future_payoff, future_contracts = ([] for i in range(9))
 
-    for i in active_futures:
-        qs_futures = Future.objects.filter(futuresymbol=PortfolioFuture.objects.get(id=i.id).futuresymbol.id)
-        max_futures_date = qs_futures.aggregate(Max('date'))
-
-        max_futures_dates.append(max_futures_date['date__max'].strftime("%#d/%#m/%Y"))
-
-        latest_clos = qs_futures.filter(date=max_futures_date['date__max']).values('closing_price')[0]['closing_price']
-        futures_clos_prices.append(json.dumps(latest_clos, cls=DecimalEncoder))
-
-        latest_stock = qs_futures.filter(date=max_futures_date['date__max']).values('stock')[0]['stock']
-        futures_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
-
-        latest_fixing_price = qs_futures.filter(date=max_futures_date['date__max']).values('fixing_price')[0]['fixing_price']
-        fixing_prices.append(json.dumps(latest_fixing_price, cls=DecimalEncoder))
-
-        if i.futuresymbol.asset == 'FTSE':
-            if i.position == 'Long':
-                if latest_fixing_price > 0:
-                    futures_profits.append(float(latest_fixing_price) - float(i.buysellprice))
-                    future_payoff.append(float(2*i.contracts*(float(latest_fixing_price) - float(i.buysellprice))))
-                else:
-                    futures_profits.append(float(latest_clos) - float(i.buysellprice))
-                    future_payoff.append(float(2*i.contracts*(float(latest_clos) - float(i.buysellprice))))
-
-            if i.position == 'Short':
-                if latest_fixing_price > 0:
-                    futures_profits.append(float(i.buysellprice) - float(latest_fixing_price))
-                    future_payoff.append(float(2*i.contracts*(float(i.buysellprice) - float(latest_fixing_price))))
-                else:
-                    futures_profits.append(float(i.buysellprice) - float(latest_clos))
-                    future_payoff.append(float(2*i.contracts*(float(i.buysellprice) - float(latest_clos))))
-                    
-        else:
-            if i.position == 'Long':
-                if latest_fixing_price > 0:
-                    futures_profits.append(float(latest_fixing_price) - float(i.buysellprice))
-                    future_payoff.append(float(100*i.contracts*(float(latest_fixing_price) - float(i.buysellprice))))
-                else:
-                    futures_profits.append(float(latest_clos) - float(i.buysellprice))
-                    future_payoff.append(float(100*i.contracts*(float(latest_clos) - float(i.buysellprice))))
-
-            if i.position == 'Short':
-                if latest_fixing_price > 0:
-                    futures_profits.append(float(i.buysellprice) - float(latest_fixing_price))
-                    future_payoff.append(float(100*i.contracts*(float(i.buysellprice) - float(latest_fixing_price))))
-                else:
-                    futures_profits.append(float(i.buysellprice) - float(latest_clos))
-                    future_payoff.append(float(100*i.contracts*(float(i.buysellprice) - float(latest_clos))))
-
-        if i.futuresymbol.asset == 'FTSE':
-            if i.position == 'Long':
-                future_debit_credit.append(-float(2*i.contracts*i.buysellprice))
-            else:
-                future_debit_credit.append(float(2*i.contracts*i.buysellprice))
-            future_valuation.append(float(2*i.contracts*latest_clos))
-            future_contracts.append(float(i.contracts))
-        else:
-            if i.position == 'Long':
-                future_debit_credit.append(-float(100*i.contracts*i.buysellprice))
-            else:
-                future_debit_credit.append(float(100*i.contracts*i.buysellprice))
-            future_valuation.append(float(100*i.contracts*latest_clos)) 
-            future_contracts.append(float(i.contracts))
-
-    max_stocks_dates, stock_stock_prices, stock_debit_credit, stocks_profits, stocks_valuation, stocks_total_payoff, stocks_quantity = ([] for i in range(7))
-
-    for i in stocks:
-        qs_stocks = Stock.objects.filter(stocksymbol=PortfolioStock.objects.get(id=i.id).stocksymbol.id)
-        max_stocks_date = qs_stocks.aggregate(Max('date'))
-        
-        max_stocks_dates.append(max_stocks_date['date__max'].strftime("%#d/%#m/%Y"))
-        
-        latest_stock = qs_stocks.filter(date=max_stocks_date['date__max']).values('close')[0]['close']
-        stock_stock_prices.append(json.dumps(latest_stock, cls=DecimalEncoder))
-        stock_debit_credit.append(float(i.quantity*float(i.buyprice)))
-        stocks_quantity.append(float(i.quantity))
-        
-        stocks_profits.append(float(latest_stock)-float(i.buyprice))
-        stocks_valuation.append(float(i.quantity*latest_stock))
-        stocks_total_payoff.append(float(i.quantity*(float(latest_stock)-float(i.buyprice))))
-
-    if request.method == "POST":
-        portfolioOptionForm = PortfolioOptionForm(request.POST)
-        
-        if portfolioOptionForm.is_valid():
-            asset_ = request.POST.get('asset')
-            optiontype_ = request.POST.get('option_type')
-            expmonth_ = request.POST.get('exp_month')
-            expyear_ = request.POST.get('exp_year')
-            strike_ = request.POST.get('strike')
-            expdate_ = request.POST.get('exp_date')
-            try:
-                qs = Optionsymbol.objects.filter(expmonthdate__gte=date.today()).filter(asset=asset_).filter(optiontype=optiontype_).filter(expmonthdate__month=expmonth_).filter(expmonthdate__year=expyear_).filter(strike=strike_)
-                optionsymbol_ = qs[0]
-                portfolioOption = PortfolioOption(
-                    optionsymbol = optionsymbol_,
-                    position = portfolioOptionForm.cleaned_data["position_type"],
-                    contracts = portfolioOptionForm.cleaned_data["contracts"],
-                    buysellprice = portfolioOptionForm.cleaned_data["buysellprice"],
-                )
-                
-                portfolioOption.save()
-                portfolioOption.portfolio.add(portfolio)
-
-                return HttpResponseRedirect(request.path_info)            
-
-            except (IndexError, Optionsymbol.DoesNotExist):
-                return render(request, 'accounts/myportfolio-detail.html', {
-                    'portfolio': portfolio,
+        context = {'portfolio': portfolio,
                     'options': options,
                     'futures': futures,
                     'stocks': stocks,
@@ -653,10 +713,10 @@ def PortfolioDetailView(request, portfolio_id):
                     'portfolioOptionForm': portfolioOptionForm,
                     'portfolioFutureForm': portfolioFutureForm,
                     'portfolioStockForm': portfolioStockForm,
-                    'max_options_dates': max_options_dates,   
-                    'options_clos_prices': options_clos_prices,     
-                    'stock_prices': stock_prices,       
-                    'profits': profits,  
+                    'max_options_dates': max_options_dates,
+                    'options_clos_prices': options_clos_prices,
+                    'stock_prices': stock_prices,
+                    'profits': profits,
                     'option_debit_credit': option_debit_credit,
                     'option_valuation': option_valuation,
                     'option_payoff': option_payoff,
@@ -664,7 +724,6 @@ def PortfolioDetailView(request, portfolio_id):
                     'max_futures_dates': max_futures_dates, 
                     'futures_clos_prices': futures_clos_prices,
                     'futures_stock_prices': futures_stock_prices,
-                    'max_stocks_dates': max_stocks_dates,
                     'fixing_prices': fixing_prices,
                     'futures_profits': futures_profits,
                     'future_debit_credit': future_debit_credit,
@@ -693,63 +752,11 @@ def PortfolioDetailView(request, portfolio_id):
                     'total_stock_valuation': sum(stocks_valuation),
                     'total_stock_payoff': sum(stocks_total_payoff),
                     'today': date.today(),
-                    'error_message': 'Please select a valid not expired option',
-                    })
+                    }
 
-
-    context = {'portfolio': portfolio,
-                'options': options,
-                'futures': futures,
-                'stocks': stocks,
-                'active_options': active_options,
-                'active_options_count': len(active_options),
-                'active_futures': active_futures,
-                'active_futures_count': len(active_futures),
-                'portfolioOptionForm': portfolioOptionForm,
-                'portfolioFutureForm': portfolioFutureForm,
-                'portfolioStockForm': portfolioStockForm,
-                'max_options_dates': max_options_dates,
-                'options_clos_prices': options_clos_prices,
-                'stock_prices': stock_prices,
-                'profits': profits,
-                'option_debit_credit': option_debit_credit,
-                'option_valuation': option_valuation,
-                'option_payoff': option_payoff,
-                'option_delta': option_delta,
-                'max_futures_dates': max_futures_dates, 
-                'futures_clos_prices': futures_clos_prices,
-                'futures_stock_prices': futures_stock_prices,
-                'fixing_prices': fixing_prices,
-                'futures_profits': futures_profits,
-                'future_debit_credit': future_debit_credit,
-                'future_valuation': future_valuation,
-                'future_payoff': future_payoff,
-                'max_stocks_dates': max_stocks_dates,
-                'stock_stock_prices': stock_stock_prices,
-                'stock_debit_credit': stock_debit_credit,
-                'stocks_profits': stocks_profits,
-                'stocks_valuation': stocks_valuation,
-                'stocks_total_payoff': stocks_total_payoff,
-                'stocks_count': len(stocks),
-                'stocks_quantity': sum(stocks_quantity),
-                'total_portfolio_valuation': sum(option_valuation)+sum(future_valuation)+sum(stocks_valuation),
-                'total_portfolio_payoff': sum(option_payoff)+sum(future_payoff)+sum(stocks_total_payoff),
-                'total_option_contracts': sum(option_contracts),
-                'total_option_debit_credit': sum(option_debit_credit),
-                'total_option_valuation': sum(option_valuation),
-                'total_option_payoff': sum(option_payoff),
-                'total_option_delta': sum(option_delta),
-                'total_future_contracts': sum(future_contracts),
-                'total_future_debit_credit': sum(future_debit_credit),
-                'total_future_valuation': sum(future_valuation),
-                'total_future_payoff': sum(future_payoff),
-                'total_stock_debit_credit': sum(stock_debit_credit),
-                'total_stock_valuation': sum(stocks_valuation),
-                'total_stock_payoff': sum(stocks_total_payoff),
-                'today': date.today(),
-                }
-
-    return render(request, 'accounts/myportfolio-detail.html', context)
+        return render(request, 'accounts/myportfolio-detail.html', context)
+    else:
+        return HttpResponseForbidden()
 
 @ login_required
 def DeletePortfolioOptionView(request):

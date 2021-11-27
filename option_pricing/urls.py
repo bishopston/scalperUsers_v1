@@ -89,4 +89,5 @@ urlpatterns = [
     path('privacy-policy/', TemplateView.as_view(template_name="option_pricing/privacy_policy.html"), name='privacy-policy'),
     path('terms-of-use/', TemplateView.as_view(template_name="option_pricing/terms_of_use.html"), name='terms-of-use'),
     path('cookie-policy/', TemplateView.as_view(template_name="option_pricing/cookie_policy.html"), name='cookie-policy'),
+    path('cv/', views.cv, name='cv'),
 ]
