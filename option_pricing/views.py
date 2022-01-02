@@ -6,7 +6,7 @@ from django.views.generic import View
 from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
-from django.core import serializers
+#from django.core import serializers
 
 from datetime import datetime, date
 import calendar
