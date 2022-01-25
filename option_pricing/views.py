@@ -3,10 +3,10 @@ from django.db.models import Max, Min, Avg, Sum, F
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse, FileResponse, Http404
 from django.views.generic import View
-from django.template import loader
+#from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
-from django.core import serializers
+#from django.core import serializers
 
 from datetime import datetime, date
 import calendar
@@ -1860,7 +1860,7 @@ def OptionCallPutMonthlyRatioAllView(request):
 def OptionCallPutMonthlyRatioAllView(request):
     callputratiodata = []
 
-    ratio = Optioncallputmonthlyratio.objects.all()
+    ratio = Optioncallputmonthlyratio.objects.all().order_by('date')
 
     for i in ratio:
         callputratiodata.append({json.dumps(i.date.strftime("%B")+" "+i.date.strftime("%Y")):json.dumps(i.callputratio, cls=DecimalEncoder)})
