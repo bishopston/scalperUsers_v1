@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'accounts',
     'option_pricing',
+    'api',
+    'rest_framework',
+    'corsheaders',
     'crispy_forms',
     'widget_tweaks',
     'bootstrap_modal_forms',
@@ -163,3 +166,13 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 import django_heroku
 django_heroku.settings(locals())
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+
+""" CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:8000/',
+) """

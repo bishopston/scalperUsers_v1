@@ -1860,7 +1860,7 @@ def OptionCallPutMonthlyRatioAllView(request):
 def OptionCallPutMonthlyRatioAllView(request):
     callputratiodata = []
 
-    ratio = Optioncallputmonthlyratio.objects.all()
+    ratio = Optioncallputmonthlyratio.objects.all().order_by('date')
 
     for i in ratio:
         callputratiodata.append({json.dumps(i.date.strftime("%B")+" "+i.date.strftime("%Y")):json.dumps(i.callputratio, cls=DecimalEncoder)})

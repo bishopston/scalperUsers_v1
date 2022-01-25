@@ -16,6 +16,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('option_pricing.urls', namespace='option_pricing')),
+    path('api/', include('api.urls')),
     path(
         'sitemap.xml',sitemap, {'sitemaps':sitemaps}, name='django.contrib.sitemaps.views.sitemap'
     )
