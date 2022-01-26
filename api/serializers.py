@@ -24,3 +24,16 @@ class OptionSymbolSerializer(serializers.ModelSerializer):
         representation = super(OptionSymbolSerializer, self).to_representation(instance)
         representation['expmonthdate'] = instance.expmonthdate.strftime("%#d-%#m-%Y")
         return representation
+
+class OptionAssetSerializer(serializers.ModelSerializer):
+    options = OptionSerializer(many=True, read_only=True)
+    optiontype = serializers.CharField(source='get_optiontype_display')
+
+    class Meta:
+        model = Optionsymbol
+        fields = ('symbol', 'asset', 'optiontype', 'strike', 'expmonthdate', 'options',)
+
+    def to_representation(self, instance):
+        representation = super(OptionSymbolSerializer, self).to_representation(instance)
+        representation['expmonthdate'] = instance.expmonthdate.strftime("%#d-%#m-%Y")
+        return representation
